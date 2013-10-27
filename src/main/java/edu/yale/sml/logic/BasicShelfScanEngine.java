@@ -1,0 +1,1115 @@
+package edu.yale.sml.logic;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.converters.DateConverter;
+import org.hibernate.HibernateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+import edu.yale.sml.logic.FullComparator;
+import edu.yale.sml.model.DataLists;
+import edu.yale.sml.model.Messages;
+import edu.yale.sml.model.OrbisRecord;
+import edu.yale.sml.model.Report;
+import edu.yale.sml.model.ReportHelper;
+import edu.yale.sml.model.SearchResult;
+import edu.yale.sml.model.ShelvingError;
+import edu.yale.sml.persistence.BarcodeSearchDAO;
+import edu.yale.sml.persistence.MessagesDAO;
+import edu.yale.sml.persistence.MessagesHibernateDAO;
+import edu.yale.sml.view.NullFileException;
+
+
+/**
+ * Types of methods: decorate, filter, process, calculate diff
+ * @author od26
+ *
+ */
+public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngine
+{
+
+    private static final long serialVersionUID = -1871752891918863039L;
+    final static Logger logger = LoggerFactory.getLogger(BasicShelfScanEngine.class);
+
+    public static final String ITEM_FLAG_STRING = "*";
+    public static final String ENUM_FLAG_STRING = "@";
+
+    public static final String LC_STRING = "( LC )";
+    public static final int MAX_QUERY_COUNT = 1500;
+    public static final String NOT_CHARGED_STRING = "Not Charged";
+    public static final String NULL_BARCODE_STRING = "00000000";
+    public static final String RESET_BARCODE = "";
+    public static final int MIN_ERROR_DISPLAY = 2;
+
+    private List<OrbisRecord> badBarcodes;
+    private List<Report> culpritList;
+    private List<Report> enumWarnings = new ArrayList<Report>();
+    private int nullBarcodes = 0;
+    private List<Report> reportListCopy = new ArrayList<Report>();
+    private DataLists reportLists = new DataLists(); // data structre that has report contents
+    private ShelvingError shelvingError;
+
+    private static boolean CHECK_FOR_LATEST_ORBISRECORD = false; // toggle switch to be controlled at application level
+    private static boolean IGNORE_NON_DEFAULT_ITEM_STATUS = false;
+
+    public BasicShelfScanEngine()
+    {
+        super();
+    }
+
+    public void processCatalogList(List<SearchResult> list) throws InvocationTargetException, IllegalAccessException
+    {
+        List<String> barocodesAdded = new ArrayList<String>();
+        badBarcodes = new ArrayList<OrbisRecord>();
+
+        for (SearchResult searchResult : list)
+        {
+            // e.g. for a barcode of legit length, but no result in Orbis
+
+            if (searchResult.getResult().size() == 0)
+            {
+                // FIXME
+                if (searchResult.getId().contains(NULL_BARCODE_STRING))
+                {
+                    nullBarcodes++;
+                }
+                OrbisRecord catalogObj = new OrbisRecord();
+                catalogObj.setITEM_BARCODE(searchResult.getId());
+                catalogObj.setDISPLAY_CALL_NO("Bad Barcode");
+                catalogObj.setNORMALIZED_CALL_NO("Bad Barcode");
+                catalogObj.setSUPPRESS_IN_OPAC("N/A");
+                badBarcodes.add(catalogObj);
+
+                continue; // skip full object populating
+            }
+
+            for (Map<String, Object> m : searchResult.getResult())
+            {
+                OrbisRecord catalogObj = new OrbisRecord();
+                java.sql.Date date = null;
+                Converter dc = new DateConverter(date);
+                ConvertUtils.register(dc, java.sql.Date.class); // sql bug?
+                BeanUtils.populate(catalogObj, m);
+
+                // logger.debug("Added:" + catalogObj.getITEM_BARCODE());
+
+                // Not sure what to do if CN Type null
+                if (catalogObj.getCALL_NO_TYPE() == null)
+                {
+                    logger.debug("CN TYPE null for :" + catalogObj.getITEM_BARCODE());
+                }
+
+                if (catalogObj.getITEM_STATUS_DESC() == null && catalogObj.getITEM_STATUS_DATE() == null && (catalogObj.getNORMALIZED_CALL_NO() == null) || catalogObj.getDISPLAY_CALL_NO() == null)
+                {
+                    logger.debug("Ignoring completely null record for Lauen" + catalogObj.getITEM_BARCODE());
+                    continue;
+                }
+
+                // check if valid item status. This may cause duplicate entries:
+                if (catalogObj.getITEM_STATUS_DESC() != null && Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC()))
+                {
+
+                    // not sure how useful it is because valid items seem to fetch only one row from Orbis (unlike invalid)
+
+                    if (CHECK_FOR_LATEST_ORBISRECORD && barocodesAdded.contains(catalogObj.getITEM_BARCODE()) && !catalogObj.getITEM_BARCODE().contains(NULL_BARCODE_STRING))
+                    {
+                        logger.debug("Already contains valid status item. Perhaps occurs twice!: " + catalogObj.getITEM_BARCODE());
+                        // FIXME repeat doesn't care take of prior repeat
+                        catalogObj.setDISPLAY_CALL_NO(catalogObj.getDISPLAY_CALL_NO() + " REPEAT "); // repeat doesn't care take of prior repeat
+                        reportLists.getCatalogAsList().add(catalogObj);
+
+                    }
+                    else
+                    // old, default case
+                    {
+                        reportLists.getCatalogAsList().add(catalogObj);
+                        barocodesAdded.add(catalogObj.getITEM_BARCODE());
+                    }
+                }
+                // e.g. for barcode with Status 'Hold Status'
+                else
+                {
+                    /* first print status info for */
+
+                    printStatuses(catalogObj);
+                    if (IGNORE_NON_DEFAULT_ITEM_STATUS == false)
+                    {
+                        logger.debug("Adding barcode anyway despite invalid item Status : " + catalogObj.getITEM_BARCODE());
+                        reportLists.getCatalogAsList().add(catalogObj);
+                        barocodesAdded.add(catalogObj.getITEM_BARCODE());
+                    }
+                    else
+                    {
+                        logger.debug("Discarding? :" + catalogObj.getITEM_BARCODE());
+                        if (barocodesAdded.contains(catalogObj.getITEM_BARCODE()))
+                        {
+                            Date existingItemStatusDate = null;
+                            OrbisRecord outdatedObject = findOlderItemStatusDateObject(reportLists.getCatalogAsList(), catalogObj.getITEM_BARCODE());
+                            if (outdatedObject != null)
+                            {
+                                existingItemStatusDate = outdatedObject.getITEM_STATUS_DATE();
+                            }
+                            else
+                            {
+                                logger.debug("Outdaed object null");
+                            }
+
+                            if (catalogObj.getITEM_STATUS_DATE() != null && outdatedObject != null && catalogObj.getITEM_STATUS_DATE().compareTo(existingItemStatusDate) > 0)
+                            {
+                                logger.debug("Item has more recent date:" + catalogObj.getITEM_BARCODE() + ", so it's replacing the older enttity");
+                                reportLists.getCatalogAsList().remove(outdatedObject);
+                                reportLists.getCatalogAsList().add(catalogObj);
+                            }
+
+                            // e.g. Missing 5-5-55 vs 'Not Charged' with status date
+                            
+                            //wont' get here if item_status_desc for existing item is not null:
+                            
+                            if (catalogObj.getITEM_STATUS_DATE() != null && outdatedObject == null) 
+                            {
+                                OrbisRecord priorWithNullDate = findOlderItemStatusDesc(reportLists.getCatalogAsList(), catalogObj.getITEM_BARCODE());
+                                
+                                if (priorWithNullDate != null) //  && Rules.isValidItemStatus(priorWithNullDate.getITEM_STATUS_DESC()))
+                                {
+                                    logger.debug("Adding more recent invalid, and discarding older valid or invalid w/ null status date!");
+                                    reportLists.getCatalogAsList().remove(priorWithNullDate);
+                                    reportLists.getCatalogAsList().add(catalogObj);
+                                }
+                                else
+                                {
+                                    logger.debug("Not sure what to do with item : " + catalogObj.getITEM_BARCODE());
+                                }                            
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        reportLists.setNullResultBarcodes(badBarcodes);
+    }
+
+    /**
+     * Main Function
+     */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public DataLists process(List<String> toFind, String finalLocationName, Date scanDate, String oversize) throws IllegalAccessException, InvocationTargetException, IOException, HibernateException, NullFileException
+    {
+
+        // Preferences
+        String preference = getApplicationProperty("logic.multipleValidStatusDesc.ignore");
+        CHECK_FOR_LATEST_ORBISRECORD = getCheckLatestPreference(preference);
+        String preference_RetainInvalidStatusItems = getApplicationProperty("logic.multipleInvalidStatusDesc.ignore");
+        IGNORE_NON_DEFAULT_ITEM_STATUS = getRetainPreference(preference_RetainInvalidStatusItems);
+        // logger.debug("Preferences:" + ", check_for_latest_orbisRecord" + CHECK_FOR_LATEST_ORBISRECORD + ", retain_non_default_item_status" + RETAIN_NON_DEFAULT_ITEM_STATUS);
+
+        // bad barcodes different from null barcodes. check
+        nullBarcodes = Collections.frequency(toFind, NULL_BARCODE_STRING); // counted twice
+
+        try
+        {
+            // init ds
+            reportLists = new DataLists();
+            shelvingError = new ShelvingError();
+
+            reportLists.setCatalogAsList(new ArrayList<OrbisRecord>()); // interesting
+            BarcodeSearchDAO itemdao = new BarcodeSearchDAO();
+
+            // N.B. Critical call to Voyager DB
+            List<SearchResult> list = itemdao.findAllById(toFind);
+
+            // N.B. Put orbis results into List<Reprt> reportCatalogList
+            processCatalogList(list);
+
+            // Filter Items -- e.g. Z9A394, separte Z9 A394
+            reportLists.setCatalogAsList(filterCallnumber(reportLists.getCatalogAsList()));
+
+            /* Create purgedList and catalogSortedPurged */
+            List<OrbisRecord> purgedList = new ArrayList<OrbisRecord>(reportLists.getCatalogAsList());
+            purgedList = processPurgedList(purgedList); // FIXME pass by reference
+            List<OrbisRecord> catalogSortedPurged = new ArrayList<OrbisRecord>(purgedList);
+            Collections.copy(catalogSortedPurged, purgedList);
+
+            // new: get enum_culprit_list
+            FullComparator fullComparator = new FullComparator();
+            Collections.sort(catalogSortedPurged, fullComparator); // why is this being sorted? perhaps as a ncessary condition fo misshelf
+            fullComparator.getCulprits();
+
+            // then compare count error
+            reportLists.setReportCatalogAsList(new ArrayList<Report>());
+
+            // set priors for each report item, and calculate mis-shelf/accuracy errors old style (misshelfs will be re-written again via processMisshehlfs)
+            processBySortOrder(purgedList, catalogSortedPurged, reportLists.getReportCatalogAsList());
+
+            // N.B. Filter out objects that DO NOT HAVE ANY ERRORS
+
+            reportLists.setReportCatalogAsList(filterReportList(reportLists.getReportCatalogAsList(), finalLocationName, scanDate, oversize));
+
+            // Get Error count as ShelvingError (done 1st time)
+            populateShelvingError(reportLists.getReportCatalogAsList(), finalLocationName, scanDate, oversize);
+
+            // finished processing, now process for other tabs
+
+            // UI: raw results:
+            reportLists.setCatalogSortedRaw(new ArrayList(reportLists.getCatalogAsList()));
+
+            sortCatalogSortedRaw();
+
+            stripCatalogSortedRawOfNullBarcodes();
+
+            // UI: Used for printing dialog:
+            reportListCopy = new ArrayList(reportLists.getReportCatalogAsList());
+
+            // marked list copy for UI -- new Logic
+            reportLists.setMarkedCatalogAsList(new ArrayList(reportLists.getCatalogAsList()));
+
+            // again, strip out all null barcodes:
+
+            List<OrbisRecord> refList = new ArrayList<OrbisRecord>(reportLists.getMarkedCatalogAsList());
+            Collections.copy(refList, reportLists.getMarkedCatalogAsList());
+
+            for (OrbisRecord o : refList)
+            {
+                if (o.getITEM_BARCODE() == null || o.getITEM_BARCODE().equals(NULL_BARCODE_STRING))
+                {
+                    reportLists.getMarkedCatalogAsList().remove(o);
+                }
+            }
+
+            // FIXME mother of all evil
+            // Add * for out of place call num
+
+            decorateMarkList(reportLists.getMarkedCatalogAsList());
+
+            // TODO Root of all evil: populates culprit list (enum w/ shelving warnings are left out)
+            // assumes all errors have been added prior
+            culpritList = processMisshelfs();
+
+            // New Add enums, since processMisshelf() doesn't add enum warnings
+            addNonAccErrorsToCulpritList(culpritList, reportLists.getReportCatalogAsList());
+
+            // 2nd time (primarily for field 'accuracy errors')
+            populateShelvingError(reportLists.getCulpritList(), finalLocationName, scanDate, oversize);
+
+            // Note enum warnings are added. means their location errors
+            // might not be counted or reported!
+
+            // add to culprit list as well.
+
+            for (Report r : fullComparator.getCulpritList())
+            {
+                enumWarnings.add(r);
+                culpritList.add(r); // add shelving warnings to culpritList
+            }
+
+            // new fixSortOrder - re-arranged by File Order:
+            culpritList = fixSortOrder(reportLists.getCatalogAsList(), culpritList);
+            reportLists.setCulpritList(culpritList); // ?
+
+            // 3rd time
+            populateShelvingError(reportLists.getCulpritList(), finalLocationName, scanDate, oversize);
+            reportLists.setShelvingError(shelvingError); // TODO clean up
+
+            reportLists.setEnumWarnings(enumWarnings);
+            setEnumWarningsSize(shelvingError, fullComparator.getCulpritList().size());
+
+        }
+        catch (HibernateException e1)
+        {
+            printErrors("Hibernate exception", e1);
+            throw new HibernateException(e1); // delegated to ErrorBean
+        }
+        catch (Throwable t)
+        {
+            printErrors("General swallowed Exception", t);
+        }
+        return reportLists;
+    }
+
+    private void setEnumWarningsSize(ShelvingError shelvingError, int size)
+    {
+        shelvingError.setEnum_warnings(size);
+    }
+
+    private List<Report> fixSortOrder(List<OrbisRecord> catalogList, List<Report> culpritList)
+    {
+        List<Report> naturalOrderList = new ArrayList<Report>();
+
+        for (OrbisRecord o : catalogList)
+        {
+            Report r = findFirstItemIndex(culpritList, o);
+            if (r != null)
+            {
+                naturalOrderList.add(r);
+            }
+        }
+        return naturalOrderList;
+    }
+
+    private Report findFirstItemIndex(List<Report> reportCatalogList, OrbisRecord o)
+    {
+        for (int i = 0; i < reportCatalogList.size(); i++)
+        {
+            if (evaluateFullMatch(reportCatalogList.get(i), o))
+                return reportCatalogList.get(i);
+        }
+        return null;
+    }
+
+    private boolean evaluateFullMatch(Report r, OrbisRecord o)
+    {
+        if (r.getITEM_BARCODE().trim().equals(o.getITEM_BARCODE().trim()))
+        {
+            if (r.getITEM_ENUM() != null && o.getITEM_ENUM() != null)
+            {
+                if (r.getITEM_ENUM().equals(o.getITEM_ENUM()))
+                {
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if ((r.getITEM_ENUM() == null && o.getITEM_ENUM() != null) || r.getITEM_ENUM() != null && o.getITEM_ENUM() == null)
+                {
+                    return false;
+                }
+            }
+
+            // T2nd match item status desc
+            if (r.getITEM_STATUS_DESC() != null && o.getITEM_STATUS_DESC() != null)
+            {
+                if (r.getITEM_STATUS_DESC().equals(o.getITEM_STATUS_DESC()))
+                {
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if ((r.getITEM_STATUS_DESC() == null && o.getITEM_STATUS_DESC() != null) || r.getITEM_STATUS_DESC() != null && o.getITEM_STATUS_DESC() == null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void printStatuses(OrbisRecord catalogObj)
+    {
+        if (catalogObj.getITEM_STATUS_DESC() == null)
+        {
+            logger.debug(catalogObj.getITEM_BARCODE() + " . Null status desc");
+        }
+        else
+        {
+            logger.debug("ITEM_STATUS_DESC for :" + catalogObj.getITEM_BARCODE() + " , status: " + catalogObj.getITEM_STATUS_DESC());
+        }
+        if (catalogObj.getITEM_STATUS_DATE() == null)
+        {
+            logger.debug(catalogObj.getITEM_BARCODE() + ". Null status date");
+        }
+        else
+        {
+            logger.debug("ITEM_STATUS_DATE for :" + catalogObj.getITEM_BARCODE() + " , status: " + catalogObj.getITEM_STATUS_DATE());
+        }
+    }
+
+    /**
+     * process Purgedm + Suppressed FIXME call by ref
+     */
+
+    public List<OrbisRecord> processPurgedList(List<OrbisRecord> purgedList)
+    {
+        for (OrbisRecord o : reportLists.getCatalogAsList())
+        {
+            if (o.getITEM_BARCODE().contains("0000000"))
+            {
+                purgedList.remove(o);
+            }
+
+            if (o.getSUPPRESS_IN_OPAC().trim().equals("Y"))
+            {
+                shelvingError.setSuppress_errors(shelvingError.getSuppress_errors() + 1);
+                reportLists.getSuppressedList().add(o);
+                continue;
+            }
+        }
+        return purgedList; // FIXME
+    }
+
+    /**
+     * FIXME nothing passed, nothing returned
+     */
+    public void sortCatalogSortedRaw()
+    {
+        Collections.copy(reportLists.getCatalogSortedRaw(), reportLists.getCatalogAsList());
+        Collections.sort(reportLists.getCatalogSortedRaw(), new FullComparator());
+    }
+
+    /**
+     * 
+     */
+    public void stripCatalogSortedRawOfNullBarcodes()
+    {
+        for (OrbisRecord o : reportLists.getCatalogAsList())
+        {
+            if (o.getITEM_BARCODE() == null || o.getITEM_BARCODE().equals(NULL_BARCODE_STRING))
+            {
+                reportLists.getCatalogSortedRaw().remove(o);
+            }
+        }
+    }
+
+    /**
+     * Used by ShelfScanEngine. Adds all catalogSorted objects. Items with accuracy, location errors are filtered out later by ShelfScanEngine.
+     * 
+     * @param catalogAsList
+     * @param catalogSorted
+     * @param reportCatalogAsList
+     * @return
+     */
+    public void processBySortOrder(List<OrbisRecord> catalogAsList, List<OrbisRecord> catalogSorted, List<Report> reportCatalogAsList)
+    {
+        int diff = 0;
+        for (int i = 0; i < catalogSorted.size(); i++)
+        {
+            diff = 0;
+            if (i == 0)
+            {
+                continue; // skip 1st
+            }
+            if (catalogSorted.get(i).getNORMALIZED_CALL_NO() == null || catalogSorted.get(i - 1).getNORMALIZED_CALL_NO() == null)
+            {
+                continue; // bug
+            }
+            String sortedItem1 = catalogSorted.get(i).getNORMALIZED_CALL_NO();
+            String sortedItem2 = catalogSorted.get(i - 1).getNORMALIZED_CALL_NO();
+            sortedItem1 = sortedItem1.replace("( LC )", " "); // TODO replace w/
+            sortedItem2 = sortedItem2.replace("( LC )", " ");
+            if (sortedItem1.equals(sortedItem2))
+            {
+            }
+            if (catalogAsList.indexOf(catalogSorted.get(i - 1)) < catalogAsList.indexOf(catalogSorted.get(i)))
+            {
+                Report r = Report.populateReport(catalogSorted.get(i), 0, "N/A", catalogAsList.get(catalogAsList.indexOf(catalogSorted.get(i - 1))).getDISPLAY_CALL_NO(), catalogAsList.get(catalogAsList.indexOf(catalogSorted.get(i - 1))), catalogSorted.get(i - 1)); // hold
+                reportCatalogAsList.add(r);
+            }
+            else
+            {
+                diff = Math.abs(catalogAsList.indexOf(catalogSorted.get(i - 1)) - catalogAsList.indexOf(catalogSorted.get(i)));
+                Report r = Report.populateReport(catalogSorted.get(i), diff, "N/A", catalogAsList.get(catalogAsList.indexOf(catalogSorted.get(i - 1))).getDISPLAY_CALL_NO(), catalogAsList.get(catalogAsList.indexOf(catalogSorted.get(i - 1))), catalogSorted.get(i - 1)); // hold
+                reportCatalogAsList.add(r);
+            }
+        }
+    }
+
+    /*
+     * Get error count
+     */
+    private void populateShelvingError(List<Report> reportCatalogAsList, String finalLocationName, Date scanDate, String oversize)
+    {
+
+        int accuracy_errors = 0;
+        int total_errors = 0;
+        int null_result_barcodes = 0;
+        int oversize_errors = 0;
+        int enum_warnings = 0;
+        int location_errors = 0;
+        int status_errors = 0;
+        int misshelf_errors = 0;
+        int misshelf_threshold_errors = 0;
+
+        for (Report item : reportCatalogAsList)
+        {
+            // if there's no reason to have in the list remove the object
+            if (item.getITEM_BARCODE().equals(NULL_BARCODE_STRING))
+            {
+                total_errors++;
+            }
+            else if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode"))
+            {
+                null_result_barcodes++;
+                total_errors++;
+            }
+
+            if (item.getText() != null && item.getText() != 0)
+            {
+                // ugly:
+                if (item.getITEM_ENUM() == null)
+                {
+                    accuracy_errors++;
+                    misshelf_errors++;
+
+                    if (item.getText() > MIN_ERROR_DISPLAY) // for report misshelf gt > 2
+                    {
+                        misshelf_threshold_errors++;
+                    }
+                }
+                else if (item.getITEM_ENUM() != null)
+                {
+                    // enum_warnings++;
+                }
+                total_errors++;
+            }
+
+            if (!item.getLOCATION_NAME().equals(finalLocationName))
+            {
+                total_errors++;
+            }
+
+            if (!item.getLOCATION_NAME().trim().equals(finalLocationName.trim()))
+            {
+                location_errors++;
+                accuracy_errors++;
+            }
+
+            if (item.getITEM_STATUS_DESC() != null)
+            {
+
+                if (item.getITEM_STATUS_DESC().equals("Not Charged") || item.getITEM_STATUS_DESC().equals("Discharged"))
+                {
+
+                    if (item.getITEM_STATUS_DATE() != null)
+                    {
+                        if (scanDate.before(item.getITEM_STATUS_DATE()))
+                        {
+                            status_errors++;
+                        }
+                    }
+                    else
+                    {
+                        // logger.debug("Item Status Desc valid, but status date Null. Not sure what to do in this case: " + item.getITEM_BARCODE() + " , with desc:" + item.getITEM_STATUS_DESC());
+                    }
+
+                }
+                else
+                // invalid status
+                {
+                    // logger.debug("Invalid status:" + item.getITEM_STATUS_DESC());
+                    status_errors++;
+                }
+            }
+            else
+            {
+                logger.debug("Item status desc null. Not sure what to do in this case: " + item.getITEM_BARCODE());
+            }
+
+            if ((item.getDISPLAY_CALL_NO().contains("+") || item.getDISPLAY_CALL_NO().contains("Oversize")) && oversize.equals("N"))
+            {
+                oversize_errors++;
+            }
+            else if ((!(item.getDISPLAY_CALL_NO().contains("+") || item.getDISPLAY_CALL_NO().contains("Oversize"))) && oversize.equals("Y"))
+            {
+                oversize_errors++;
+            }
+
+            if (item.getNORMALIZED_CALL_NO() == null)
+            {
+                total_errors++;
+            }
+
+            if ((item.getDISPLAY_CALL_NO().contains("+") || item.getDISPLAY_CALL_NO().contains("Oversize"))) // TODO properties
+            {
+                item.setOVERSIZE("Y");
+            }
+
+        }
+        shelvingError.setAccuracy_errors(accuracy_errors);
+        shelvingError.setStatus_errors(status_errors);
+        shelvingError.setEnum_warnings(enum_warnings);
+        shelvingError.setNull_barcodes(nullBarcodes);
+        shelvingError.setNull_result_barcodes(null_result_barcodes);
+        shelvingError.setOversize_errors(oversize_errors);
+        shelvingError.setTotal_errors(total_errors);
+        shelvingError.setLocation_errors(location_errors);
+        shelvingError.setStatus_errors(status_errors);
+        shelvingError.setMisshelf_errors(misshelf_errors);
+        shelvingError.setMisshelf_threshold_errors(misshelf_threshold_errors);
+    }
+
+    /*
+     * Adds * Mark list is used in theh main results page tab as well. It compares on Normalized Call Number. Comparing on Display Call Number results in much more errors. // e.g. :
+     */
+
+    // TODO replace LC logic w/ filter
+    private List<OrbisRecord> decorateMarkList(List<OrbisRecord> catalogList)
+    {
+        for (int i = 1; i < catalogList.size(); i++)
+        {
+            if (catalogList.get(i).getNORMALIZED_CALL_NO() == null || catalogList.get(i - 1).getNORMALIZED_CALL_NO() == null || catalogList.get(i).getDISPLAY_CALL_NO() == null || catalogList.get(i - 1).getDISPLAY_CALL_NO() == null)
+            {
+                continue;
+            }
+
+            String item1 = catalogList.get(i).getNORMALIZED_CALL_NO();
+            String item2 = catalogList.get(i - 1).getNORMALIZED_CALL_NO();
+            item1 = item1.replace("( LC )", " ");
+            item1 = item1.replace("(LC)", " ");
+            item2 = item2.replace("( LC )", " ");
+            item2 = item2.replace("(LC)", " ");
+
+            if (item1.trim().compareTo(item2.trim()) < 0)
+            {
+                catalogList.get(i).setDISPLAY_CALL_NO(ITEM_FLAG_STRING + catalogList.get(i).getDISPLAY_CALL_NO());
+            }
+            else
+            {
+                // logger.debug("Skipping adding *  for:" + catalogList.get(i).getITEM_BARCODE());
+            }
+        }
+        return null;
+    }
+
+    public List<OrbisRecord> filterCallnumber(List<OrbisRecord> reportCatalogAsList)
+    {
+        // filter obj -- e.g. PQ6613 Z9A394, separate Z9 A394
+
+        for (OrbisRecord o : reportCatalogAsList)
+        {
+            if (o.getDISPLAY_CALL_NO() == null || o.getNORMALIZED_CALL_NO() == null)
+            {
+                continue;
+            }
+
+            // TODO buggy. doesn't count Z9 instances
+            if (o.getDISPLAY_CALL_NO().contains("Z9"))
+            {
+                String[] str = o.getDISPLAY_CALL_NO().split("Z9");
+                if (str[1].matches("^[^\\d].*"))
+                {
+                    o.setDISPLAY_CALL_NO(o.getDISPLAY_CALL_NO().replace("Z9", "Z9 "));
+                    o.setNORMALIZED_CALL_NO(o.getNORMALIZED_CALL_NO().replace("Z9", "Z9 "));
+                }
+            }
+        }
+        return reportCatalogAsList;
+    }
+
+    /**
+     * Filter list -- if no errors are found, the item is not displayed in the final report
+     * 
+     * TODO scan date?
+     * 
+     * TODO replace with general pattern matcher
+     * 
+     * @param itemList
+     *            ArrayList<Report> of report entries that are displayed on the final report
+     * @param finalLocationName
+     *            location entered by end user when running the report
+     * @param scanDate
+     *            scan date entered by end user
+     * @param oversize
+     *            user specification of the material (options: y, intermixed, n)
+     * @return
+     */
+
+    // TODO check for and report any nulls
+
+    private List<Report> filterReportList(List<Report> itemList, String finalLocationName, Date scanDate, String oversize)
+    {
+        logger.debug("Filtering out barcodes that do not have any errors");
+
+        List<Report> filteredList = new ArrayList<Report>(itemList);
+        boolean foundError = false;
+
+        for (Report r : itemList)
+        {
+            foundError = false;
+            try
+            {
+                if (r.getNORMALIZED_CALL_NO() == null || r.getDISPLAY_CALL_NO() == null || r.getLOCATION_NAME() == null || r.getITEM_STATUS_DESC() == null || r.getSUPPRESS_IN_OPAC() == null)
+                {
+                    logger.debug("at least one field null for: " + r.getITEM_BARCODE());
+                }
+
+                if (r.getNORMALIZED_CALL_NO().equals("Bad Barcode"))
+                {
+                    continue;
+                }
+
+                boolean oversizeCallNumber = (r.getDISPLAY_CALL_NO().contains("+") || r.getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
+
+                if (oversize.equalsIgnoreCase("N"))
+                {
+                    if (oversizeCallNumber)
+                    {
+                        r.setOVERSIZE("Y"); // TODO hack -- not sure if it's being used.. see populateShelvingError()
+                        foundError = true;
+                    }
+                    else
+                    {
+                    }
+                }
+                else if (oversize.equalsIgnoreCase("Y"))
+                {
+                    if (oversizeCallNumber)
+                    {
+                        r.setOVERSIZE("Y"); // NOT AN ERROR
+                    }
+                    else
+                    {
+                        r.setOVERSIZE("N");
+                        foundError = true;
+                    }
+                }
+
+                if (r.getText() != 0)
+                {
+                    foundError = true;
+                }
+
+                if (!r.getLOCATION_NAME().equals(finalLocationName))
+                {
+                    foundError = true;
+                }
+
+                if (r.getITEM_STATUS_DESC().equals("Not Charged") || r.getITEM_STATUS_DESC().equals("Discharged"))
+                {
+                    if (r.getITEM_STATUS_DATE() != null && scanDate.before(r.getITEM_STATUS_DATE()))
+                    {
+                        foundError = true;
+                    }
+                }
+                else
+                {
+                    System.out.print("Suspicious:" + r.getITEM_BARCODE());
+                    foundError = true;
+                }
+
+
+                if (r.getSUPPRESS_IN_OPAC().equalsIgnoreCase("Y"))
+                {
+                    foundError = true;
+                }
+
+                if (!foundError)
+                {
+                    filteredList.remove(r); // remove if no error was found!
+                }
+
+            }
+            catch (Exception e)
+            {
+                logger.debug("Exception filtering barcodes");
+                e.printStackTrace(); 
+                continue; // ?
+            }
+
+        }
+        logger.debug("Done filtering barcodes");
+
+        return filteredList;
+    }
+
+    private OrbisRecord findOlderItemStatusDateObject(List<OrbisRecord> catalogAsList, String item_BARCODE)
+    {
+        // assuming there's only one;
+        for (OrbisRecord o : catalogAsList)
+        {
+            if (o.getITEM_BARCODE().equals(item_BARCODE))
+            {
+                // TODO validation
+                if (o.getITEM_STATUS_DATE() != null && o.getITEM_STATUS_DATE().toString().length() > 1)
+                {
+                    return o;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private OrbisRecord findOlderItemStatusDesc(List<OrbisRecord> catalogAsList, String item_BARCODE)
+    {
+        // assuming there's only one;
+        for (OrbisRecord o : catalogAsList)
+        {
+            if (o.getITEM_BARCODE().equals(item_BARCODE))
+            {
+                // TODO validation
+                if (o.getITEM_STATUS_DESC() != null && o.getITEM_STATUS_DESC().toString().length() > 1)
+                {
+                    return o;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * find Date
+     */
+
+    // FIXME not used
+    public Date findMaxItemStatusDate(List<OrbisRecord> catalogList, String barcode)
+    {
+        // assuming there's only one;
+        for (OrbisRecord o : catalogList)
+        {
+            if (o.getITEM_BARCODE().equals(barcode))
+            {
+                // TODO validation
+                if (o.getITEM_STATUS_DATE() != null && o.getITEM_STATUS_DATE().toString().length() > 1)
+                {
+                    return o.getITEM_STATUS_DATE();
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Helper
+     */
+    public void printBarcodes(List<Report> report)
+    {
+        for (Report r : report)
+        {
+            logger.debug("Element:" + r.getITEM_BARCODE());
+        }
+    }
+
+    /**
+     * New logic. Not sure how this works. Ugly
+     * 
+     */
+    public List<Report> processMisshelfs()
+    {
+        // logger.debug("Processing acc. errors");
+
+        List<OrbisRecord> flaggedList = new ArrayList<OrbisRecord>(reportLists.getMarkedCatalogAsList());
+        Collections.copy(flaggedList, reportLists.getMarkedCatalogAsList());
+        List<OrbisRecord> sortedList = new ArrayList<OrbisRecord>(reportLists.getCatalogSortedRaw());
+        Collections.copy(sortedList, reportLists.getCatalogSortedRaw());
+        culpritList = new ArrayList<Report>();
+
+        try
+        {
+            for (OrbisRecord o : flaggedList)
+            {
+                // logger.debug("Eval:" + o.getITEM_BARCODE());
+
+                // FOR CN type bug
+                if (o.getDISPLAY_CALL_NO() == null)
+                {
+                    logger.debug("Warning: display call number null for" + o.getITEM_BARCODE() + "cannot processMisshelfs for this case");
+                    continue; 
+                }
+
+                if (o.getDISPLAY_CALL_NO().contains(ITEM_FLAG_STRING)) // ITEM_FLAG_STRING = *
+                {
+                    // System.out.println("Flagged item : " + o.getDISPLAY_CALL_NO());
+                    int currentPosition = flaggedList.indexOf(o);
+                    OrbisRecord prior = flaggedList.get(currentPosition - 1);
+                    if (prior == null)
+                    {
+                        continue;
+                    }
+                    // is the prior sorted in highlighted in sorted?
+                    boolean priorInSortedHighlighted = false;
+
+                    priorInSortedHighlighted = ReportHelper.reportContains(prior, reportLists.getReportCatalogAsList(), reportLists.getCatalogSortedRaw().size());
+
+                    try
+                    {
+                        if (priorInSortedHighlighted)
+                        {
+                            // System.out.println("[X] Prior in sorted highlighted for : " + o.getDISPLAY_CALL_NO());
+                            OrbisRecord priorinSorted = sortedList.get(sortedList.indexOf(prior));
+                            OrbisRecord priorinSortedPrior = flaggedList.get(currentPosition - 2); // TODO null pointer exception
+                            int diff = sortedList.indexOf(prior) - sortedList.indexOf(o);
+                            culpritList.add(Report.populateReport(priorinSorted, diff, priorinSortedPrior.getDISPLAY_CALL_NO(), priorinSortedPrior.getDISPLAY_CALL_NO(), priorinSortedPrior, priorinSortedPrior));
+                        }
+                        else
+                        {
+                            // System.out.println("[Y] Prior NOT in sorted highlighted for : " + o.getDISPLAY_CALL_NO());
+                            OrbisRecord priorinFlagged = flaggedList.get(currentPosition - 1);
+                            int diff = sortedList.indexOf(o) - currentPosition;
+                            culpritList.add(Report.populateReport(o, diff, priorinFlagged.getDISPLAY_CALL_NO(), priorinFlagged.getDISPLAY_CALL_NO(), priorinFlagged, priorinFlagged));
+                        }
+                    }
+                    catch (ArrayIndexOutOfBoundsException e)
+                    {
+                        logger.debug("Process Misshelf: (ArrayIndexOutOfBoundsException) Item: " + o.getITEM_BARCODE());
+                        continue;
+                    }
+                }
+                else
+                {
+                    // no * in call_no
+                }
+            }
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+        }
+
+        return culpritList;
+    }
+
+    public void addNonAccErrorsToCulpritList(List<Report> culpritList, final List<Report> reportCatalogAsList)
+    {
+        for (Report item : reportCatalogAsList)
+        {
+            if (item.getText() == 0)
+            {
+                item.setDISPLAY_CALL_NO(item.getDISPLAY_CALL_NO());
+
+                culpritList.add(item);
+            }
+        }
+    }
+
+    public List<OrbisRecord> getBadBarcodes()
+    {
+        return badBarcodes;
+    }
+
+    public List<Report> getCulpritList()
+    {
+        return culpritList;
+    }
+
+    public int getNullBarcodes()
+    {
+        return nullBarcodes;
+    }
+
+    public List<Report> getReportListCopy()
+    {
+        return reportListCopy;
+    }
+
+    public DataLists getReportLists()
+    {
+        return reportLists;
+    }
+
+    public ShelvingError getShelvingError()
+    {
+        return shelvingError;
+    }
+
+    public void setBadBarcodes(List<OrbisRecord> badBarcodes)
+    {
+        this.badBarcodes = badBarcodes;
+    }
+
+    public void setCulpritList(List<Report> culpritList)
+    {
+        this.culpritList = culpritList;
+    }
+
+    public void setNullBarcodes(int nullBarcodes)
+    {
+        this.nullBarcodes = nullBarcodes;
+    }
+
+    public void setReportListCopy(List<Report> reportListCopy)
+    {
+        this.reportListCopy = reportListCopy;
+    }
+
+    public void setReportLists(DataLists reportLists)
+    {
+        this.reportLists = reportLists;
+    }
+
+    public void setShelvingError(ShelvingError shelvingError)
+    {
+        this.shelvingError = shelvingError;
+    }
+
+    /**
+     * TODO Preferences, a class?
+     */
+    // FIXME
+    public String getApplicationProperty(String property)
+    {
+        try
+        {
+            MessagesDAO dao = new MessagesHibernateDAO();
+            List<Messages> messageList = dao.findAll(Messages.class);
+            for (Messages m : messageList)
+            {
+                if (m.getNAME().equals(property))
+                {
+                    return m.getVALUE();
+                }
+            }
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public boolean getCheckLatestPreference(String preference)
+    {
+        if (preference != null && (preference.equalsIgnoreCase("yes") || preference.equalsIgnoreCase("true")))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public boolean getRetainPreference(String preference_RetainInvalidStatusItems)
+    {
+        if (preference_RetainInvalidStatusItems != null && (preference_RetainInvalidStatusItems.equalsIgnoreCase("yes") || preference_RetainInvalidStatusItems.equalsIgnoreCase("true")))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Helper method
+     */
+    public void printErrors(String msg, Throwable e)
+    {
+        logger.debug(msg);
+        logger.error(e.getCause().toString());
+        logger.error(e.getMessage());
+
+        e.printStackTrace();
+    }
+
+    public List<Report> getEnumWarnings()
+    {
+        return enumWarnings;
+    }
+
+    public void setEnumWarnings(List<Report> enumWarnings)
+    {
+        this.enumWarnings = enumWarnings;
+    }
+
+}
