@@ -3,10 +3,8 @@ package edu.yale.sml.logic;
 import java.util.Comparator;
 
 import org.primefaces.model.SortOrder;
-import org.slf4j.LoggerFactory;
 
 import edu.yale.sml.model.History;
-import edu.yale.sml.model.Report;
 
 /**
  * Sorts / Compares just by Normalized Call Number

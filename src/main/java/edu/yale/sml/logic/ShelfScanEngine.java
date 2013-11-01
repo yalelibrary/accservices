@@ -16,29 +16,29 @@ import edu.yale.sml.view.NullFileException;
 
 public interface ShelfScanEngine {
 
-	public abstract List<OrbisRecord> getBadBarcodes();
+	List<OrbisRecord> getBadBarcodes();
 
-	public abstract int getNullBarcodes();
+	int getNullBarcodes();
 
-	public abstract List<Report> getReportListCopy();
+	List<Report> getReportListCopy();
 
-	public abstract DataLists getReportLists();
+	DataLists getReportLists();
 
-	public abstract ShelvingError getShelvingError();
+	ShelvingError getShelvingError();
 
-	public abstract DataLists process(List<String> toFind,
+	DataLists process(List<String> toFind,
 			String finalLocationName, Date scanDate, String oversize)
 			throws IllegalAccessException, InvocationTargetException,
 			IOException, HibernateException, NullFileException;
 
-	public abstract void setBadBarcodes(List<OrbisRecord> badBarcodes);
+	void setBadBarcodes(List<OrbisRecord> badBarcodes);
 
-	public abstract void setNullBarcodes(int nullBarcodes);
+	void setNullBarcodes(int nullBarcodes);
 
-	public abstract void setReportListCopy(List<Report> reportListCopy);
+	void setReportListCopy(List<Report> reportListCopy);
 
-	public abstract void setReportLists(DataLists reportLists);
+	void setReportLists(DataLists reportLists);
 
-	public abstract void setShelvingError(ShelvingError shelvingError);
+	void setShelvingError(ShelvingError shelvingError);
 
 }

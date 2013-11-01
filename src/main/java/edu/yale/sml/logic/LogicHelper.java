@@ -366,7 +366,7 @@ public class LogicHelper
         }
         catch (Throwable e)
         {
-            System.out.println("Exception");
+            logger.error("Exception");
             e.printStackTrace();
         }
         finally

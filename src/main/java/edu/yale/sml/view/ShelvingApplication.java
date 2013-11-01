@@ -13,7 +13,6 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -316,8 +315,6 @@ public class ShelvingApplication implements java.io.Serializable
 
         // set item first/last call number.:
 
-        // first get info from dao
-
         BarcodeSearchDAO barcodeSearchDAO = new BarcodeSearchDAO();
 
         List<String> toFind = new ArrayList<String>();
@@ -326,7 +323,6 @@ public class ShelvingApplication implements java.io.Serializable
         toFind.add(item.getBarcodeEnd());
         
         Map<String, Date> barcodesAdded = new HashMap<String, Date>();
-
 
         try
         {
@@ -346,17 +342,12 @@ public class ShelvingApplication implements java.io.Serializable
                     BeanUtils.populate(catalogObj, m);
                     
                     
-                    //new logic, get item status date and desc. add only the most recent
-                    
                     // we want only one entry per barcode... 
                     
                     String barcode = catalogObj.getITEM_BARCODE();
                     
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-                     
-                    
-                    
                     if (barcodesAdded.containsKey(barcode))
                     {
                         logger.debug("Have seen this barcode before." + catalogObj.getITEM_BARCODE());
@@ -371,9 +362,7 @@ public class ShelvingApplication implements java.io.Serializable
                             {
                                 logger.debug("Have the more recent date. So removing older entry");
                                 barcodesAdded.remove(barcode);
-
                                 int found = -1 ;
-                                //ugly use hashmap
                                 for (int i = 0; i < orbisList.size(); i++)
                                 {
                                     if (orbisList.get(i).getITEM_BARCODE().equals(barcode))
@@ -382,22 +371,20 @@ public class ShelvingApplication implements java.io.Serializable
                                         break;
                                     }
                                 }
-                                
-                                
                                 if (found >= 0)
+                                {
                                     orbisList.remove(found);
+                                }
                             }
                             else
                             {
                                 logger.debug("Unknown case:" + barcode);
                             }
-                            
                         }
                         else
                         {
-                            logger.debug("Date null. So will SKIP");
+                            //logger.debug("Date null. So will SKIP");
                             continue;
-                            
                         }
                     }
                     
@@ -408,7 +395,7 @@ public class ShelvingApplication implements java.io.Serializable
                     }
                     else
                     {
-                        logger.debug("Cannot add" + catalogObj.getITEM_BARCODE());
+                        //logger.debug("Cannot add" + catalogObj.getITEM_BARCODE());
                     }
                     orbisList.add(catalogObj);
                 }
@@ -574,7 +561,6 @@ public class ShelvingApplication implements java.io.Serializable
     public void removeElement()
     {
         ShelvingDAO dao = new ShelvingHibernateDAO();
-
         try
         {
             dao.delete(selectedHistory);

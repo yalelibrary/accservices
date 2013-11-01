@@ -38,7 +38,6 @@ public class Report extends Entity implements Serializable
 
     public Report()
     {
-        // TODO Auto-generated constructor stub
     }
 
     public static Report populateReport(OrbisRecord o, Integer flag, String prior, String physicalPrior, OrbisRecord physicalPriorO, OrbisRecord priorO)
@@ -58,7 +57,6 @@ public class Report extends Entity implements Serializable
         catch (Exception e)
         {
             //ok to just report the exception, not raise it
-            //System.out.println("Some or all fields null for: " + o.getITEM_BARCODE());
         }
 
         Report rc = new Report(flag, o.getITEM_BARCODE(), o.getDISPLAY_CALL_NO(), o.getITEM_ENUM(), oversize, o.getCHRON(), o.getCHRON(), o.getLOCATION_NAME(), o.getITEM_STATUS_DESC(), o.getITEM_STATUS_DATE(), o.getSUPPRESS_IN_OPAC(), o.getCALL_NO_TYPE());
@@ -168,10 +166,14 @@ public class Report extends Entity implements Serializable
         if (ITEM_BARCODE == null)
         {
             if (other.ITEM_BARCODE != null)
+            {
                 return false;
+            }
         }
-        else if (!ITEM_BARCODE.equals(other.ITEM_BARCODE))
-            return false;
+        else if (!ITEM_BARCODE.equals(other.ITEM_BARCODE)) 
+        {
+        	return false;
+        }            
         return true;
     }
 
@@ -220,7 +222,7 @@ public class Report extends Entity implements Serializable
         return LOCATION_NAME;
     }
 
-    public synchronized String getMarker()
+    public String getMarker()
     {
         return marker;
     }
@@ -245,7 +247,7 @@ public class Report extends Entity implements Serializable
         return prior;
     }
 
-    public synchronized String getPriorPhysical()
+    public String getPriorPhysical()
     {
         return priorPhysical;
     }
@@ -319,7 +321,7 @@ public class Report extends Entity implements Serializable
         LOCATION_NAME = lOCATION_NAME;
     }
 
-    public synchronized void setMarker(String marker)
+    public void setMarker(String marker)
     {
         this.marker = marker;
     }
@@ -344,7 +346,7 @@ public class Report extends Entity implements Serializable
         this.prior = prior;
     }
 
-    public synchronized void setPriorPhysical(String priorPhysical)
+    public void setPriorPhysical(String priorPhysical)
     {
         this.priorPhysical = priorPhysical;
     }

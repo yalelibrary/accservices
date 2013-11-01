@@ -24,7 +24,7 @@ import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
 @ManagedBean
 @SessionScoped
 /**
- * TODO Remove since it's not used anywhere anymore
+ * TODO Remove ( since it's not used anywhere anymore )
  * 
  * Class for configuring application settings. This configures both the form UI messages as well as toggle switches. 
  * The bean scope has to be checked as well.
@@ -81,16 +81,11 @@ public class SettingsView
     @Deprecated
     public String updateAll()
     {
-      /*  MessagesDAO dao = new MessagesHibernateDAO();
-        dao.updateAll(messagesList);
-        hashMap.clear(); // ?
-        initialize(); */
         return "not ok";
     }
     
     public String updateSettings()
     {
-        //first save Messages, then Toggles -- unless Hibernate allows saving both from parent
         logger.debug("Saving all settings");        
         return "ok";
     }   

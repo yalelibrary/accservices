@@ -43,6 +43,7 @@ public class SessionNetIdFilter implements Filter
             request.getSession().setAttribute("netid", "ghost");
         }
 
+        
         if (netid.isEmpty())
         {
             HttpServletResponse httpResponse = (HttpServletResponse) res;
@@ -57,12 +58,10 @@ public class SessionNetIdFilter implements Filter
             chain.doFilter(req, res);
             return;
         }
-
         else
         {
             if (request.getSession().getAttribute("netid").equals("ghost"))
             {
-                // System.out.println("[SessionNetIdFilter] Skipping chain.doFilter(req, res) & waiting for Javascript to discover user 'ghost' . . .");
             }
             else
             {

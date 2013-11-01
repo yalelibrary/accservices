@@ -45,6 +45,7 @@ public class ExcelHistoryView implements Serializable
         return historyAsList;
     }
     
+    @Deprecated
     public void toggle()
     {
     }
@@ -54,7 +55,6 @@ public class ExcelHistoryView implements Serializable
     {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         boolean paginate = false;
-
         try
         {
             historyAsList = new ArrayList<History>();
@@ -71,7 +71,6 @@ public class ExcelHistoryView implements Serializable
         {
             e.printStackTrace();
         }
-
     }
 
     public void setHistoryAsList(List<History> historyAsList)

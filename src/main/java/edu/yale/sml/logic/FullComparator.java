@@ -21,6 +21,8 @@ public class FullComparator implements Comparator<OrbisRecord>
     List<OrbisRecord> culprits = new java.util.ArrayList<OrbisRecord>();
     List<Report> culpritList = new java.util.ArrayList<Report>();
     private static final int FLAG = 5555;
+    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FullComparator.class);
+
 
     public int compare(OrbisRecord o1, OrbisRecord o2)
     {
@@ -31,17 +33,17 @@ public class FullComparator implements Comparator<OrbisRecord>
 
         if (o1 == null || o2 == null)
         {
-            // System.out.println("Null record");
+            // logger.debug("Null record");
         }
 
         if (o1.getNORMALIZED_CALL_NO() == null || o2.getNORMALIZED_CALL_NO() == null)
         {
-            System.out.println("Null for comparison : " + o1.toString() + "  : " + o2.toString());
+            logger.debug("Null for comparison : " + o1.toString() + "  : " + o2.toString());
             return 0;
         }
 
         /*
-         * System.out.println("Comparing :" + o1.getNORMALIZED_CALL_NO() + ":" + o2.getNORMALIZED_CALL_NO());
+         * logger.debug("Comparing :" + o1.getNORMALIZED_CALL_NO() + ":" + o2.getNORMALIZED_CALL_NO());
          */
 
         String item1 = o1.getNORMALIZED_CALL_NO();
@@ -58,11 +60,11 @@ public class FullComparator implements Comparator<OrbisRecord>
         // for same call numbers, but different enums and years
         if (diff == 0)
         {
-            // System.out.println("[ComparatorImpl] Call Num. same, but sorting on enum/year for : " + o1.getITEM_BARCODE() + " w/ " + o2.getITEM_BARCODE());
+            // logger.debug("[ComparatorImpl] Call Num. same, but sorting on enum/year for : " + o1.getITEM_BARCODE() + " w/ " + o2.getITEM_BARCODE());
 
             if (item1.length() != item2.length())
             {
-                // System.out.println("Length not equal for :" + item1 + "and" + item2);
+                // logger.debug("Length not equal for :" + item1 + "and" + item2);
             }
 
             if (o1.getENUM_VALUE() == null && o2.getENUM_VALUE() == null)
@@ -75,7 +77,7 @@ public class FullComparator implements Comparator<OrbisRecord>
             if (o1.getENUM_VALUE() == null || o2.getENUM_VALUE() == null)
             {
                 // check for chron?
-                eitherEnumNull = true; // forchron;
+                eitherEnumNull = true; 
             }
 
             else if (o1.getITEM_ENUM() != null && o2.getITEM_ENUM() != null)
@@ -150,19 +152,19 @@ public class FullComparator implements Comparator<OrbisRecord>
 
                         else
                         {
-                            // System.out.println("Unk sort. Preceeding colon OK, but error.");
+                            // logger.debug("Unk sort. Preceeding colon OK, but error.");
                         }
                     }
 
                     else
                     {
-                        // System.out.println("Sort Unknown condition.");
+                        // logger.debug("Sort Unknown condition.");
                     }
 
                 }
                 catch (NumberFormatException n)
                 {
-                    System.out.println("Number Format Exception" + n.getCause() + n.getMessage() );
+                    logger.debug("Number Format Exception" + n.getCause() + n.getMessage() );
                     enum_diff = 0;
                 }
             }
@@ -245,9 +247,6 @@ public class FullComparator implements Comparator<OrbisRecord>
 
     public boolean notDVD(String chron) // TODO replace with non number regex
     {
-        if (chron.contains("CD") || chron.contains("DVD"))
-            return false;
-        else
-            return true;
+        return (chron.contains("CD") || chron.contains("DVD")) ? false : true;            
     }
 }

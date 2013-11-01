@@ -27,7 +27,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.exception.DataException;
 
 import edu.yale.sml.logic.BasicShelfScanEngine;
-//import edu.yale.sml.logic.DefaultShelfScanEngine;
 import edu.yale.sml.logic.InvalidFormatException;
 import edu.yale.sml.logic.LogicHelper;
 import edu.yale.sml.logic.ShelfScanEngine;
@@ -465,7 +464,6 @@ public class SearchView implements Serializable
         }
         else
         {
-            //logger.debug("Null file.");
         }
     }
 
@@ -492,9 +490,13 @@ public class SearchView implements Serializable
         history.setLASTCALLNUMBER(edu.yale.sml.logic.Rules.getLastValidDisplayCallNum(reportLists.getCatalogAsList()));
 
         if (reportLists.getCatalogAsList().get(0).getNORMALIZED_CALL_NO() != null)
+        {
             history.setNORM_CALL_FIRST(reportLists.getCatalogAsList().get(0).getNORMALIZED_CALL_NO());
+        }
         if (reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1).getNORMALIZED_CALL_NO() != null)
-            history.setNORM_CALL_LAST(reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1).getNORMALIZED_CALL_NO());
+        {
+        	history.setNORM_CALL_LAST(reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1).getNORMALIZED_CALL_NO());
+        }            
 
         history.setBARCODE_FIRST(first.getITEM_BARCODE());
         history.setBARCODE_LAST(last.getITEM_BARCODE());
@@ -547,7 +549,7 @@ public class SearchView implements Serializable
 
     public void setCatalogAsSortedList(List<OrbisRecord> catalogAsSortedList)
     {
-        // this.catalogAsSortedList = catalogAsSortedList;
+        // this.catalogAsSortedList = catalogAsSortedList; //?
     }
 
     public void setEngine(BasicShelfScanEngine engine)
@@ -593,8 +595,8 @@ public class SearchView implements Serializable
     public void setLocationName(String locationName)
     {
         this.locationName = locationName;
-        this.finalLocationName = locationName; // idea is to read this
-        this.locationName = ""; // TODO: UGLY
+        this.finalLocationName = locationName; 
+        this.locationName = ""; // ?
     }
 
     public void setLocationNames(List<String> locationNames)
@@ -654,27 +656,21 @@ public class SearchView implements Serializable
     }
     
     // TODO - not sure if the following method and corresponding html tab/page is required anymore.
-    //  it started as a test. 
     public static String getReferenceLink(String rowIndex)
     {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
     }
 
     // TODO - not sure if the following method and corresponding html tab/page is required anymore.
-    //  it started as a test. 
     public static String getReferenceLink2(String rowIndex)
     {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
     }
 
-    // to jump to history report
+    // To jump to a particular history report
     public void jump() throws IOException
-    {
-        if (true)
-        {
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/shelfscan/pages/results.xhtml?id=" + redirect_id);
-
-        }
+    {      
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/shelfscan/pages/results.xhtml?id=" + redirect_id);     
     }
 
     public String getRedirect_id()

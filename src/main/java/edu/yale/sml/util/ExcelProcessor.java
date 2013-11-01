@@ -9,11 +9,6 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 
-/**
- * @author od26
- *
- */
-
 @ManagedBean
 @ApplicationScoped
 public class ExcelProcessor

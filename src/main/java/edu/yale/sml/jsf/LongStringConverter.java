@@ -13,17 +13,11 @@ public class LongStringConverter implements Converter
     {
         String val = (String) value;
         int min_length = (val.length() > 40) ? 40 : val.length();
-        
-        if (val.length() < 41)
-            return val;
-        else
-        
-        return val.substring(0, min_length) + " . . .";
+        return val.length() < 41 ? val : val.substring(0, min_length) + " . . .";
     }
 
     public Object getAsObject(FacesContext arg0, UIComponent arg1, String arg2)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 }

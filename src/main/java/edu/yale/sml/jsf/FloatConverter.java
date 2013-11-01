@@ -12,14 +12,9 @@ public class FloatConverter implements Converter
     public String getAsString(FacesContext context, UIComponent component, Object value)
     {
         float val = ((Float) value);
-        
-        if (val % 1 == 0)
-            return new Integer(Math.round(val)).toString();
-        else
-            return Float.toString(val);
+        return (val % 1 == 0) ? new Integer(Math.round(val)).toString() : Float.toString(val);     
     }
   
-
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value)
     {

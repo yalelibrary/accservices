@@ -41,8 +41,6 @@ public class LazyHistoryShelvingDataModel extends LazyDataModel<Shelving>
     public List<Shelving> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters)
     {
 
-
-
         int result_count = dataSourceSize;
         List<Shelving> data = new ArrayList<Shelving>();
 

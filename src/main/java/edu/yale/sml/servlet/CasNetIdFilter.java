@@ -20,16 +20,17 @@ public class CasNetIdFilter implements Filter
 {
 
     final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.servlet.CasNetIdFilter");
+    private final String CAS_VALIDATE_URL = "https://secure.its.yale.edu/cas/validate";
 
     public CasNetIdFilter()
     {
         super();
     }
 
-    // determines if a ticket has been returned from net id .. if so, it moves
-    // on to nxt
+    // determines if a ticket has been returned from net id .. if so, moves to next
 
-    // gets netid and puts it in session
+
+    // Gets NetId and puts it in Session
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
     {
 
@@ -49,7 +50,7 @@ public class CasNetIdFilter implements Filter
         try
         {
             final String user;
-            user = LogicHelper.getCASUser("https://secure.its.yale.edu/cas/validate", new StringBuffer(param)).get(2).trim(); 
+            user = LogicHelper.getCASUser(CAS_VALIDATE_URL, new StringBuffer(param)).get(2).trim(); 
             request.getSession().setAttribute("netid", user); 
         }
 

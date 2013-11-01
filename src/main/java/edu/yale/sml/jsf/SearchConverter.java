@@ -12,26 +12,12 @@ public class SearchConverter implements Converter
 	public Object getAsObject(FacesContext context, UIComponent component,
 			String value)
 	{
-		if(value.compareTo("true") == 0)
-		{
-			return 1;
-		}
-		else 
-		{
-			return 0;
-		}
+		return (value.compareTo("true") == 0) ? 1 : 0;		
 	}
 
 	public String getAsString(FacesContext context, UIComponent component,
 			Object value)
 	{
-		if((Boolean) value == true)
-		{
-			return "1";
-		}
-		else
-		{
-			return "";
-		}
+		return (Boolean) value == true ? "1" : "";	
 	}
 }

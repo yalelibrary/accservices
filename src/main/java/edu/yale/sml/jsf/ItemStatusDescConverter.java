@@ -14,26 +14,12 @@ public class ItemStatusDescConverter implements Converter
 	public Object getAsObject(FacesContext context, UIComponent component,
 			String value)
 	{
-		if(value.compareTo("true") == 0)
-		{
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
+		return value.compareTo("true") == 0 ? 1 : 0;	
 	}
 
 	public String getAsString(FacesContext context, UIComponent component,
 			Object value)
 	{
-		if(((String) value).equals(BasicShelfScanEngine.NOT_CHARGED_STRING))
-		{
-			return "1";
-		}
-		else
-		{
-			return "";
-		}
+		return ((String) value).equals(BasicShelfScanEngine.NOT_CHARGED_STRING) ? "1" : "";
 	}
 }

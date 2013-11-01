@@ -46,7 +46,7 @@ public class Shelving implements java.io.Serializable
     }
 
     public Shelving(Integer accuracyErrors, String barcodeEnd, String barcodeStart, Date creationDate, String displayEnd, String displayStart, String endItemStatus, Date endItemStatusDate, String floor, Date formDate, int id, String nETID, String normalizedEnd, String normalizedStart, String notes,
-            String numRows, String oversize, String sCANLOCATION, String startItemStatus, Date startItemStatusDate, String team, float teamSize, String time)
+            String numRows, String oversize, String loc, String startItemStatus, Date startItemStatusDate, String team, float teamSize, String time)
     {
         super();
         this.accuracyErrors = accuracyErrors;
@@ -60,13 +60,13 @@ public class Shelving implements java.io.Serializable
         this.floor = floor;
         this.formDate = formDate;
         this.id = id;
-        NETID = nETID;
+        this.NETID = nETID;
         this.normalizedEnd = normalizedEnd;
         this.normalizedStart = normalizedStart;
         this.notes = notes;
         this.numRows = numRows;
         this.oversize = oversize;
-        SCANLOCATION = sCANLOCATION;
+        this.SCANLOCATION = loc;
         this.startItemStatus = startItemStatus;
         this.startItemStatusDate = startItemStatusDate;
         this.team = team;

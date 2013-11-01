@@ -790,7 +790,7 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
                 }
                 else
                 {
-                    System.out.print("Suspicious:" + r.getITEM_BARCODE());
+                    //System.out.print("Suspicious:" + r.getITEM_BARCODE());
                     foundError = true;
                 }
 
@@ -826,7 +826,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
         {
             if (o.getITEM_BARCODE().equals(item_BARCODE))
             {
-                // TODO validation
                 if (o.getITEM_STATUS_DATE() != null && o.getITEM_STATUS_DATE().toString().length() > 1)
                 {
                     return o;
@@ -844,7 +843,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
         {
             if (o.getITEM_BARCODE().equals(item_BARCODE))
             {
-                // TODO validation
                 if (o.getITEM_STATUS_DESC() != null && o.getITEM_STATUS_DESC().toString().length() > 1)
                 {
                     return o;
@@ -867,7 +865,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
         {
             if (o.getITEM_BARCODE().equals(barcode))
             {
-                // TODO validation
                 if (o.getITEM_STATUS_DATE() != null && o.getITEM_STATUS_DATE().toString().length() > 1)
                 {
                     return o.getITEM_STATUS_DATE();
@@ -1040,10 +1037,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
         this.shelvingError = shelvingError;
     }
 
-    /**
-     * TODO Preferences, a class?
-     */
-    // FIXME
     public String getApplicationProperty(String property)
     {
         try
@@ -1098,7 +1091,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
         logger.debug(msg);
         logger.error(e.getCause().toString());
         logger.error(e.getMessage());
-
         e.printStackTrace();
     }
 

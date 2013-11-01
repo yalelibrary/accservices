@@ -9,9 +9,9 @@ public class SessionNetIdEvaluator extends HttpServlet
 {
     private static final long serialVersionUID = -7145207353136170795L;
 
-    // server-side AJAX handler service responds whether a legit ID exists in
+    // Deprecated functionality. server-side AJAX handler service responds whether a legit ID exists in
     // session. e.g. with js.sanityCheck(), AND removes appropriate 'ghost' netid
-
+  
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -24,7 +24,7 @@ public class SessionNetIdEvaluator extends HttpServlet
         response.setContentType("text/plain");
         response.setCharacterEncoding("UTF-8");
 
-        if (data.equals("ghost"))
+        if (data.equals("ghost")) // deprecated Javascript usage.
         {
             request.getSession().removeAttribute("netid"); 
             response.getWriter().write("error");

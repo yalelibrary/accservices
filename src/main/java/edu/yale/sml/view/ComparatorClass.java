@@ -2,7 +2,7 @@ package edu.yale.sml.view;
 
 import edu.yale.sml.model.OrbisRecord;
 
-//TODO USED WHERE?
+@Deprecated
 public class ComparatorClass<O> implements Comparable<OrbisRecord>
 {
 

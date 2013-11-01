@@ -94,7 +94,6 @@ public class HistorySearchView implements java.io.Serializable
     @PostConstruct
     public void initialize()
     {
-      //  System.out.println("Init HistorySearchView");
     }
 
     /**

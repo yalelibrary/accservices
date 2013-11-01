@@ -185,44 +185,44 @@ public class OrbisRecord implements Serializable
         CHRON = cHRON;
     }
 
-    public void setDISPLAY_CALL_NO(String dISPLAY_CALL_NO)
+    public void setDISPLAY_CALL_NO(String display_call_number)
     {
-        DISPLAY_CALL_NO = dISPLAY_CALL_NO;
+        DISPLAY_CALL_NO = display_call_number;
     }
 
-    public void setENCODING_LEVEL(String eNCODING_LEVEL)
+    public void setENCODING_LEVEL(String level)
     {
-        ENCODING_LEVEL = eNCODING_LEVEL;
+        ENCODING_LEVEL = level;
     }
 
-    public void setITEM_BARCODE(String iTEM_BARCODE)
+    public void setITEM_BARCODE(String barcode)
     {
-        ITEM_BARCODE = iTEM_BARCODE;
+        ITEM_BARCODE = barcode;
     }
 
-    public void setITEM_ENUM(String iTEM_ENUM)
+    public void setITEM_ENUM(String item_enum)
     {
-        ITEM_ENUM = iTEM_ENUM;
+        ITEM_ENUM = item_enum;
     }
 
-    public void setITEM_ID(String iTEM_ID)
+    public void setITEM_ID(String item_id)
     {
-        ITEM_ID = iTEM_ID;
+        ITEM_ID = item_id;
     }
 
-    public void setITEM_STATUS_DATE(Date iTEM_STATUS_DATE)
+    public void setITEM_STATUS_DATE(Date item_status_date)
     {
-        ITEM_STATUS_DATE = iTEM_STATUS_DATE;
+        ITEM_STATUS_DATE = item_status_date;
     }
 
-    public void setITEM_STATUS_DESC(String iTEM_STATUS_DESC)
+    public void setITEM_STATUS_DESC(String item_status_desc)
     {
-        ITEM_STATUS_DESC = iTEM_STATUS_DESC;
+        ITEM_STATUS_DESC = item_status_desc;
     }
 
-    public void setLOCATION_NAME(String lOCATION_NAME)
+    public void setLOCATION_NAME(String location_name)
     {
-        LOCATION_NAME = lOCATION_NAME;
+        LOCATION_NAME = location_name;
     }
 
     public void setMFHD_ID(String mFHD_ID)
@@ -230,14 +230,14 @@ public class OrbisRecord implements Serializable
         MFHD_ID = mFHD_ID;
     }
 
-    public void setNORMALIZED_CALL_NO(String nORMALIZED_CALL_NO)
+    public void setNORMALIZED_CALL_NO(String norm_call_number)
     {
-        NORMALIZED_CALL_NO = nORMALIZED_CALL_NO;
+        NORMALIZED_CALL_NO = norm_call_number;
     }
 
-    public void setPERM_LOCATION(String pERM_LOCATION)
+    public void setPERM_LOCATION(String perm_location)
     {
-        PERM_LOCATION = pERM_LOCATION;
+        PERM_LOCATION = perm_location;
     }
 
     public void setPrior(String prior)
@@ -245,14 +245,14 @@ public class OrbisRecord implements Serializable
         this.prior = prior;
     }
 
-    public void setSUPPRESS_IN_OPAC(String sUPPRESS_IN_OPAC)
+    public void setSUPPRESS_IN_OPAC(String supp)
     {
-        SUPPRESS_IN_OPAC = sUPPRESS_IN_OPAC;
+        SUPPRESS_IN_OPAC = supp;
     }
 
-    public void setYEAR(String yEAR)
+    public void setYEAR(String year)
     {
-        YEAR = yEAR;
+        YEAR = year;
     }
 
     @Override

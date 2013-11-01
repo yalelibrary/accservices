@@ -134,7 +134,7 @@ public class History implements java.io.Serializable
         return LOCATION;
     }
 
-    public synchronized int getLOCATIONERROR()
+    public int getLOCATIONERROR()
     {
         return LOCATIONERROR;
     }
@@ -144,7 +144,7 @@ public class History implements java.io.Serializable
         return MISLABELLED;
     }
 
-    public synchronized String getNETID()
+    public String getNETID()
     {
         return NETID;
     }
@@ -244,7 +244,7 @@ public class History implements java.io.Serializable
         LOCATION = lOCATION;
     }
 
-    public synchronized void setLOCATIONERROR(int lOCATIONERROR)
+    public void setLOCATIONERROR(int lOCATIONERROR)
     {
         LOCATIONERROR = lOCATIONERROR;
     }
@@ -254,7 +254,7 @@ public class History implements java.io.Serializable
         MISLABELLED = mISLABELLED;
     }
 
-    public synchronized void setNETID(String nETID)
+    public void setNETID(String nETID)
     {
         NETID = nETID;
     }
