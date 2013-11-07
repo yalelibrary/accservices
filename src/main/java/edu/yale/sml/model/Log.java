@@ -2,9 +2,13 @@ package edu.yale.sml.model;
 
 import java.util.Date;
 
-public class Log
+public class Log implements java.io.Serializable
 {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1777878878L;
     private Integer id;
     private String net_id;
     private Date timestamp;

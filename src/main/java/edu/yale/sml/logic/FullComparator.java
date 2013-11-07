@@ -107,7 +107,6 @@ public class FullComparator implements Comparator<OrbisRecord>
                 }
 
                 if (s2.contains("-"))
-
                 {
                     s2 = s2.replace("-", ":");
                 }
@@ -136,7 +135,7 @@ public class FullComparator implements Comparator<OrbisRecord>
                     {
                         enum_diff = -1;
                     }
-
+                    
                     else if (Integer.parseInt(s1contents[0]) == Integer.parseInt(s2contents[0]))
                     {
 

@@ -47,7 +47,7 @@ public class SettingsView
         GenericDAO dao = new GenericHibernateDAO();
         messagesList = new ArrayList<SettingsView.Messages>();
         togglesList = new ArrayList<SettingsView.Toggles>();        
-        logList = getLogs();
+        //logList = getLogs();
 
         try
         {
@@ -194,23 +194,5 @@ public class SettingsView
     public void setHashMap(HashMap hashMap)
     {
         this.hashMap = hashMap;
-    }
-    
-    /**
-     * Find all log messages
-     * @return
-     */
-    public List<Log> getLogs()
-    {
-        try
-        {
-            return new GenericHibernateDAO().findAll(Log.class);
-        }
-        catch (Throwable e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace(); //ok to swallow
-        }
-        return null;
-    }
+    }   
 }

@@ -116,6 +116,38 @@ public class GenericHibernateDAO<T> implements GenericDAO<T>
             }
         }
     }
+    
+    /**
+     * Finds all, sorted (desc) and up to a number
+     * @param classz
+     * @param field
+     * @return
+     * @throws Throwable
+     */
+    @SuppressWarnings("unchecked")
+    public List<T> findAllSorted(Class classz, String field, int limit) throws Throwable
+    {
+        Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
+        try
+        {
+            Query q = session.createQuery("from " + classz.getName() + " c order by c." + field + " desc");
+            q.setMaxResults(limit);            
+            List<T> list = q.list();
+            return list;
+        }
+        catch (Throwable t)
+        {
+            logger.error("Exception in query.");
+            throw t;
+        }
+        finally
+        {
+            if (session != null)
+            {
+                session.close();
+            }
+        }
+    }
 
     public int findByLevelCount(Class classz, String level, String field)
     {

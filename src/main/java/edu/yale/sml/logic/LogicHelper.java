@@ -1,5 +1,6 @@
 package edu.yale.sml.logic;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,9 +19,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.yale.sml.model.InputFile;
+import edu.yale.sml.model.Log;
 import edu.yale.sml.model.Messages;
 import edu.yale.sml.persistence.FileDAO;
 import edu.yale.sml.persistence.FileHibernateDAO;
+import edu.yale.sml.persistence.GenericDAO;
+import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.MessagesDAO;
 import edu.yale.sml.persistence.MessagesHibernateDAO;
 
@@ -98,7 +102,8 @@ public class LogicHelper
      * @return Contents of barcode file as List<String>
      * @throws IOException
      */
-    public static String readFileAsString(final UploadedFile fileUploadController) throws IOException
+    public static String readFileAsString(final UploadedFile fileUploadController)
+            throws IOException
     {
 
         StringBuilder sb = new StringBuilder();
@@ -168,7 +173,8 @@ public class LogicHelper
      * @return persistentId of the file saved .. used in history
      * @throws IOException
      */
-    public static Integer saveFile(final UploadedFile fileUploadController, String author, String date) throws IOException
+    public static Integer saveFile(final UploadedFile fileUploadController, String author,
+            String date) throws IOException
     {
         InputStream is = null;
         try
@@ -178,13 +184,16 @@ public class LogicHelper
             String md5 = DigestUtils.md5Hex(bytes);
             FileDAO dao = new FileHibernateDAO();
             List<InputFile> inputFileList = dao.findInputFileByMD5(md5);
-            if (inputFileList != null && inputFileList.get(0).getName() != null && inputFileList.get(0).getName().equals(fileUploadController.getFileName()))
+            if (inputFileList != null && inputFileList.get(0).getName() != null
+                    && inputFileList.get(0).getName().equals(fileUploadController.getFileName()))
             {
                 return new Integer(inputFileList.get(0).getId());
             }
 
             Integer fileId = 0;
-            fileId = dao.save(new InputFile(fileUploadController.getFileName(), md5, author, new Date(System.currentTimeMillis()), readFileAsString(fileUploadController), "sample text"));
+            fileId = dao.save(new InputFile(fileUploadController.getFileName(), md5, author,
+                    new Date(System.currentTimeMillis()), readFileAsString(fileUploadController),
+                    "sample text"));
 
             return fileId;
         }
@@ -221,7 +230,8 @@ public class LogicHelper
      * @return persistentId of the file saved .. used in history
      * @throws IOException
      */
-    public static InputFile getInputFile(final UploadedFile fileUploadController, String author, String date) throws IOException
+    public static InputFile getInputFile(final UploadedFile fileUploadController, String author,
+            String date) throws IOException
     {
         InputStream is = null;
 
@@ -232,12 +242,15 @@ public class LogicHelper
             String md5 = DigestUtils.md5Hex(bytes);
             FileDAO dao = new FileHibernateDAO();
             List<InputFile> inputFileList = dao.findInputFileByMD5(md5);
-            if (inputFileList != null && inputFileList.get(0).getName() != null && inputFileList.get(0).getName().equals(fileUploadController.getFileName()))
+            if (inputFileList != null && inputFileList.get(0).getName() != null
+                    && inputFileList.get(0).getName().equals(fileUploadController.getFileName()))
             {
                 return inputFileList.get(0);
             }
             Integer fileId = 0;
-            return (new InputFile(fileUploadController.getFileName(), md5, author, new Date(System.currentTimeMillis()), readFileAsString(fileUploadController), "sample text"));
+            return (new InputFile(fileUploadController.getFileName(), md5, author, new Date(
+                    System.currentTimeMillis()), readFileAsString(fileUploadController),
+                    "sample text"));
         }
         catch (Throwable e)
         {
@@ -290,7 +303,8 @@ public class LogicHelper
      * @return
      * @throws IOException
      */
-    public static List<String> getCASUser(final String cas_server_url, final StringBuffer contents) throws IOException
+    public static List<String> getCASUser(final String cas_server_url, final StringBuffer contents)
+            throws IOException
     {
         OutputStreamWriter writer = null;
         BufferedReader in = null;
@@ -450,4 +464,27 @@ public class LogicHelper
         }
         return false;
     }
+
+    /**
+     * Log message to tdatabase
+     */
+    public static void logMessage(String operation, String inputFileName, String message)
+    {
+        GenericDAO genericDAO = new GenericHibernateDAO();
+        Log log = new Log();
+        // log.setNet_id(user);
+        log.setOperation(operation);
+        log.setTimestamp(new Date());
+        log.setInput_file(inputFileName);
+        log.setStacktrace(message);
+        try
+        {
+            genericDAO.save(log);
+        }
+        catch (Throwable t)
+        {
+            t.printStackTrace();
+        }
+    }
+
 }

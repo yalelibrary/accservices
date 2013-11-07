@@ -1,5 +1,6 @@
 package edu.yale.sml.view;
 
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -51,9 +52,9 @@ import org.slf4j.LoggerFactory;
 
 @ManagedBean
 @ViewScoped
-
 // TODO: Search View has the search and results components on the same page.
-// Note for future: Should have separated the form elements from the processing elements.
+// Note for future: Should have separated the form elements from the processing
+// elements.
 /*
  * Main entry point for report creation
  */
@@ -64,9 +65,9 @@ public class SearchView implements Serializable
     private static final long serialVersionUID = 8064034317364105517L;
 
     // Report
-    
+
     BasicShelfScanEngine engine; // not abstract
-    String fileName = ""; 
+    String fileName = "";
     String finalLocationName = "";
     String firstCallNumber = "", lastCallNumber = "";
     List<Location> locationAsList = new LocationView().findAll();
@@ -83,15 +84,15 @@ public class SearchView implements Serializable
     List<String> selectBoxFileNames = new ArrayList<String>();
     int timeSpent = 30;
     UploadedFile uploadedFile;
-    List<OrbisRecord> badBarcodes; 
+    List<OrbisRecord> badBarcodes;
     String uploadedFileName = "";
-    String user = ""; 
+    String user = "";
     String notes = "";
-    String redirect_id = ""; 
+    String redirect_id = "";
+
     public SearchView()
     {
     }
-
 
     @Deprecated
     public History doProcess()
@@ -203,11 +204,14 @@ public class SearchView implements Serializable
     public void handleFileUpload(FileUploadEvent event)
     {
         FacesMessage msg = new FacesMessage("File uploaded.");
-        uploadedFile = event.getFile(); 
+        uploadedFile = event.getFile();
         uploadedFileName = uploadedFile.getFileName();
-        // TODO Don't have to place whole object in session below since it's not used
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("PrimeFacesUploadedFile", uploadedFile);
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("PrimeFacesUploadedFileName", uploadedFile.getFileName());
+        // TODO Don't have to place whole object in session below since it's not
+        // used
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                .put("PrimeFacesUploadedFile", uploadedFile);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                .put("PrimeFacesUploadedFileName", uploadedFile.getFileName());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
@@ -222,7 +226,11 @@ public class SearchView implements Serializable
     }
 
     /**
-     * initialize() TODO what happens if ID is null or history table is emtpy. exception thrown and user gets the stack trace? or how to get a friendly message across the problem is with the design of picking up hisotry object. really need to check @conversationscoped TODO inject hibernate dao
+     * initialize() TODO what happens if ID is null or history table is emtpy.
+     * exception thrown and user gets the stack trace? or how to get a friendly
+     * message across the problem is with the design of picking up hisotry
+     * object. really need to check @conversationscoped TODO inject hibernate
+     * dao
      */
     @PostConstruct
     public void initialize()
@@ -233,7 +241,8 @@ public class SearchView implements Serializable
         }
         else
         {
-            setUser(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString());
+            setUser(FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                    .get("netid").toString());
         }
 
         oversizeAsList.add("Y");
@@ -243,14 +252,18 @@ public class SearchView implements Serializable
         Integer historyID = -1;
         try
         {
-            if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id") != null) // check in param
+            if (FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap()
+                    .get("id") != null) // check in param
             {
-                historyID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
+                historyID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext()
+                        .getRequestParameterMap().get("id"));
                 populateSearchView(historyID);
             }
-            else if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("HISTORYID") != null)
+            else if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                    .get("HISTORYID") != null)
             {
-                historyID = (Integer) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("HISTORYID");
+                historyID = (Integer) FacesContext.getCurrentInstance().getExternalContext()
+                        .getSessionMap().get("HISTORYID");
                 populateSearchView(historyID);
             }
             else
@@ -261,9 +274,15 @@ public class SearchView implements Serializable
         {
             try
             {
-                FacesContext.getCurrentInstance().getExternalContext().redirect(new PropertiesConfiguration("messages.properties").getString("generic_error_redirect"));
+                FacesContext
+                        .getCurrentInstance()
+                        .getExternalContext()
+                        .redirect(
+                                new PropertiesConfiguration("messages.properties")
+                                        .getString("generic_error_redirect"));
             }
-            catch (ConfigurationException e1) // TODO msgs propeties exception, nto needed
+            catch (ConfigurationException e1) // TODO msgs propeties exception,
+                                              // nto needed
             {
                 e1.printStackTrace();
             }
@@ -297,10 +316,14 @@ public class SearchView implements Serializable
             }
             catch (Exception e)
             {
-                logger.debug("About to redirect. Omitting stacktrace. Hibernate failed to rereive object by specified report ID: " + ID);
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); // caution, out of cautio0n
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("PrimeFacesUploadedFileName");
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/shelfscan/pages/error/oops.xhtml");
+                logger.debug("About to redirect. Omitting stacktrace. Hibernate failed to rereive object by specified report ID: "
+                        + ID);
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                        .remove("HISTORYID"); // caution, out of cautio0n
+                FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                        .remove("PrimeFacesUploadedFileName");
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .redirect("/shelfscan/pages/error/oops.xhtml");
                 return;
             }
 
@@ -308,11 +331,14 @@ public class SearchView implements Serializable
 
             try
             {
-                savedSearchViewObject = (SearchView) SerializationUtils.deserialize(historyCatalog.getSEARCHVIEW());
+                savedSearchViewObject = (SearchView) SerializationUtils.deserialize(historyCatalog
+                        .getSEARCHVIEW());
             }
             catch (RuntimeException apachecommonsexception)
             {
-                throw new InvalidFormatException("Serialization format exception."); // business logic exception
+                throw new InvalidFormatException("Serialization format exception."); // business
+                                                                                     // logic
+                                                                                     // exception
             }
 
             if (engine == null)
@@ -320,13 +346,20 @@ public class SearchView implements Serializable
                 engine = new BasicShelfScanEngine();
             }
 
-            engine.getReportLists().setCatalogAsList(savedSearchViewObject.reportLists.getCatalogAsList());
-            engine.getReportLists().setReportCatalogAsList(savedSearchViewObject.reportLists.getReportCatalogAsList());
-            engine.getReportLists().setCatalogSortedRaw(savedSearchViewObject.reportLists.getCatalogSortedRaw());
-            engine.getReportLists().setMarkedCatalogAsList(savedSearchViewObject.reportLists.getMarkedCatalogAsList());
-            engine.getReportLists().setSuppressedList(savedSearchViewObject.reportLists.getSuppressedList());
-            engine.getReportLists().setNullResultBarcodes(savedSearchViewObject.reportLists.getNullResultBarcodes());
-            engine.getReportLists().setEnumWarnings(savedSearchViewObject.reportLists.getEnumWarnings());
+            engine.getReportLists().setCatalogAsList(
+                    savedSearchViewObject.reportLists.getCatalogAsList());
+            engine.getReportLists().setReportCatalogAsList(
+                    savedSearchViewObject.reportLists.getReportCatalogAsList());
+            engine.getReportLists().setCatalogSortedRaw(
+                    savedSearchViewObject.reportLists.getCatalogSortedRaw());
+            engine.getReportLists().setMarkedCatalogAsList(
+                    savedSearchViewObject.reportLists.getMarkedCatalogAsList());
+            engine.getReportLists().setSuppressedList(
+                    savedSearchViewObject.reportLists.getSuppressedList());
+            engine.getReportLists().setNullResultBarcodes(
+                    savedSearchViewObject.reportLists.getNullResultBarcodes());
+            engine.getReportLists().setEnumWarnings(
+                    savedSearchViewObject.reportLists.getEnumWarnings());
             engine.setShelvingError(savedSearchViewObject.engine.getShelvingError());
             fileName = savedSearchViewObject.getFileName();
             firstCallNumber = savedSearchViewObject.getFirstCallNumber();
@@ -334,20 +367,23 @@ public class SearchView implements Serializable
             finalLocationName = savedSearchViewObject.getFinalLocationName();
             oversize = savedSearchViewObject.getOversize();
             scanDate = savedSearchViewObject.getScanDate();
-            engine.getReportLists().setCulpritList(savedSearchViewObject.reportLists.getCulpritList());
+            engine.getReportLists().setCulpritList(
+                    savedSearchViewObject.reportLists.getCulpritList());
 
         }
         catch (NullPointerException e)
         {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); 
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("PrimeFacesUploadedFileName");
-            throw new NullPointerException(e.getMessage()); 
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                    .remove("HISTORYID");
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                    .remove("PrimeFacesUploadedFileName");
+            throw new NullPointerException(e.getMessage());
         }
     }
-    
-    
+
     /**
-     * Main method that gets invoked when form is sumbitted. Called directly from xhtml JSF view
+     * Main method that gets invoked when form is sumbitted. Called directly
+     * from xhtml JSF view
      * 
      * @return "ok" if file is processed ok
      * @throws IllegalAccessException
@@ -357,11 +393,13 @@ public class SearchView implements Serializable
      * @throws NullFileException
      */
 
-    //FIXME 'ufso'
-    
-    public String process() throws IllegalAccessException, InvocationTargetException, IOException, HibernateException, NullFileException
+    // FIXME 'ufso'
+
+    public String process() throws IllegalAccessException, InvocationTargetException, IOException,
+            HibernateException, NullFileException
     {
-        boolean allowExistingFileProcessing = LogicHelper.isApplicationPropertyChecked("form.shelfscan.allowProcessingExistingFiles"); //TODO
+        boolean allowExistingFileProcessing = LogicHelper
+                .isApplicationPropertyChecked("form.shelfscan.allowProcessingExistingFiles"); // TODO
         List<String> toFind = new ArrayList<String>();
         Integer persistId = 0;
         boolean selectBoxInput = false;
@@ -370,7 +408,9 @@ public class SearchView implements Serializable
         {
             try
             {
-                if ( allowExistingFileProcessing && ((UploadedFile) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(PF_FILE_PREFIX)) == null)
+                if (allowExistingFileProcessing
+                        && ((UploadedFile) FacesContext.getCurrentInstance().getExternalContext()
+                                .getSessionMap().get(PF_FILE_PREFIX)) == null)
                 {
                     if (selectBoxFileName != null)
                     {
@@ -385,11 +425,14 @@ public class SearchView implements Serializable
                 else
                 {
                     // Report Header
-                    setFileName(((UploadedFile) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(PF_FILE_PREFIX)).getFileName());
-                    toFind = LogicHelper.readFile((UploadedFile) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(PF_FILE_PREFIX));
+                    setFileName(((UploadedFile) FacesContext.getCurrentInstance()
+                            .getExternalContext().getSessionMap().get(PF_FILE_PREFIX))
+                            .getFileName());
+                    toFind = LogicHelper.readFile((UploadedFile) FacesContext.getCurrentInstance()
+                            .getExternalContext().getSessionMap().get(PF_FILE_PREFIX));
                 }
             }
-            catch (NullPointerException e) //?
+            catch (NullPointerException e) // ?
             {
                 logger.debug("No filename set for header.");
                 return "nullfile";
@@ -397,16 +440,18 @@ public class SearchView implements Serializable
 
             // Save file for later search by barcode feature
 
-            engine = new BasicShelfScanEngine(); // DI? but only one engine is ever used
+            engine = new BasicShelfScanEngine(); // DI? but only one engine is
+                                                 // ever used
 
             // (optional feature) Save record of user processing this file:
-            logFileProcessing();       
-            
+            logFileProcessing();
+
             logger.debug("Starting process file");
             reportLists = engine.process(toFind, finalLocationName, scanDate, oversize); //
-    
+
             firstCallNumber = reportLists.getCatalogAsList().get(0).getDISPLAY_CALL_NO();
-            lastCallNumber = reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1).getDISPLAY_CALL_NO();
+            lastCallNumber = reportLists.getCatalogAsList()
+                    .get(reportLists.getCatalogAsList().size() - 1).getDISPLAY_CALL_NO();
 
             InputFile inputFile = null;
 
@@ -417,12 +462,17 @@ public class SearchView implements Serializable
             }
             else
             {
-                inputFile = LogicHelper.getInputFile((UploadedFile) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(PF_FILE_PREFIX), "netid", "date");
+                inputFile = LogicHelper.getInputFile(
+                        (UploadedFile) FacesContext.getCurrentInstance().getExternalContext()
+                                .getSessionMap().get(PF_FILE_PREFIX), "netid", "date");
             }
-            persistId = saveHistory(inputFile, reportLists.getShelvingError(), user, String.valueOf(toFind.size()), finalLocationName);
+            persistId = saveHistory(inputFile, reportLists.getShelvingError(), user,
+                    String.valueOf(toFind.size()), finalLocationName);
             // clear session map for PrimeFaces uploade file
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(PF_FILE_PREFIX);
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("PrimeFacesUploadedFileName");
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                    .remove(PF_FILE_PREFIX);
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                    .remove("PrimeFacesUploadedFileName");
         }
         catch (NullFileException e)
         {
@@ -437,10 +487,11 @@ public class SearchView implements Serializable
             ge.printStackTrace();
         }
 
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("HISTORYID", persistId);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                .put("HISTORYID", persistId);
         return "ok";
     }
-    
+
     private void logFileProcessing()
     {
         if (getFileName() != null)
@@ -452,26 +503,31 @@ public class SearchView implements Serializable
             log.setOperation("Shelfscan");
             log.setTimestamp(new Date());
             log.setInput_file(getFileName());
+            log.setStacktrace("User uploaded file for processing");
             try
             {
                 genericDAO.save(log);
             }
             catch (Throwable t)
             {
-                logger.debug("Error logging file processing for user:" + user + " , file name:" + getFileName());
+                logger.debug("Error logging file processing for user:" + user + " , file name:"
+                        + getFileName());
                 t.printStackTrace();
             }
         }
         else
         {
+            // ignore (for now)
         }
     }
 
     // TODO: MAJOR HEADACHE perhaps move to HistoryDAO
     // not passed: reportLists
-    private Integer saveHistory(InputFile inputFile, ShelvingError shelvingError, String netid, String numScanned, String finalLocationName) throws HibernateException
+    private Integer saveHistory(InputFile inputFile, ShelvingError shelvingError, String netid,
+            String numScanned, String finalLocationName) throws HibernateException
     {
-        logger.debug("Saving results for file:" + inputFile.getName() + " , for user specified: " + netid);
+        logger.debug("Saving results for file:" + inputFile.getName() + " , for user specified: "
+                + netid);
 
         History history = new History();
         HistoryDAO historyDAO = new HistoryHibernateDAO();
@@ -484,19 +540,25 @@ public class SearchView implements Serializable
         history.setInputFile(inputFile);
 
         OrbisRecord first = reportLists.getCatalogAsList().get(0);
-        OrbisRecord last = reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1);
+        OrbisRecord last = reportLists.getCatalogAsList().get(
+                reportLists.getCatalogAsList().size() - 1);
 
-        history.setFIRSTCALLNUMBER(edu.yale.sml.logic.Rules.getFirstValidDisplayCallNum(reportLists.getCatalogAsList()));
-        history.setLASTCALLNUMBER(edu.yale.sml.logic.Rules.getLastValidDisplayCallNum(reportLists.getCatalogAsList()));
+        history.setFIRSTCALLNUMBER(edu.yale.sml.logic.Rules.getFirstValidDisplayCallNum(reportLists
+                .getCatalogAsList()));
+        history.setLASTCALLNUMBER(edu.yale.sml.logic.Rules.getLastValidDisplayCallNum(reportLists
+                .getCatalogAsList()));
 
         if (reportLists.getCatalogAsList().get(0).getNORMALIZED_CALL_NO() != null)
         {
-            history.setNORM_CALL_FIRST(reportLists.getCatalogAsList().get(0).getNORMALIZED_CALL_NO());
+            history.setNORM_CALL_FIRST(reportLists.getCatalogAsList().get(0)
+                    .getNORMALIZED_CALL_NO());
         }
-        if (reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1).getNORMALIZED_CALL_NO() != null)
+        if (reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1)
+                .getNORMALIZED_CALL_NO() != null)
         {
-        	history.setNORM_CALL_LAST(reportLists.getCatalogAsList().get(reportLists.getCatalogAsList().size() - 1).getNORMALIZED_CALL_NO());
-        }            
+            history.setNORM_CALL_LAST(reportLists.getCatalogAsList()
+                    .get(reportLists.getCatalogAsList().size() - 1).getNORMALIZED_CALL_NO());
+        }
 
         history.setBARCODE_FIRST(first.getITEM_BARCODE());
         history.setBARCODE_LAST(last.getITEM_BARCODE());
@@ -595,7 +657,7 @@ public class SearchView implements Serializable
     public void setLocationName(String locationName)
     {
         this.locationName = locationName;
-        this.finalLocationName = locationName; 
+        this.finalLocationName = locationName;
         this.locationName = ""; // ?
     }
 
@@ -654,14 +716,16 @@ public class SearchView implements Serializable
     {
         return true;
     }
-    
-    // TODO - not sure if the following method and corresponding html tab/page is required anymore.
+
+    // TODO - not sure if the following method and corresponding html tab/page
+    // is required anymore.
     public static String getReferenceLink(String rowIndex)
     {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
     }
 
-    // TODO - not sure if the following method and corresponding html tab/page is required anymore.
+    // TODO - not sure if the following method and corresponding html tab/page
+    // is required anymore.
     public static String getReferenceLink2(String rowIndex)
     {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
@@ -669,8 +733,9 @@ public class SearchView implements Serializable
 
     // To jump to a particular history report
     public void jump() throws IOException
-    {      
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/shelfscan/pages/results.xhtml?id=" + redirect_id);     
+    {
+        FacesContext.getCurrentInstance().getExternalContext()
+                .redirect("/shelfscan/pages/results.xhtml?id=" + redirect_id);
     }
 
     public String getRedirect_id()
