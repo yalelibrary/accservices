@@ -323,13 +323,19 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
             // warnings are left out)
             // assumes all errors have been added prior
             culpritList = processMisshelfs();
+            
+            //printBarcodes(culpritList);
 
             // New Add enums, since processMisshelf() doesn't add enum warnings
             addNonAccErrorsToCulpritList(culpritList, reportLists.getReportCatalogAsList());
+            
+            //printBarcodes(culpritList);
 
             // 2nd time (primarily for field 'accuracy errors')
             populateShelvingError(reportLists.getCulpritList(), finalLocationName, scanDate,
                     oversize);
+            
+            //printBarcodes(culpritList);
 
             // TODO Note enum warnings are added. means their location errors
             // might not be counted or reported!
@@ -341,18 +347,22 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
                 enumWarnings.add(item);
                 culpritList.add(item); // add shelving warnings to culpritList
             }
+            
+            printBarcodes(culpritList);
 
             // new fixSortOrder - re-arranged by File Order:
             culpritList = fixSortOrder(reportLists.getCatalogAsList(), culpritList);
             reportLists.setCulpritList(culpritList); // ?
 
             // 3rd time
+            //printBarcodes(culpritList);
             populateShelvingError(reportLists.getCulpritList(), finalLocationName, scanDate,
                     oversize);
             reportLists.setShelvingError(shelvingError); // TODO clean up
 
             reportLists.setEnumWarnings(enumWarnings);
             setEnumWarningsSize(shelvingError, fullComparator.getCulpritList().size());
+            printBarcodes(culpritList);
         }
         catch (HibernateException e1)
         {
@@ -953,10 +963,14 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
      */
     public void printBarcodes(List<Report> report)
     {
+        logger.debug("--------------------------------------------");
         for (Report item : report)
         {
             logger.debug("Element:" + item.getITEM_BARCODE());
         }
+        logger.debug("---------------------------------------------");
+        logger.debug("Report size:" + report.size());
+
     }
 
     /**
@@ -1014,29 +1028,68 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
                         {
                             System.out.println("[X] Prior in sorted highlighted for : "
                                     + o.getDISPLAY_CALL_NO());
-                            OrbisRecord priorinSorted = sortedList.get(sortedList.indexOf(prior));
+                            OrbisRecord priorinSorted = null;
+                            if (sortedList.indexOf(prior) >= 0)
+                            {
+                                priorinSorted = sortedList.get(sortedList.indexOf(prior));
+                            }
+                            else
+                            {
+                                logger.debug("Warning: Prior in sorted cannot be determined.");
+                            }
+                                                          
                             OrbisRecord priorinSortedPrior = null;
+                            logger.debug("Continuing . . .");
 
                             try
                             {
-                                priorinSortedPrior = flaggedList.get(currentPosition - 2); // TODO
+                                logger.debug("Current Position: " + currentPosition);
+                                int indexDiff = currentPosition - 2;
+                                logger.debug("IndexDiff:" + indexDiff);
+                                if (indexDiff >= 0)
+                                {
+                                    priorinSortedPrior = flaggedList.get(currentPosition - 2); // TODO
+                                }
+                                else
+                                {
+                                    //dummy record, since with current algo. prior cannot be found
+                                    LogicHelper.logMessage("Shelfscan", "",
+                                            "Warning: Cannot determine prior for :" + o.getITEM_BARCODE());
+                                    //priorinSortedPrior.setIT//
+                                    //diff = 0;
+                                }
                             }
                             catch (ArrayIndexOutOfBoundsException e)
                             {
-                                logger.debug("cannot determine prior");
+                                logger.debug("Warning: cannot determine prior");
                                 LogicHelper.logMessage("Shelfscan", "",
-                                        "Cannot determine prior for :" + o.getITEM_BARCODE());
+                                        "Warning: Cannot determine prior for :" + o.getITEM_BARCODE());
                                 throw e;
                             }
                             int diff = sortedList.indexOf(prior) - sortedList.indexOf(o);
-                            culpritList.add(Report.populateReport(priorinSorted, diff,
+                            logger.debug("Diff:" + diff);
+                            logger.debug("Added to culpritlist : " + priorinSorted.getITEM_BARCODE());
+                            Report reportItem = null;
+                            reportItem = Report.populateReport(priorinSorted, diff,
                                     priorinSortedPrior.getDISPLAY_CALL_NO(),
                                     priorinSortedPrior.getDISPLAY_CALL_NO(), priorinSortedPrior,
-                                    priorinSortedPrior));
+                                    priorinSortedPrior);
+                            if (reportItem == null)
+                            {
+                                logger.debug("report item null for : " + o.getITEM_BARCODE());
+                            }                                                                        
+                            culpritList.add(reportItem);
+                            Report reportItem_Original = null;
+                            reportItem_Original = Report.populateReport(o, 0,
+                                    "N/A",
+                                    "N/A", null, null);
+                            //culpritList.add(reportItem_Original);
+
+                            logger.debug("Added additional item : " + o.getITEM_BARCODE());
                         }
                         else
                         {
-                            System.out.println("[Y] Prior NOT in sorted highlighted for : "
+                            System.out.println("[Y] Prior NOT in sorted highlighted for: "
                                     + o.getDISPLAY_CALL_NO());
                             OrbisRecord priorinFlagged = flaggedList.get(currentPosition - 1);
                             int diff = sortedList.indexOf(o) - currentPosition;
@@ -1064,6 +1117,8 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
             e.printStackTrace();
         }
 
+        logger.debug("Sending back . ..");
+        printBarcodes(culpritList);
         return culpritList;
     }
 
