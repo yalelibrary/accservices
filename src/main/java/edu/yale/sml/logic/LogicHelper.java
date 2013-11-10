@@ -13,14 +13,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import edu.yale.sml.model.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.yale.sml.model.InputFile;
-import edu.yale.sml.model.Log;
-import edu.yale.sml.model.Messages;
 import edu.yale.sml.persistence.FileDAO;
 import edu.yale.sml.persistence.FileHibernateDAO;
 import edu.yale.sml.persistence.GenericDAO;
@@ -486,5 +484,112 @@ public class LogicHelper
             t.printStackTrace();
         }
     }
+
+    public static void printBarcodes(final List<Report> report)
+    {
+        logger.debug("--------------------------------------------");
+        for (Report item : report)
+        {
+            logger.debug("Element:" + item.getITEM_BARCODE());
+        }
+        logger.debug("---------------------------------------------");
+        logger.debug("Report size:" + report.size());
+
+    }
+
+    /**
+     * Helper method
+     */
+    public static void printErrors(String msg, Throwable e)
+    {
+        logger.debug(msg);
+        logger.error(e.getCause().toString());
+        logger.error(e.getMessage());
+        e.printStackTrace();
+    }
+
+    @Deprecated
+    public static boolean getCheckLatestPreference(final String preference)
+    {
+        if (preference != null
+                && (preference.equalsIgnoreCase("yes") || preference.equalsIgnoreCase("true")))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    @Deprecated
+    public static boolean getRetainPreference(final String preference_RetainInvalidStatusItems)
+    {
+        if (preference_RetainInvalidStatusItems != null
+                && (preference_RetainInvalidStatusItems.equalsIgnoreCase("yes") || preference_RetainInvalidStatusItems
+                .equalsIgnoreCase("true")))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+     * Compare Orbis item and Report item
+     * @param item
+     * @param orbisItem
+     * @return
+     */
+
+    public static boolean evaluateFullMatch(final Report item, final OrbisRecord orbisItem)
+    {
+        if (item.getITEM_BARCODE().trim().equals(orbisItem.getITEM_BARCODE().trim()))
+        {
+            if (item.getITEM_ENUM() != null && orbisItem.getITEM_ENUM() != null)
+            {
+                if (item.getITEM_ENUM().equals(orbisItem.getITEM_ENUM()))
+                {
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if ((item.getITEM_ENUM() == null && orbisItem.getITEM_ENUM() != null)
+                        || item.getITEM_ENUM() != null && orbisItem.getITEM_ENUM() == null)
+                {
+                    return false;
+                }
+            }
+
+            // 2nd match item status desc
+            if (item.getITEM_STATUS_DESC() != null && orbisItem.getITEM_STATUS_DESC() != null)
+            {
+                if (item.getITEM_STATUS_DESC().equals(orbisItem.getITEM_STATUS_DESC()))
+                {
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if ((item.getITEM_STATUS_DESC() == null && orbisItem.getITEM_STATUS_DESC() != null)
+                        || item.getITEM_STATUS_DESC() != null && orbisItem.getITEM_STATUS_DESC() == null)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
 
 }
