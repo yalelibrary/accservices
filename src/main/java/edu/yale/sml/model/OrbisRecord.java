@@ -40,6 +40,7 @@ public class OrbisRecord implements Serializable
         return CHRON;
     }
 
+    //TODO remove, along with getCHRON_VALUE (no longer modified)
     public String getENUM_VALUE()
     {
         return ITEM_ENUM;

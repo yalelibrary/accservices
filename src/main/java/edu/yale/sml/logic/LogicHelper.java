@@ -503,8 +503,16 @@ public class LogicHelper
     public static void printErrors(String msg, Throwable e)
     {
         logger.debug(msg);
-        logger.error(e.getCause().toString());
-        logger.error(e.getMessage());
+        if (e.getCause() != null)
+        {
+            logger.error(e.getCause().toString());
+
+        }
+        if (e.getMessage() != null)
+        {
+            logger.error(e.getMessage());
+
+        }
         e.printStackTrace();
     }
 
@@ -537,6 +545,21 @@ public class LogicHelper
         }
     }
 
+    /**
+     * Finds prior physical
+     */
+    
+    public static OrbisRecord priorPhysical (List<OrbisRecord> orbisList, String barcode)
+    {
+           for (int i = 1 ; i < orbisList.size(); i++)
+           {
+               if (orbisList.get(i).getITEM_BARCODE().equals(barcode))
+               {
+                   return orbisList.get(i-1);
+               }
+           }
+        return null;  //will also return for 2nd item in list      
+    }
     /**
      * Compare Orbis item and Report item
      * @param item

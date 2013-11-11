@@ -1,5 +1,6 @@
 package edu.yale.sml.logic;
 
+
 import edu.yale.sml.model.DataLists;
 import edu.yale.sml.model.OrbisRecord;
 import edu.yale.sml.model.Report;
@@ -11,31 +12,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: odin
- * Date: 11/9/13
- * Time: 9:58 PM
- * To change this template use File | Settings | File Templates.
- */
-public class AccuracyErrorsProcessor {
+public class AccuracyErrorsProcessor
+{
     final private static Logger logger = LoggerFactory.getLogger(BasicShelfScanEngine.class);
     final private static String operation = "Shelfscan";
     final private static String ITEM_FLAG_STRING = "*";
 
     /**
      * New logic. Not sure how this works.
-     *
+     * 
      */
-    public static List<Report> processMisshelfs(final List<Report> culpritList,
-                                         final DataLists reportLists)
+    public static List<Report> processMisshelfs(final DataLists reportLists)
 
     {
         // logger.debug("Processing acc. errors");
 
         List<OrbisRecord> flaggedList = new ArrayList<OrbisRecord>(
                 reportLists.getMarkedCatalogAsList());
-        //reportLists.
+        // reportLists.
         Collections.copy(flaggedList, reportLists.getMarkedCatalogAsList());
         List<OrbisRecord> sortedList = new ArrayList<OrbisRecord>(reportLists.getCatalogSortedRaw());
         Collections.copy(sortedList, reportLists.getCatalogSortedRaw());
@@ -104,23 +98,31 @@ public class AccuracyErrorsProcessor {
                                 }
                                 else
                                 {
-                                    //dummy record, since with current algo. prior cannot be found
-                                    LogicHelper.logMessage("Shelfscan", "",
-                                            "Warning: Cannot determine prior for :" + o.getITEM_BARCODE());
-                                    //priorinSortedPrior.setIT//
-                                    //diff = 0;
+                                    // dummy record, since with current algo.
+                                    // prior cannot be found
+                                    LogicHelper.logMessage(
+                                            "Shelfscan",
+                                            "",
+                                            "Warning: Cannot determine prior for :"
+                                                    + o.getITEM_BARCODE());
+                                    // priorinSortedPrior.setIT//
+                                    // diff = 0;
                                 }
                             }
                             catch (ArrayIndexOutOfBoundsException e)
                             {
                                 logger.debug("Warning: cannot determine prior");
-                                LogicHelper.logMessage("Shelfscan", "",
-                                        "Warning: Cannot determine prior for :" + o.getITEM_BARCODE());
+                                LogicHelper.logMessage(
+                                        "Shelfscan",
+                                        "",
+                                        "Warning: Cannot determine prior for :"
+                                                + o.getITEM_BARCODE());
                                 throw e;
                             }
                             int diff = sortedList.indexOf(prior) - sortedList.indexOf(o);
                             logger.debug("Diff:" + diff);
-                            logger.debug("Added to culpritlist : " + priorinSorted.getITEM_BARCODE());
+                            logger.debug("Added to culpritlist : "
+                                    + priorinSorted.getITEM_BARCODE());
                             Report reportItem = null;
                             reportItem = Report.populateReport(priorinSorted, diff,
                                     priorinSortedPrior.getDISPLAY_CALL_NO(),
@@ -132,10 +134,9 @@ public class AccuracyErrorsProcessor {
                             }
                             errorItems.add(reportItem);
                             Report reportItem_Original = null;
-                            reportItem_Original = Report.populateReport(o, 0,
-                                    "N/A",
-                                    "N/A", null, null);
-                            //culpritList.add(reportItem_Original);
+                            reportItem_Original = Report.populateReport(o, 0, "N/A", "N/A", null,
+                                    null);
+                            // culpritList.add(reportItem_Original);
 
                             logger.debug("Added additional item : " + o.getITEM_BARCODE());
                         }
@@ -170,7 +171,7 @@ public class AccuracyErrorsProcessor {
         }
 
         logger.debug("Sending back . ..");
-        LogicHelper.printBarcodes(culpritList);
+        LogicHelper.printBarcodes(errorItems);
         return errorItems;
     }
 
