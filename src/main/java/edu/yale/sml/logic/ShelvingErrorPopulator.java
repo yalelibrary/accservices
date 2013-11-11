@@ -22,9 +22,7 @@ public class ShelvingErrorPopulator {
     final static Logger logger = LoggerFactory.getLogger(ShelvingErrorPopulator.class);
     public static final int MIN_ERROR_DISPLAY = 2;
 
-
-
-    /*
+     /*
      * Get error count. Suppress errors still done elsewhere
      */
     public ShelvingError populateShelvingError(List<Report> reportCatalogAsList, String finalLocationName,

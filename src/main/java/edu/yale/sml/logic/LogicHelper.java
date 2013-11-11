@@ -296,7 +296,7 @@ public class LogicHelper
     /**
      * Get CAS user from url
      * 
-     * @param wsURL
+     * @param
      * @param contents
      * @return
      * @throws IOException
@@ -589,6 +589,26 @@ public class LogicHelper
             return true;
         }
         return false;
+    }
+
+    /**
+     * Find first item in a List<Report> that matches
+     * TODO Used by ShelfscanEngine only?
+     * @param reportItems
+     * @param orbisItem
+     * @return
+     */
+    public static Report findFirstItemIndex(final List<Report> reportItems, final OrbisRecord orbisItem)
+    {
+        for (int i = 0; i < reportItems.size(); i++)
+        {
+            // logicHelper method to compre orbis item to report item is used here
+            if (LogicHelper.evaluateFullMatch(reportItems.get(i), orbisItem))
+            {
+                return reportItems.get(i);
+            }
+        }
+        return null;
     }
 
 
