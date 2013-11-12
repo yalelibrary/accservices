@@ -77,7 +77,6 @@ public class ReportListFilter {
                 {
                     if (oversizeCallNumber)
                     {
-                        item.setOVERSIZE("Y"); // used?
                         foundError = true;
                     }
                 }
@@ -85,11 +84,9 @@ public class ReportListFilter {
                 {
                     if (oversizeCallNumber)
                     {
-                        item.setOVERSIZE("Y"); // NOT AN ERROR
                     }
                     else
                     {
-                        item.setOVERSIZE("N");
                         foundError = true;
                     }
                 }

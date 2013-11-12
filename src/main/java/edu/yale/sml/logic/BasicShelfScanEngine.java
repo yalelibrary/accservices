@@ -50,62 +50,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
     private DataLists reportLists = new DataLists(); // main data structure
     private ShelvingError shelvingError;
 
-    // not used:
-    //private static boolean CHECK_FOR_LATEST_ORBISRECORD = false;
-    //private static boolean IGNORE_NON_DEFAULT_ITEM_STATUS = false;
-
-    public BasicShelfScanEngine()
-    {
-        super();
-    }
-
-    /**
-     * Calculate number of null barcodes. Null barcodes are added in another
-     * operation though, to keep the file sort order intact!
-     * 
-     * @param list
-     * @param
-     * @return
-     */
-    private int computeNullBarcodes(final List<SearchResult> list)
-    {
-        for (SearchResult searchResult : list)
-        {
-            // e.g. for a barcode of legit length, but no result in Orbis
-            if (searchResult.getResult().size() == 0)
-            {
-                if (searchResult.getId().contains(NULL_BARCODE_STRING))
-                {
-                    nullBarcodes++;
-                }
-            }
-        }
-        return nullBarcodes;
-    }
-
-    /**
-     * TODO use new reportLists Populates catalog
-     * 
-     * @param list
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
-     */
-    public DataLists initCatalogList(final List<SearchResult> list)
-            throws InvocationTargetException, IllegalAccessException
-    {
-        nullBarcodes = computeNullBarcodes(Collections.unmodifiableList(list));
-        // TODO clean up
-        if (reportLists.getCatalogAsList() != null)
-        {
-            logger.debug("Pre CatalogInit processing, list catalog size : "
-                    + reportLists.getCatalogAsList().size());
-        }
-        reportLists = CatalogInit.processCatalogList(Collections.unmodifiableList(list));
-        logger.debug("Post CatalogInit processing, list catalog size : "
-                + reportLists.getCatalogAsList().size());
-        return reportLists;
-    }
-
     /**
      * Main Function
      */
@@ -116,7 +60,7 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
             HibernateException, NullFileException
     {
         logger.debug("Processing data");
-        // bad barcodes different from null barcodes. check; counted twice?
+        // (bad barcodes different from null barcodes. check; counted twice?)
         nullBarcodes = Collections.frequency(toFind, NULL_BARCODE_STRING);
         try
         {
@@ -139,7 +83,7 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
                     reportLists.getCatalogAsList());
 
             // remove null barcode & add to suppress errors
-            purgedList = processPurgedList(purgedList);
+            processPurgedList(purgedList);
 
             List<OrbisRecord> catalogSortedPurged = new ArrayList<OrbisRecord>(purgedList);
             Collections.copy(catalogSortedPurged, purgedList);
@@ -158,17 +102,21 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
             processBySortOrder(purgedList, catalogSortedPurged,
                     reportLists.getReportCatalogAsList());
 
-            // N.B. Filter out objects that DO NOT HAVE ANY ERRORS
+            // new: set oversize:
+            setOversizeFlag(reportLists.getReportCatalogAsList(), oversize);
+
+
+            /*
             reportLists.setReportCatalogAsList(filterReportList(
-                    reportLists.getReportCatalogAsList(), finalLocationName, scanDate, oversize));
+                    reportLists.getReportCatalogAsList(), finalLocationName, scanDate, oversize));  */
 
             // TODO new
-            /*
-             * reportLists.setReportCatalogAsList((ReportListFilter.filterReportList
-             * (
-             * Collections.unmodifiableList(reportLists.getReportCatalogAsList(
-             * )), finalLocationName, scanDate, oversize));
-             */
+            // Filter out objects that do NOT have ANY errors
+
+            List<Report> errorsOnlyList = ReportListFilter.filterReportList(
+                    Collections.unmodifiableList(reportLists.getReportCatalogAsList())
+                    , finalLocationName, scanDate, oversize);
+            reportLists.setReportCatalogAsList(errorsOnlyList);
 
             // Get Error count as ShelvingError (done 1st time)
             ShelvingErrorPopulator shelvingErrorPopulator = new ShelvingErrorPopulator();
@@ -205,13 +153,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
 
             // Add * for out of place call num
             decorateMarkList(reportLists.getMarkedCatalogAsList());
-            // TODO:
-            /*
-             * List<OrbisRecord> decoratedList = ListDecorator.decorateList(
-             * Collections
-             * .unmodifiableList(reportLists.getMarkedCatalogAsList()));
-             * reportLists.setMarkedCatalogAsList(decoratedList);
-             */
 
             // (Bit problematic: populates culprit list : enum w/ shelving
             // warnings are left out)
@@ -221,6 +162,8 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
             // New Add enums, since processMisshelf() doesn't add enum warnings
             // addNonAccErrorsToCulpritList(culpritList,
             // reportLists.getReportCatalogAsList());
+            // Note: does this add enums? -- no because there are no enums detected yet
+            // see method to get enum erros below FIXME
             addRemainingToMisshelfCulpritList(culpritList, reportLists.getReportCatalogAsList(),
                     reportLists.getCatalogAsList(), finalLocationName, scanDate, oversize);
 
@@ -243,12 +186,13 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
             reportLists.setCulpritList(culpritList); // ?
 
             // 3rd time
+            // TODO pass final list. Perhaps this should live in Rules, and be a static method?
             shelvingError = shelvingErrorPopulator.populateShelvingError(
                     reportLists.getReportCatalogAsList(), finalLocationName, scanDate, oversize,
                     nullBarcodes);
             reportLists.setShelvingError(shelvingError); // TODO clean up
-            reportLists.setEnumWarnings(enumWarnings);
-            setEnumWarningsSize(shelvingError, fullComparator.getCulpritList().size());
+            reportLists.setEnumWarnings(enumWarnings);  //  ?
+            setEnumWarningsSize(shelvingError, fullComparator.getCulpritList().size());  // ?
         }
         catch (HibernateException e1)
         {
@@ -261,6 +205,54 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
         }
         return reportLists;
     }
+
+    /**
+     * Calculate number of null barcodes. Null barcodes are added in another
+     * operation though, to keep the file sort order intact!
+     *
+     * @param list
+     * @param
+     * @return
+     */
+    private int computeNullBarcodes(final List<SearchResult> list)
+    {
+        for (SearchResult searchResult : list)
+        {
+            // e.g. for a barcode of legit length, but no result in Orbis
+            if (searchResult.getResult().size() == 0)
+            {
+                if (searchResult.getId().contains(NULL_BARCODE_STRING))
+                {
+                    nullBarcodes++;
+                }
+            }
+        }
+        return nullBarcodes;
+    }
+
+    /**
+     * TODO use new reportLists Populates catalog
+     *
+     * @param list
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
+    public DataLists initCatalogList(final List<SearchResult> list)
+            throws InvocationTargetException, IllegalAccessException
+    {
+        nullBarcodes = computeNullBarcodes(Collections.unmodifiableList(list));
+        // TODO clean up
+        if (reportLists.getCatalogAsList() != null)
+        {
+            logger.debug("Pre CatalogInit processing, list catalog size : "
+                    + reportLists.getCatalogAsList().size());
+        }
+        reportLists = CatalogInit.processCatalogList(Collections.unmodifiableList(list));
+        logger.debug("Post CatalogInit processing, list catalog size : "
+                + reportLists.getCatalogAsList().size());
+        return reportLists;
+    }
+
 
     /**
      * Revert sort order
@@ -287,7 +279,7 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
     /**
      * process Purged + Suppressed //TODO change signature if not used by JSF
      */
-    public List<OrbisRecord> processPurgedList(List<OrbisRecord> purgedList)
+    public void processPurgedList(List<OrbisRecord> purgedList)
     {
         for (OrbisRecord o : reportLists.getCatalogAsList())
         {
@@ -303,7 +295,6 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
                 continue;
             }
         }
-        return purgedList;
     }
 
     /**
@@ -388,7 +379,7 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
     }
 
     /*
-     * Adds * Mark list is used in theh main results page tab as well. It
+     * Adds * Mark list is used in the main results page tab as well. It
      * compares on Normalized Call Number. Comparing on Display Call Number
      * results in much more errors. // e.g. :
      */
@@ -449,7 +440,60 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
     }
 
     /**
-     *TODO clean up so it uses Rules.isItemError. This method should remove items from list, but also
+     * Sets oversize
+     */
+     private void setOversizeFlag(final List<Report> itemList, final String oversize)
+     {
+         List<Report> filteredList = new ArrayList<Report>(itemList);
+         for (Report item : itemList)
+         {
+             try
+             {
+                 if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
+                         || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null
+                         || item.getSUPPRESS_IN_OPAC() == null)
+                 {
+                     logger.debug("at least one field null for: " + item.getITEM_BARCODE());
+                 }
+
+                 if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode"))
+                 {
+                     continue;
+                 }
+
+                 boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+") || item
+                         .getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
+                 if (oversize.equalsIgnoreCase("N"))
+                 {
+                     if (oversizeCallNumber)
+                     {
+                         item.setOVERSIZE("Y"); // used?
+                     }
+                 }
+                 else if (oversize.equalsIgnoreCase("Y"))
+                 {
+                     if (oversizeCallNumber)
+                     {
+                         item.setOVERSIZE("Y"); // NOT AN ERROR
+                     }
+                     else
+                     {
+                         item.setOVERSIZE("N");
+                     }
+                 }
+           }
+             catch (Exception e)
+             {
+                 logger.debug("Exception setting oversize flag for item : " + item.getITEM_BARCODE());
+                 e.printStackTrace();
+                 continue; // ?
+             }
+         }
+         // logger.debug("Done filtering barcodes");
+     }
+
+    /**
+     *TODO clean up so it uses Rules.isItemError. And BSSE uses above method
      *add item_size
      * 
      * Filter list -- if no errors are found, the item is not displayed in the
@@ -773,4 +817,10 @@ public class BasicShelfScanEngine implements java.io.Serializable, ShelfScanEngi
         }
         return null;
     }
+
+    public BasicShelfScanEngine()
+    {
+        super();
+    }
+
 }
