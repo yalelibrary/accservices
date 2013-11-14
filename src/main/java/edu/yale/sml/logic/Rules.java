@@ -180,6 +180,7 @@ public class Rules
                     + item.getITEM_BARCODE());
             e.printStackTrace();
         }
+        //logger.debug("founderror:" + foundError);
         return foundError;
     }
 

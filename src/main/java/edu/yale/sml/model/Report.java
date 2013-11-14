@@ -393,6 +393,6 @@ public class Report extends Entity implements Serializable
     @Override
     public String toString()
     {
-        return "Report [ITEM_BARCODE=" + ITEM_BARCODE + "]";
+        return "Report [" + ITEM_BARCODE + "]";
     }
 }
