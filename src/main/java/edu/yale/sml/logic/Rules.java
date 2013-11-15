@@ -183,5 +183,94 @@ public class Rules
         //logger.debug("founderror:" + foundError);
         return foundError;
     }
+    
+
+    /*
+     * same as above but returns only voyager errors .. i.e. not concerned with whether an item is a misshelf
+     */
+    
+    public static boolean isVoyagerError(final Report item, final String finalLocationName, final Date scanDate,
+            final String oversize)
+    {
+        logger.debug("Filtering out barcodes that do not have any errors");
+        boolean foundError = false;
+
+        try
+        {
+            if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
+                    || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null
+                    || item.getSUPPRESS_IN_OPAC() == null)
+            {
+                logger.debug("at least one field null for: " + item.getITEM_BARCODE());
+            }
+
+            if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode"))
+            {
+                // ?
+            }
+
+            boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+") || item
+                    .getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
+
+            if (oversize.equalsIgnoreCase("N"))
+            {
+                if (oversizeCallNumber)
+                {
+                    item.setOVERSIZE("Y"); // used?
+                    foundError = true;
+                }
+            }
+            else if (oversize.equalsIgnoreCase("Y"))
+            {
+                if (oversizeCallNumber)
+                {
+                    item.setOVERSIZE("Y"); // NOT AN ERROR
+                }
+                else
+                {
+                    item.setOVERSIZE("N");
+                    foundError = true;
+                }
+            }
+
+           /* if (item.getText() != 0)
+            {
+                foundError = true;
+            }*/
+
+            if (!item.getLOCATION_NAME().equals(finalLocationName))
+            {
+                foundError = true;
+            }
+
+            if (item.getITEM_STATUS_DESC().equals("Not Charged")
+                    || item.getITEM_STATUS_DESC().equals("Discharged"))
+            {
+                if (item.getITEM_STATUS_DATE() != null
+                        && scanDate.before(item.getITEM_STATUS_DATE()))
+                {
+                    foundError = true;
+                }
+            }
+            else
+            {
+                // System.out.print("Suspicious:" + r.getITEM_BARCODE());
+                foundError = true;
+            }
+
+            if (item.getSUPPRESS_IN_OPAC().equalsIgnoreCase("Y"))
+            {
+                foundError = true;
+            }
+        }
+        catch (Exception e)
+        {
+            logger.debug("Exception figuring out any error with barcode : "
+                    + item.getITEM_BARCODE());
+            e.printStackTrace();
+        }
+        //logger.debug("founderror:" + foundError);
+        return foundError;
+    }
 
 }

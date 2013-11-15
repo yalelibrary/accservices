@@ -12,9 +12,6 @@ public class SampleLayout extends LayoutBase<ILoggingEvent>
         sbuf.append(event.getTimeStamp() -  event.getLoggerContextVO().getBirthTime());
         sbuf.append(" ");
         sbuf.append(event.getLevel());
-        sbuf.append(" [");
-        sbuf.append(event.getThreadName());
-        sbuf.append("] ");
         sbuf.append(event.getLoggerName());
         sbuf.append(" - ");
         sbuf.append(event.getFormattedMessage());

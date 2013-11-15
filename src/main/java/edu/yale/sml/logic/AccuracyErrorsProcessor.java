@@ -17,19 +17,24 @@ public class AccuracyErrorsProcessor {
     final private static String op = "Shelfscan";
     final private static String ITEM_FLAG_STRING = "*";
 
+    /**
+     * works of plain list, populates a List<Report>
+     * @param dataLists
+     * @return
+     */
     public static List<Report> processMisshelfs(final DataLists dataLists)
 
     {
 	logger.debug("(New) Processing acc. errors");
-	List<OrbisRecord> flagList = new ArrayList<OrbisRecord>(
+	List<OrbisRecord> itemList = new ArrayList<OrbisRecord>(
 		dataLists.getMarkedCatalogAsList());
-	Collections.copy(flagList, dataLists.getMarkedCatalogAsList());
+	Collections.copy(itemList, dataLists.getMarkedCatalogAsList());
 	List<OrbisRecord> sortedList = new ArrayList<OrbisRecord>(
 		dataLists.getCatalogSortedRaw());
 	Collections.copy(sortedList, dataLists.getCatalogSortedRaw());
 	List<Report> errorItems = new ArrayList<Report>();
 	try {
-	    for (OrbisRecord o : flagList) {
+	    for (OrbisRecord o : itemList) {
 		String BARCODE = o.getITEM_BARCODE();
 		if (o.getDISPLAY_CALL_NO() == null) {
 		    logger.debug("Disp. Call. Null :" + BARCODE
@@ -39,12 +44,11 @@ public class AccuracyErrorsProcessor {
 		    continue;
 		}
 
-		// * items
-		if (o.getDISPLAY_CALL_NO().contains(ITEM_FLAG_STRING))								      
-		{
-		    logger.debug("Flagged item : " + o.getDISPLAY_CALL_NO());
-		    int currentPosition = flagList.indexOf(o);
-		    OrbisRecord prior = flagList.get(currentPosition - 1);
+		if (o.getDISPLAY_CALL_NO().contains(ITEM_FLAG_STRING)) {
+		    logger.debug("* Item : " + o.getITEM_BARCODE() + " :"
+			    + o.getDISPLAY_CALL_NO());
+		    int pos = itemList.indexOf(o);
+		    OrbisRecord prior = itemList.get(pos - 1);
 		    if (prior == null) {
 			continue;
 		    }
@@ -59,28 +63,29 @@ public class AccuracyErrorsProcessor {
 			    logger.debug("[X] Prior in sorted highlighted for : "
 				    + o.getDISPLAY_CALL_NO()
 				    + o.getITEM_BARCODE());
-			    OrbisRecord priorinSorted = null;
+
+			    OrbisRecord priorinSortedList = null;
+			    OrbisRecord priorOfPriorinSortedList = null;
+
 			    if (sortedList.indexOf(prior) >= 0) {
-				priorinSorted = sortedList.get(sortedList
+				priorinSortedList = sortedList.get(sortedList
 					.indexOf(prior));
 			    } else {
 				logger.debug("Warning: Prior in sorted cannot be determined.");
 			    }
-			    OrbisRecord priorinSortedPrior = null;
 
 			    try {
-				logger.debug("Current Position: "
-					+ currentPosition);
-				int indexDiff = currentPosition - 2;
+				logger.debug("Current Position: " + pos);
+				int indexDiff = pos - 2;
 				logger.debug("IndexDiff:" + indexDiff);
 				if (indexDiff >= 0) {
-				    priorinSortedPrior = flagList
-					    .get(currentPosition - 2); // TODO
+				    priorOfPriorinSortedList = itemList
+					    .get(pos - 2); // TODO
 				} else {
 				    LogicHelper.logMessage(
-					    "Shelfscan",
+					    op,
 					    "",
-					    "Cat determine prior for:"
+					    "can't prior for:"
 						    + o.getITEM_BARCODE());
 				}
 			    } catch (ArrayIndexOutOfBoundsException e) {
@@ -93,38 +98,49 @@ public class AccuracyErrorsProcessor {
 			    int diff = sortedList.indexOf(prior)
 				    - sortedList.indexOf(o);
 			    logger.debug("Diff:" + diff
-				    + " added to culprit List : "
-				    + priorinSorted.getITEM_BARCODE());
+				    + " . Added to culprit List : "
+				    + priorinSortedList.getITEM_BARCODE());
 			    Report reportItem = null;
 
-			    if (priorinSortedPrior == null) {
+			    if (priorOfPriorinSortedList == null) {
 				logger.debug("Warning  : priorinSortedPrior null");
-				priorinSortedPrior = new OrbisRecord();
-				priorinSortedPrior.setDISPLAY_CALL_NO("N/A");
+				priorOfPriorinSortedList = new OrbisRecord();
+				priorOfPriorinSortedList
+					.setDISPLAY_CALL_NO("N/A");
 			    }
 
-			    reportItem = Report.populateReport(priorinSorted,
-				    diff,
-				    priorinSortedPrior.getDISPLAY_CALL_NO(),
-				    priorinSortedPrior.getDISPLAY_CALL_NO(),
-				    priorinSortedPrior, priorinSortedPrior);
+			    // N.B. Add priorinSorted
+			    reportItem = Report.populateReport(
+				    priorinSortedList, diff,
+				    priorOfPriorinSortedList
+					    .getDISPLAY_CALL_NO(),
+				    priorOfPriorinSortedList
+					    .getDISPLAY_CALL_NO(),
+				    priorOfPriorinSortedList,
+				    priorOfPriorinSortedList);
 			    if (reportItem == null) {
 				logger.debug("Warning: report item null for : "
 					+ o.getITEM_BARCODE());
 			    }
 			    errorItems.add(reportItem);
-			    logger.debug("Added additional item : "
-				    + o.getITEM_BARCODE());
+			    logger.debug("Added item : "
+				    + reportItem.getITEM_BARCODE());
+
+			    OrbisRecord priorinFlagged = itemList.get(pos - 1);
+
+			    logger.debug("Prior in flagged was :"
+				    + priorinFlagged.getITEM_BARCODE());
 			} else {
 			    logger.debug("[Y] Prior NOT in sorted highlighted for: "
 				    + o.getDISPLAY_CALL_NO());
-			    OrbisRecord priorinFlagged = flagList
-				    .get(currentPosition - 1);
-			    int diff = sortedList.indexOf(o) - currentPosition;
+			    OrbisRecord priorinFlagged = itemList.get(pos - 1);
+			    int diff = sortedList.indexOf(o) - pos;
 			    errorItems.add(Report.populateReport(o, diff,
 				    priorinFlagged.getDISPLAY_CALL_NO(),
 				    priorinFlagged.getDISPLAY_CALL_NO(),
 				    priorinFlagged, priorinFlagged));
+			    logger.debug("Added item : " + o.getITEM_BARCODE());
+
 			}
 		    } catch (ArrayIndexOutOfBoundsException e) {
 			logger.debug("Process Misshelf: (ArrayIndexOutOfBoundsException)");
@@ -137,6 +153,7 @@ public class AccuracyErrorsProcessor {
 		    }
 		} else {
 		    // no * in display call num
+		    
 		}
 	    }
 	} catch (Throwable e) {
