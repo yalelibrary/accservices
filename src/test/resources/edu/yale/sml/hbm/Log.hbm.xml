@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 18, 2012 4:12:05 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+    <class name="edu.yale.sml.model.Log" table="log" lazy="false" schema="dbo" catalog="">
+          <id name="id" column="id" type="java.lang.Integer">
+          <generator class="identity"/>
+          </id>
+          <property name="net_id" column="net_id"/>
+          <property name="timestamp" column="timestamp"/>
+          <property name="operation" column="operation"/>
+          <property name="input_file" column="input_file"/>
+          <property name="application_env" column="application_env"/>
+          <property name="user_env" column="user_env"/>
+          <property name="stacktrace" column="stacktrace"/>
+          
+    </class>
+</hibernate-mapping>

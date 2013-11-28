@@ -14,7 +14,7 @@ public class HibernateOracleUtils
 	{
 		try
 		{
-			return new Configuration().configure("shelfscan.oracle.hibernate.cfg.xml")
+            return new Configuration().configure("shelfscan.oracle.hibernate.cfg.xml")
 					.buildSessionFactory();
 		}
 		catch (Throwable ex)

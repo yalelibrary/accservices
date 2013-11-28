@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 
-public class Report extends Entity implements Serializable
+public class Report implements Serializable
 {
 
     private static final long serialVersionUID = 5079435243211265712L;
@@ -390,9 +390,40 @@ public class Report extends Entity implements Serializable
         CALL_NO_TYPE = cALL_NO_TYPE;
     }
 
-    @Override
-    public String toString()
+    @Deprecated
+    public String printBarcodesString()
     {
         return "Report [" + ITEM_BARCODE + "]";
+    }
+
+    @Override
+    public String toString() {
+        return "Report{" +
+                "CHRON='" + CHRON + '\'' +
+                ", DISPLAY_CALL_NO='" + DISPLAY_CALL_NO + '\'' +
+                ", ENCODING_LEVEL='" + ENCODING_LEVEL + '\'' +
+                ", ITEM_BARCODE='" + ITEM_BARCODE + '\'' +
+                ", ITEM_ENUM='" + ITEM_ENUM + '\'' +
+                ", ITEM_ID='" + ITEM_ID + '\'' +
+                ", ITEM_STATUS_DATE=" + ITEM_STATUS_DATE +
+                ", ITEM_STATUS_DESC='" + ITEM_STATUS_DESC + '\'' +
+                ", LOCATION_NAME='" + LOCATION_NAME + '\'' +
+                ", MFHD_ID='" + MFHD_ID + '\'' +
+                ", NORMALIZED_CALL_NO='" + NORMALIZED_CALL_NO + '\'' +
+                ", OVERSIZE='" + OVERSIZE + '\'' +
+                ", SUPPRESS_IN_OPAC='" + SUPPRESS_IN_OPAC + '\'' +
+                ", YEAR='" + YEAR + '\'' +
+                ", CALL_NO_TYPE='" + CALL_NO_TYPE + '\'' +
+                ", orbisRecord=" + orbisRecord +
+                ", priorEnum='" + priorEnum + '\'' +
+                ", priorChron='" + priorChron + '\'' +
+                ", priorPhysicalEnum='" + priorPhysicalEnum + '\'' +
+                ", priorPhysicalChron='" + priorPhysicalChron + '\'' +
+                ", physicalPrior=" + physicalPrior +
+                ", prior='" + prior + '\'' +
+                ", priorPhysical='" + priorPhysical + '\'' +
+                ", marker='" + marker + '\'' +
+                ", text=" + text +
+                '}';
     }
 }

@@ -349,11 +349,6 @@ public class History implements java.io.Serializable
         TIMESPENT = tIMESPENT;
     }
 
-    public void setTRANSCATIONMESSAGES(String tRANSACTIONMESSAGES)
-    {
-        TRANSCATIONMESSAGES = tRANSACTIONMESSAGES;
-    }
-
     @Override
     public String toString()
     {

@@ -158,4 +158,22 @@ public class ShelvingError implements java.io.Serializable
 	{
 		this.total_errors = total_errors;
 	}
+
+    @Override
+    public String toString() {
+        return "ShelvingError{" +
+                "accuracy_errors=" + accuracy_errors +
+                ", discharge_errors=" + discharge_errors +
+                ", enum_warnings=" + enum_warnings +
+                ", location_errors=" + location_errors +
+                ", null_barcodes=" + null_barcodes +
+                ", null_result_barcodes=" + null_result_barcodes +
+                ", oversize_errors=" + oversize_errors +
+                ", total_errors=" + total_errors +
+                ", status_errors=" + status_errors +
+                ", suppress_errors=" + suppress_errors +
+                ", misshelf_errors=" + misshelf_errors +
+                ", misshelf_threshold_errors=" + misshelf_threshold_errors +
+                '}';
+    }
 }

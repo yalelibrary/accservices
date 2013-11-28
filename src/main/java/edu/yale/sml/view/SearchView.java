@@ -579,7 +579,7 @@ public class SearchView implements Serializable
         history.setLOCATIONERROR(shelvingError.getLocation_errors());
         history.setNULLBARCODE(shelvingError.getNull_barcodes());
         history.setFILENAME(getFileName());
-        history.setTRANSCATIONMESSAGES(reportLists.getTransactionMessages().toString());
+        //history.setTRANSCATIONMESSAGES(reportLists.getTransactionMessages().toString());
         // persist object
 
         history.setSEARCHVIEW(SerializationUtils.serialize(this));

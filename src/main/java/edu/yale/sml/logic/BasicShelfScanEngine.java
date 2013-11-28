@@ -34,13 +34,10 @@ public class BasicShelfScanEngine implements java.io.Serializable,
     final static Logger logger = LoggerFactory
 	    .getLogger(BasicShelfScanEngine.class);
     public static final String ITEM_FLAG_STRING = "*";
-    public static final String ENUM_FLAG_STRING = "@";
     public static final String LC_STRING = "( LC )";
     public static final int MAX_QUERY_COUNT = 1500;
     public static final String NOT_CHARGED_STRING = "Not Charged";
     public static final String NULL_BARCODE_STRING = "00000000";
-    public static final String RESET_BARCODE = "";
-    public static final int MIN_ERROR_DISPLAY = 2;
 
     private List<OrbisRecord> badBarcodes;
     private List<Report> culpritList;

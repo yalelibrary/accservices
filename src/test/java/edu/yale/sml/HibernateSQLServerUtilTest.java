@@ -1,16 +1,19 @@
-package edu.yale.sml.persistence.config;
+package edu.yale.sml;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HibernateSQLServerUtil
+/**
+ * Used for integration test. Move to test folder.
+ * Only difference is that it doesn't invoke the Lucene index in Configure()
+ */
+public class HibernateSQLServerUtilTest
 {
 
-    final static Logger logger = LoggerFactory.getLogger(HibernateSQLServerUtil.class); 
+    final static Logger logger = LoggerFactory.getLogger(HibernateSQLServerUtilTest.class);
 
     private static final SessionFactory sessionFactory = buildSessionFactory();	
     	
@@ -22,13 +25,8 @@ public class HibernateSQLServerUtil
 		try
 		{
 			Configuration configuration = new Configuration();
-            configuration.configure("shelfscan.sqlserver.hibernate.cfg.xml");
-            ServiceRegistryBuilder serviceRegistryBuilder = new ServiceRegistryBuilder().applySettings(configuration
-                            .getProperties());
-            SessionFactory sessionFactory = configuration
-                            .buildSessionFactory(serviceRegistryBuilder.buildServiceRegistry());
-            return sessionFactory;
-		}
+            return new Configuration().configure("shelfscan.sqlserver.hibernate.cfg.xml").buildSessionFactory();
+       }
 		catch (Throwable ex)
 		{
 			logger.error("Exception encountered while building session factory");

@@ -488,11 +488,10 @@ public class LogicHelper
     public static void printBarcodes(final List<Report> report)
     {
         logger.debug("--------------------------------------------");
-       /* for (Report item : report)
+        for (Report item : report)
         {
             logger.debug("Element:" + item.getITEM_BARCODE());
-        }*/
-        logger.debug(report.toString());
+        }
         logger.debug("---------------------------------------------");
         logger.debug("Report list size:" + report.size());
 

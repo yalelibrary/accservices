@@ -16,7 +16,6 @@ public class DataLists implements java.io.Serializable
     List<Report> reportCatalogAsList = new ArrayList<Report>();
     ShelvingError shelvingError = new ShelvingError();
     List<OrbisRecord> suppressedList = new ArrayList<OrbisRecord>(); // of Report?
-    String transactionMessages = new String();
     List<Report> enumWarnings = new ArrayList<Report>();
 
     public List<Report> getEnumWarnings()
@@ -68,11 +67,6 @@ public class DataLists implements java.io.Serializable
         return suppressedList;
     }
 
-    public String getTransactionMessages()
-    {
-        return transactionMessages;
-    }
-
     public void setCatalogAsList(List<OrbisRecord> catalogAsList)
     {
         this.catalogAsList = catalogAsList;
@@ -118,9 +112,21 @@ public class DataLists implements java.io.Serializable
         this.suppressedList = suppressedList;
     }
 
-    public void setTransactionMessages(String transactionMessages)
-    {
-        this.transactionMessages = transactionMessages;
+
+    @Override
+    public String toString() {
+        return "DataLists{" +
+                "catalogAsList=" + catalogAsList +
+                ", catalogSortedRaw=" + catalogSortedRaw +
+                ", culpritList=" + culpritList +
+                ", markedCatalogAsList=" + markedCatalogAsList +
+                ", nullResultBarcodes=" + nullResultBarcodes +
+                ", reportCatalogAsList=" + reportCatalogAsList +
+                ", shelvingError=" + shelvingError +
+                ", suppressedList=" + suppressedList +
+                ", enumWarnings=" + enumWarnings +
+                '}';
     }
+
 
 }

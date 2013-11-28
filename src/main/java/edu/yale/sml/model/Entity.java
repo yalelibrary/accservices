@@ -165,4 +165,23 @@ public class Entity
 		YEAR = yEAR;
 	}
 
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "CHRON='" + CHRON + '\'' +
+                ", DISPLAY_CALL_NO='" + DISPLAY_CALL_NO + '\'' +
+                ", ENCODING_LEVEL='" + ENCODING_LEVEL + '\'' +
+                ", ITEM_BARCODE='" + ITEM_BARCODE + '\'' +
+                ", ITEM_ENUM='" + ITEM_ENUM + '\'' +
+                ", ITEM_ID='" + ITEM_ID + '\'' +
+                ", ITEM_STATUS_DATE=" + ITEM_STATUS_DATE +
+                ", ITEM_STATUS_DESC='" + ITEM_STATUS_DESC + '\'' +
+                ", LOCATION_NAME='" + LOCATION_NAME + '\'' +
+                ", MFHD_ID='" + MFHD_ID + '\'' +
+                ", NORMALIZED_CALL_NO='" + NORMALIZED_CALL_NO + '\'' +
+                ", OVERSIZE='" + OVERSIZE + '\'' +
+                ", SUPPRESS_IN_OPAC='" + SUPPRESS_IN_OPAC + '\'' +
+                ", YEAR='" + YEAR + '\'' +
+                '}';
+    }
 }

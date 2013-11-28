@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jun 18, 2012 4:12:05 PM by Hibernate Tools 3.4.0.CR1 -->
+<hibernate-mapping>
+	<class name="edu.yale.sml.model.InputFile" table="input_acc_files"
+		lazy="false" schema="dbo" catalog="">
+		<id name="id" column="id">
+			<generator class="identity" />
+		</id>
+		<property name="name" column="name" />
+		<property name="md5" column="md5" />
+		<property name="author" column="author" />
+		<property name="date" column="date" />
+		<property name="contents" column="contents" />
+		<property name="text" column="text" />
+	</class>
+</hibernate-mapping>
