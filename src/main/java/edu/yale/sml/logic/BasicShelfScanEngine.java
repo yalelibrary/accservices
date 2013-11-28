@@ -93,10 +93,15 @@ public class BasicShelfScanEngine implements java.io.Serializable,
 	    fullComparator.getCulprits(); // TODO
 
 	    // set priors, and mis-shelf -- another method also runs for this
-	    //List<Report> legacyMisshelfs = legacyCalculateMisshelf(purgedList,
-	//	    catalogSortedPurged);
-	     List<Report> legacyMisshelfs = legacyAddAll(purgedList,
+	    List<Report> legacyMisshelfs = legacyCalculateMisshelf(purgedList,
+		    catalogSortedPurged);
+	    
+	    
+	    // 2 pass approach (ignored for now)
+	    /*List<Report> legacyMisshelfs = legacyAddAll(purgedList,
 	       catalogSortedPurged);  // populate List<Report> since AccuracyErrorsProcessors adds only m/s to List<Report>
+*/	    
+	    
 	    reportLists.setReportCatalogAsList(legacyMisshelfs); // remove?
 
 	    // set oversize flag
