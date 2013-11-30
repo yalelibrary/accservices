@@ -134,7 +134,9 @@ public class AccuracyErrorsProcessor {
 			    logger.debug("[Y] Prior NOT in sorted highlighted for: "
 				    + o.getDISPLAY_CALL_NO());
 			    OrbisRecord priorinFlagged = itemList.get(pos - 1);
-			    int diff = sortedList.indexOf(o) - pos;
+			    //int diff = sortedList.indexOf(o) - pos;
+                int diff = sortedList.indexOf(prior)
+                        - sortedList.indexOf(o);
 			    errorItems.add(Report.populateReport(o, diff,
 				    priorinFlagged.getDISPLAY_CALL_NO(),
 				    priorinFlagged.getDISPLAY_CALL_NO(),
