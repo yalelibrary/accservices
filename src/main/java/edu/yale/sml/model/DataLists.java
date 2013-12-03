@@ -1,5 +1,8 @@
 package edu.yale.sml.model;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,16 @@ public class DataLists implements java.io.Serializable
     private ShelvingError shelvingError = new ShelvingError();
     private List<OrbisRecord> suppressedList = new ArrayList<OrbisRecord>(); // of Report?
     private List<Report> enumWarnings = new ArrayList<Report>();
+    private Multimap<String,String> barcodesAsMap = ArrayListMultimap.create(); //currently only {barcode:itemstatus}
+
+
+    public Multimap<String, String> getBarcodesAsMap() {
+        return barcodesAsMap;
+    }
+
+    public void setBarcodesAsMap(Multimap<String, String> barcodesAsMap) {
+        this.barcodesAsMap = barcodesAsMap;
+    }
 
     public List<Report> getEnumWarnings()
     {

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import com.google.common.collect.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,7 +30,6 @@ public class CatalogInit {
 
     private static final String NULL_BARCODE_STRING = "00000000";
 
-
     public static DataLists processCatalogList(List<SearchResult> list) throws InvocationTargetException,
             IllegalAccessException
     {
@@ -38,9 +38,13 @@ public class CatalogInit {
         List<OrbisRecord> badBarcodes = new ArrayList<OrbisRecord>();
         DataLists dataLists = new DataLists();
 
+        Multimap<String,String> barcodeStatuses = ArrayListMultimap.create();
+
+
         for (SearchResult searchResult : list)
         {
             // e.g. for a barcode of legit length, but no result in Orbis
+
 
             if (searchResult.getResult().size() == 0)
             {
@@ -69,6 +73,11 @@ public class CatalogInit {
                 BeanUtils.populate(catalogObj, m);
 
                 // logger.debug("Added:" + catalogObj.getITEM_BARCODE());
+
+                //used for testing:
+                if (catalogObj.getITEM_STATUS_DESC() != null)
+                    barcodeStatuses.put(searchResult.getId(), catalogObj.getITEM_STATUS_DESC());
+
 
                 // Not sure what to do if CN Type null
                 if (catalogObj.getCALL_NO_TYPE() == null)
@@ -111,7 +120,7 @@ public class CatalogInit {
                     }
                     else
                     {
-                        logger.debug("List does NOT contain this item." + catalogObj.getITEM_BARCODE());
+                        //logger.debug("List does NOT contain this item." + catalogObj.getITEM_BARCODE());
                         dataLists.getCatalogAsList().add(catalogObj);
                         barocodesAdded.add(catalogObj.getITEM_BARCODE());
                     }
@@ -210,6 +219,7 @@ public class CatalogInit {
             }
         }
         dataLists.setNullResultBarcodes(badBarcodes);
+        dataLists.setBarcodesAsMap(barcodeStatuses);
         return dataLists; //done!
     }
 

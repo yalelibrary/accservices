@@ -46,6 +46,7 @@ public class BasicShelfScanEngine implements java.io.Serializable,
     private DataLists reportLists = new DataLists(); // main data structure
     private ShelvingError shelvingError;
 
+
     /**
      * Main Function
      */
@@ -391,6 +392,8 @@ public class BasicShelfScanEngine implements java.io.Serializable,
                                 .getDISPLAY_CALL_NO(),
                         catalogList.get(catalogList.indexOf(sortedList
                                 .get(i - 1))), sortedList.get(i - 1)); // hold
+
+
                 reportCatalogAsList.add(item);
                 // logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE()
                 // + " with diff: " + diff);
@@ -407,6 +410,8 @@ public class BasicShelfScanEngine implements java.io.Serializable,
                                 .getDISPLAY_CALL_NO(),
                         catalogList.get(catalogList.indexOf(sortedList
                                 .get(i - 1))), sortedList.get(i - 1)); // hold
+
+
                 reportCatalogAsList.add(item);
                 logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE()
                         + " with diff: " + diff);

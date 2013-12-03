@@ -18,6 +18,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import com.google.common.collect.Multimap;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -133,7 +134,7 @@ public class SearchView implements Serializable
             try
             {
                 JsfExternalContext.redirect(new PropertiesConfiguration("messages.properties")
-                                        .getString("generic_error_redirect"));
+                        .getString("generic_error_redirect"));
             }
             catch (Exception ce)
             {
@@ -203,14 +204,16 @@ public class SearchView implements Serializable
             engine.getReportLists().setEnumWarnings(
                     savedSearchViewObject.reportLists.getEnumWarnings());
             engine.setShelvingError(savedSearchViewObject.engine.getShelvingError());
+            engine.getReportLists().setCulpritList(
+                    savedSearchViewObject.reportLists.getCulpritList());
+            engine.getReportLists().setBarcodesAsMap(savedSearchViewObject.reportLists.getBarcodesAsMap());
+
             fileName = savedSearchViewObject.getFileName();
             firstCallNumber = savedSearchViewObject.getFirstCallNumber();
             lastCallNumber = savedSearchViewObject.getLastCallNumber();
             finalLocationName = savedSearchViewObject.getFinalLocationName();
             oversize = savedSearchViewObject.getOversize();
             scanDate = savedSearchViewObject.getScanDate();
-            engine.getReportLists().setCulpritList(
-                    savedSearchViewObject.reportLists.getCulpritList());
 
         }
         catch (NullPointerException e)
@@ -308,6 +311,10 @@ public class SearchView implements Serializable
         OrbisRecord last = catalogList.get(catalogList.size() - 1);
         int listSize = catalogList.size();
 
+        logger.debug("first:" + first.getDISPLAY_CALL_NO());
+        logger.debug("last:" + last.getDISPLAY_CALL_NO());
+        logger.debug("listsize:" + listSize);
+
         History history = new History();
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         Integer savedID = 0;
@@ -330,7 +337,7 @@ public class SearchView implements Serializable
         if (catalogList.get(listSize - 1).getNORMALIZED_CALL_NO() != null)
         {
             history.setNORM_CALL_LAST(catalogList
-                    .get(listSize).getNORMALIZED_CALL_NO());
+                    .get(listSize - 1).getNORMALIZED_CALL_NO());
         }
 
         history.setBARCODE_FIRST(first.getITEM_BARCODE());
