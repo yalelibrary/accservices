@@ -15,24 +15,24 @@ public class Shelving implements java.io.Serializable
     private String barcodeEnd;
     private String barcodeStart;
     private Date creationDate;
-    public String displayEnd = "";
-    public String displayStart = "";
+    private String displayEnd = "";
+    private String displayStart = "";
     private String endItemStatus = "";
     private Date endItemStatusDate;
-    public String floor = "";
+    private String floor = "";
     private Date formDate = new Date();
     private int id;
-    public String NETID = ""; //has to be public for LazyHistory model
-    public String normalizedEnd = "";
-    public String normalizedStart = "";
+    private String NETID = ""; //has to be public for LazyHistory model
+    private String normalizedEnd = "";
+    private String normalizedStart = "";
     private String notes;
     private String numRows;
     private String oversize;
-    public String SCANLOCATION = "";
+    private String SCANLOCATION = "";
     private String startItemStatus = "";
     private Date startItemStatusDate;
     private String team;
-    public float teamSize = 1;
+    private float teamSize = 1;
     private String time;
     
     

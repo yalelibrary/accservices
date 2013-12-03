@@ -8,22 +8,22 @@ public class OrbisRecord implements Serializable
 
     private static final long serialVersionUID = -6792300395330658557L;
 
-    String CHRON = "";
-    String DISPLAY_CALL_NO = "";
-    String ENCODING_LEVEL;
-    String ITEM_BARCODE = "";
-    String ITEM_ENUM = "";
-    String ITEM_ID = "";
-    Date ITEM_STATUS_DATE = null;
-    String ITEM_STATUS_DESC = "";
-    String LOCATION_NAME = "";
-    String MFHD_ID = "";
-    String NORMALIZED_CALL_NO = "";
-    String PERM_LOCATION = "";
-    String prior = "N/A";
-    String SUPPRESS_IN_OPAC = "";
-    String YEAR = "";
-    String CALL_NO_TYPE = "N/A";
+    private String CHRON = "";
+    private String DISPLAY_CALL_NO = "";
+    private String ENCODING_LEVEL;
+    private String ITEM_BARCODE = "";
+    private String ITEM_ENUM = "";
+    private String ITEM_ID = "";
+    private Date ITEM_STATUS_DATE = null;
+    private String ITEM_STATUS_DESC = "";
+    private String LOCATION_NAME = "";
+    private String MFHD_ID = "";
+    private String NORMALIZED_CALL_NO = "";
+    private String PERM_LOCATION = "";
+    private String prior = "N/A";
+    private String SUPPRESS_IN_OPAC = "";
+    private String YEAR = "";
+    private String CALL_NO_TYPE = "N/A";
 
     public OrbisRecord()
     {

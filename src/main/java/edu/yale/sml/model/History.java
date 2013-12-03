@@ -8,36 +8,36 @@ import java.util.Set;
 public class History implements java.io.Serializable
 {
     private static final long serialVersionUID = -8463243297163676698L;
-    short ACCURACY;
-    Integer FILE_ID = 0;
-    Integer fileId = 0;
-    String FILENAME = "";
+    private short ACCURACY;
+    private Integer FILE_ID = 0;
+    private Integer fileId = 0;
+    private String FILENAME = "";
     private Set fileSet = new HashSet(0);
-    String FIRSTCALLNUMBER = "";
+    private String FIRSTCALLNUMBER = "";
     private Integer ID;
-    InputFile inputFile; // FK many-to-one
-    String LASTCALLNUMBER = "";
-    String LOCATION = "";
-    int LOCATIONERROR = 0;
-    String MISLABELLED = "";
-    public String NETID = "";
-    String NOTES = "";
-    int NULLBARCODE = 0;
-    String NUMBERBARCODE = "";
-    short NUMBERSCANNED;
-    short OVERSIZE = 0;
-    Date RUNDATE = new Date();
-    Date SCANDATE = new Date();
-    public String SCANLOCATION = "";
-    byte[] SEARCHVIEW;
-    short STATUS;
-    short SUPPRESS;
-    short TIMESPENT = 0;
-    String TRANSCATIONMESSAGES; // CHANGE TO TEXT TYPE OR SQL TPE
+    private InputFile inputFile; // FK many-to-one
+    private String LASTCALLNUMBER = "";
+    private String LOCATION = "";
+    private int LOCATIONERROR = 0;
+    private String MISLABELLED = "";
+    private String NETID = "";
+    private String NOTES = "";
+    private int NULLBARCODE = 0;
+    private String NUMBERBARCODE = "";
+    private short NUMBERSCANNED;
+    private short OVERSIZE = 0;
+    private Date RUNDATE = new Date();
+    private Date SCANDATE = new Date();
+    private String SCANLOCATION = "";
+    private byte[] SEARCHVIEW;
+    private short STATUS;
+    private short SUPPRESS;
+    private short TIMESPENT = 0;
+    private String TRANSCATIONMESSAGES; // CHANGE TO TEXT TYPE OR SQL TPE
     private String BARCODE_LAST;
     private String BARCODE_FIRST;
-    public String NORM_CALL_LAST = "";
-    public String NORM_CALL_FIRST = "";
+    private String NORM_CALL_LAST = "";
+    private String NORM_CALL_FIRST = "";
 
     public History()
     {

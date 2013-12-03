@@ -3,10 +3,10 @@ package edu.yale.sml.model;
 public class Messages
 {
 
-    Integer ID;
-    String NAME = "";
-    String VALUE = ""; // what if it's value
-    String TOOLTIP = "";
+    private Integer ID;
+    private String NAME = "";
+    private String VALUE = ""; // what if it's value
+    private String TOOLTIP = "";
 
     public Messages()
     {

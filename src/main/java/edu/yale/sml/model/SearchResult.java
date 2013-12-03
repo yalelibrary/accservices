@@ -10,8 +10,8 @@ import java.util.Map;
 public class SearchResult
 {
 
-    String id = ""; // barcode from input file
-    List<Map<String, Object>> result = null; // corresponding result
+    private String id = ""; // barcode from input file
+    private List<Map<String, Object>> result = null; // corresponding result
 
     public String getId()
     {
