@@ -135,6 +135,7 @@ public class AccuracyErrorsProcessor {
 				    + o.getDISPLAY_CALL_NO());
 			    OrbisRecord priorinFlagged = itemList.get(pos - 1);
 			    //int diff = sortedList.indexOf(o) - pos;
+                //12-2-13
                 int diff = sortedList.indexOf(prior)
                         - sortedList.indexOf(o);
 			    errorItems.add(Report.populateReport(o, diff,

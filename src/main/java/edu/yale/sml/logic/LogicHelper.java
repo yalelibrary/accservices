@@ -29,7 +29,8 @@ import edu.yale.sml.persistence.MessagesHibernateDAO;
 public class LogicHelper
 {
 
-    final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.logic.LogicHelper");
+    private final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.logic.LogicHelper");
+    private final static int MIN_BARCODE_LEN = 1;    //should be 14, but not needed right now
 
     /**
      * @param fileUploadController
@@ -66,6 +67,11 @@ public class LogicHelper
             while (s.hasNext())
             {
                 String a = s.next().trim(); // always trim a string
+                if (a.length() < MIN_BARCODE_LEN)
+                {
+                    logger.debug("Skipping string:" + a);
+                    continue;
+                }
                 toFind.add(a);
             }
         }
@@ -131,6 +137,11 @@ public class LogicHelper
             while (s.hasNext())
             {
                 String a = s.next().trim(); // always trim a string
+                if (a.length() < MIN_BARCODE_LEN)
+                {
+                    logger.debug("Skipping string:" + a);
+                    continue;
+                }
                 sb.append(a + "\n");
             }
         }
@@ -218,7 +229,7 @@ public class LogicHelper
     }
 
     /**
-     * Saves contents from PrimeFaces component to database using DAO
+     * Called from SearchView. Saves contents from PrimeFaces component to database using DAO
      * 
      * TODO currently instanties an instance of FileDAO
      * 
@@ -252,6 +263,7 @@ public class LogicHelper
         }
         catch (Throwable e)
         {
+
             e.printStackTrace();
         }
         finally
@@ -271,6 +283,8 @@ public class LogicHelper
         return null;
     }
 
+    /*
+    @Deprecated
     public static String getFileBytesAsString(InputStream is) throws IOException
     {
         List<String> toFind = new ArrayList<String>();
@@ -292,6 +306,7 @@ public class LogicHelper
         }
         return toFind.toString();
     }
+    */
 
     /**
      * Get CAS user from url
@@ -373,14 +388,16 @@ public class LogicHelper
             while (s.hasNext())
             {
                 String a = s.next().trim();
+                if (a.length() < MIN_BARCODE_LEN)
+                {
+                    logger.debug("Skipping string:" + a);
+                    continue;
+
+                }
                 toFind.add(a);
             }
         }
-        catch (Throwable e)
-        {
-            logger.error("Exception");
-            e.printStackTrace();
-        }
+
         finally
         {
             if (is != null)

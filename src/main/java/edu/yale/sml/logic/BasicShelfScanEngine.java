@@ -626,8 +626,9 @@ public class BasicShelfScanEngine implements java.io.Serializable,
                                                   final List<Report> reportCatalogAsList,
                                                   List<OrbisRecord> orbisList, String finalLocationName,
                                                   Date scanDate, String oversize) {
-        logger.debug("*Adding Non Acc items to culprit list");
-        logger.debug("Current culprit list : " + culpritList.toString());
+        logger.debug("------------------------------------");
+        logger.debug("Adding Non Acc items to culprit list");
+        //logger.debug("Current culprit list : " + culpritList.toString());
         for (Report item : reportCatalogAsList) {
             // logger.debug("Considering:" + item.getITEM_BARCODE() +
             // " Text flag : " + item.getText());
@@ -638,8 +639,8 @@ public class BasicShelfScanEngine implements java.io.Serializable,
 	     * culpritList.add(item); }
 	     */
             if (culpritList.contains(item)) {
-                logger.debug("Skipping : " + item.getITEM_BARCODE()
-                        + " (Already contains).");
+                logger.debug("Skipping adding non-acc to culprit list: " + item.getITEM_BARCODE()
+                        + " (List already contains).");
             } else if (Rules.isVoyagerError(item, finalLocationName, scanDate,
                     oversize)) // necessary because of legacyMisshelf()
             {
@@ -660,9 +661,12 @@ public class BasicShelfScanEngine implements java.io.Serializable,
                 }
                 culpritList.add(item);
             } else {
-                logger.debug("Skipping : " + item.getITEM_BARCODE());
+                logger.debug("Skipping adding non-acc to culprit list: " + item.getITEM_BARCODE());
             }
+
         }
+        logger.debug("DONE");
+        logger.debug("-------------------");
     }
 
     public List<OrbisRecord> getBadBarcodes() {

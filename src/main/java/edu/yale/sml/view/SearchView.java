@@ -392,9 +392,6 @@ public class SearchView implements Serializable
      * @throws HibernateException
      * @throws NullFileException
      */
-
-    // FIXME 'ufso'
-
     public String process() throws IllegalAccessException, InvocationTargetException, IOException,
             HibernateException, NullFileException
     {

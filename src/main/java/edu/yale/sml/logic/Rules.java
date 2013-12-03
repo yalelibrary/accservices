@@ -192,7 +192,6 @@ public class Rules
     public static boolean isVoyagerError(final Report item, final String finalLocationName, final Date scanDate,
             final String oversize)
     {
-        logger.debug("Filtering out barcodes that do not have any errors");
         boolean foundError = false;
 
         try
@@ -270,6 +269,7 @@ public class Rules
             e.printStackTrace();
         }
         //logger.debug("founderror:" + foundError);
+        logger.debug(item.getITEM_BARCODE() + " isVoyagerError? " + foundError);
         return foundError;
     }
 

@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class CatalogInit {
 
-    final static Logger logger = LoggerFactory.getLogger(BasicShelfScanEngine.class);
+    final static Logger logger = LoggerFactory.getLogger(CatalogInit.class);
 
     private static final String NULL_BARCODE_STRING = "00000000";
 
@@ -33,6 +33,7 @@ public class CatalogInit {
     public static DataLists processCatalogList(List<SearchResult> list) throws InvocationTargetException,
             IllegalAccessException
     {
+        logger.debug("Processing list . . .");
         List<String> barocodesAdded = new ArrayList<String>();
         List<OrbisRecord> badBarcodes = new ArrayList<OrbisRecord>();
         DataLists dataLists = new DataLists();
@@ -101,7 +102,7 @@ public class CatalogInit {
                     if (barocodesAdded.contains(catalogObj.getITEM_BARCODE())
                             && !catalogObj.getITEM_BARCODE().contains(NULL_BARCODE_STRING))
                     {
-                        logger.debug("Already contains valid status item. Perhaps occurs twice!: "
+                        logger.debug("List already contains valid status item for this item: "
                                 + catalogObj.getITEM_BARCODE());
                         // check if repeat takes care of prior
                         catalogObj.setDISPLAY_CALL_NO(catalogObj.getDISPLAY_CALL_NO() + " REPEAT ");
@@ -110,6 +111,7 @@ public class CatalogInit {
                     }
                     else
                     {
+                        logger.debug("List does NOT contain this item." + catalogObj.getITEM_BARCODE());
                         dataLists.getCatalogAsList().add(catalogObj);
                         barocodesAdded.add(catalogObj.getITEM_BARCODE());
                     }
@@ -118,13 +120,13 @@ public class CatalogInit {
                 else
                 // if not valid item status
                 {
-                    printStatuses(catalogObj);
+                    logger.debug("Considering invalid status item :" + catalogObj.getITEM_BARCODE() + " ? ");
 
-                    logger.debug("Discarding? :" + catalogObj.getITEM_BARCODE());
+                    printStatuses(catalogObj);
 
                     if (barocodesAdded.contains(catalogObj.getITEM_BARCODE()) == false)
                     {
-                        logger.debug("Adding barcode anyway despite invalid item Status : "
+                        logger.debug("Adding item (w/ invalid status) . The list does NOT contains barcode : "
                                 + catalogObj.getITEM_BARCODE());
                         dataLists.getCatalogAsList().add(catalogObj);
                         barocodesAdded.add(catalogObj.getITEM_BARCODE());
@@ -132,7 +134,7 @@ public class CatalogInit {
 
                     else if (barocodesAdded.contains(catalogObj.getITEM_BARCODE()))
                     {
-                        logger.debug("Already contains this item");
+                        logger.debug("List already contains this item : " + catalogObj.getITEM_BARCODE());
                         Date existingItemStatusDate = null;
                         OrbisRecord outdatedObject = findOlderItemStatusDateObject(
                                 dataLists.getCatalogAsList(), catalogObj.getITEM_BARCODE());
@@ -150,16 +152,35 @@ public class CatalogInit {
                                 && catalogObj.getITEM_STATUS_DATE().compareTo(
                                 existingItemStatusDate) > 0)
                         {
-                            logger.debug("Item has more recent date:"
+                            logger.debug("Item (w/ invalid status) has more recent date:"
                                     + catalogObj.getITEM_BARCODE()
                                     + ", so it's replacing the older enttity");
                             dataLists.getCatalogAsList().remove(outdatedObject);
                             dataLists.getCatalogAsList().add(catalogObj);
                         }
 
+                        else
+                        {
+                            logger.debug("Item (w/ invalid status) doesn't have more recent status." + catalogObj.getITEM_BARCODE());
+                            logger.debug("Checking if the other item (in the list is valid though?");
+                            if (outdatedObject != null && outdatedObject.getITEM_STATUS_DESC() != null && Rules.isValidItemStatus(outdatedObject.getITEM_STATUS_DESC())) {
+                                logger.debug("Confirmed that current list already contains a valid item");
+                                logger.debug("Discarding valid with invalid");
+                                dataLists.getCatalogAsList().remove(outdatedObject);
+                                dataLists.getCatalogAsList().add(catalogObj);
+                            }
+                            else {
+                                logger.debug("Nope. Either existing item also invalid status OR it's status desc is null");
+                            }
+
+
+                        }
+
                         // e.g. Missing 5-5-55 vs 'Not Charged' with status date
                         // wont' get here if item_status_desc for existing item
                         // is not null:
+
+                        //IF outdated object IS NULL
 
                         if (catalogObj.getITEM_STATUS_DATE() != null && outdatedObject == null)
                         {
@@ -178,6 +199,11 @@ public class CatalogInit {
                                 logger.debug("Not sure what to do with item : "
                                         + catalogObj.getITEM_BARCODE());
                             }
+                        }
+                        else
+                        {
+                            logger.debug("Item " + catalogObj.getITEM_BARCODE() + " status date null or outdated object NOT null");
+
                         }
                     }
                 }
