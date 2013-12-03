@@ -1,6 +1,5 @@
 package edu.yale.sml.view;
 
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -16,6 +15,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -46,13 +46,13 @@ import org.primefaces.model.UploadedFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+ * Main entry point for report creation.
+ *
+ * Important methods: initialize, populateSearchView (loads history), saveHistory, process
+ */
 @ManagedBean
 @ViewScoped
-
-
-/*
- * Main entry point for report creation
- */
 public class SearchView implements Serializable
 {
 
@@ -61,6 +61,7 @@ public class SearchView implements Serializable
     final static Logger logger = LoggerFactory.getLogger(SearchView.class);
     final static String PF_FILE_PREFIX = "PrimeFacesUploadedFile";
     final static String PF_FILE_NAME = "PrimeFacesUploadedFileName";
+    private final static String APP = "ShelfScan";
 
     BasicShelfScanEngine engine; // note: using direct impl.
     String fileName = "";
@@ -93,9 +94,11 @@ public class SearchView implements Serializable
     public void initialize()
     {
 
-        Map sessionMap =  FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        Map<String,String> requestMap =   FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") == null)
+        ExternalContext JsfExternalContext =   FacesContext.getCurrentInstance().getExternalContext();
+        Map sessionMap =  JsfExternalContext.getSessionMap();
+        Map<String,String> requestMap =   JsfExternalContext.getRequestParameterMap();
+
+        if (sessionMap.get("netid") == null)
         {
             //TODO
         }
@@ -129,11 +132,7 @@ public class SearchView implements Serializable
         {
             try
             {
-                FacesContext
-                        .getCurrentInstance()
-                        .getExternalContext()
-                        .redirect(
-                                new PropertiesConfiguration("messages.properties")
+                JsfExternalContext.redirect(new PropertiesConfiguration("messages.properties")
                                         .getString("generic_error_redirect"));
             }
             catch (Exception ce)
@@ -151,6 +150,8 @@ public class SearchView implements Serializable
     {
         History historyCatalog = new History();
         HistoryDAO historyDAO = new HistoryHibernateDAO();
+        Map sessionMap =  FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+
         if (engine == null) //TODO change
         {
             engine = new BasicShelfScanEngine();
@@ -167,8 +168,7 @@ public class SearchView implements Serializable
             catch (Exception e)
             {
                 logger.debug("Failed to get report # "+ ID + " Redirecting . . .");
-                FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-                        .remove("HISTORYID"); // out of caution
+                sessionMap.remove("HISTORYID"); // out of caution
                 clearSessionMap();
                 FacesContext.getCurrentInstance().getExternalContext()
                         .redirect("/shelfscan/pages/error/oops.xhtml");
@@ -215,7 +215,7 @@ public class SearchView implements Serializable
         }
         catch (NullPointerException e)
         {
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID");
+            sessionMap.remove("HISTORYID");
             clearSessionMap();
             throw new NullPointerException(e.getMessage());
         }
@@ -237,16 +237,16 @@ public class SearchView implements Serializable
     {
         List<String> toFind = new ArrayList<String>();
         Integer persistId = 0;
+        Map sessionMap =  FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+
         try
         {
             try
             {
                 // Report Header
-                setFileName(((UploadedFile) FacesContext.getCurrentInstance()
-                            .getExternalContext().getSessionMap().get(PF_FILE_PREFIX))
+                setFileName(((UploadedFile) sessionMap.get(PF_FILE_PREFIX))
                             .getFileName());
-                 toFind = LogicHelper.readFile((UploadedFile) FacesContext.getCurrentInstance()
-                            .getExternalContext().getSessionMap().get(PF_FILE_PREFIX));
+                toFind = LogicHelper.readFile((UploadedFile) sessionMap.get(PF_FILE_PREFIX));
             }
             catch (NullPointerException e) // ?
             {
@@ -269,8 +269,7 @@ public class SearchView implements Serializable
             InputFile inputFile = null;
 
             inputFile = LogicHelper.getInputFile(
-                        (UploadedFile) FacesContext.getCurrentInstance().getExternalContext()
-                                .getSessionMap().get(PF_FILE_PREFIX), "netid", "date");
+                        (UploadedFile) sessionMap.get(PF_FILE_PREFIX), "netid", "date");
 
             logger.debug("Saving to history");
             persistId = saveHistory(inputFile, reportLists, user,
@@ -291,8 +290,7 @@ public class SearchView implements Serializable
             ge.printStackTrace();
         }
 
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-                .put("HISTORYID", persistId);
+        sessionMap.put("HISTORYID", persistId);
         return "ok";
     }
 
@@ -304,7 +302,11 @@ public class SearchView implements Serializable
         logger.debug("Saving shelfscan results for file:" + inputFile.getName() + " , for specified user : "
                 + netid);
         ShelvingError shelvingError = reportLists.getShelvingError();
+
         List<OrbisRecord> catalogList = reportLists.getCatalogAsList();
+        OrbisRecord first = catalogList.get(0);
+        OrbisRecord last = catalogList.get(catalogList.size() - 1);
+        int listSize = catalogList.size();
 
         History history = new History();
         HistoryDAO historyDAO = new HistoryHibernateDAO();
@@ -315,10 +317,6 @@ public class SearchView implements Serializable
 
         // option set to cascade = 'save-update' //revisit if necessary
         history.setInputFile(inputFile);
-
-        OrbisRecord first = catalogList.get(0);
-        OrbisRecord last = catalogList.get(catalogList.size() - 1);
-        int listSize = catalogList.size();
 
         history.setFIRSTCALLNUMBER(edu.yale.sml.logic.Rules.getFirstValidDisplayCallNum(reportLists
                 .getCatalogAsList()));
@@ -393,7 +391,7 @@ public class SearchView implements Serializable
             GenericDAO genericDAO = new GenericHibernateDAO();
             Log log = new Log();
             log.setNet_id(user);
-            log.setOperation("Shelfscan");
+            log.setOperation(APP);
             log.setTimestamp(new Date());
             log.setInput_file(getFileName());
             log.setStacktrace("User uploaded file for processing");
@@ -412,16 +410,13 @@ public class SearchView implements Serializable
 
     public void handleFileUpload(FileUploadEvent event)
     {
-        FacesMessage msg = new FacesMessage("File uploaded.");
+        Map sessionMap =  FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         uploadedFile = event.getFile();
         uploadedFileName = uploadedFile.getFileName();
-        // TODO Don't have to place whole object in session below since it's not
-        // used
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-                .put("PrimeFacesUploadedFile", uploadedFile);
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-                .put("PrimeFacesUploadedFileName", uploadedFile.getFileName());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        // TODO Don't have to place whole PF object in session (not used)
+        sessionMap.put("PrimeFacesUploadedFile", uploadedFile);
+        sessionMap.put("PrimeFacesUploadedFileName", uploadedFile.getFileName());
+        FacesContext.getCurrentInstance().addMessage(null,  new FacesMessage("File uploaded, etc."));
     }
 
     //used by results.xhtml (needed?)
@@ -437,11 +432,12 @@ public class SearchView implements Serializable
                 .redirect("/shelfscan/pages/results.xhtml?id=" + redirect_id);
     }
 
-        /*
+    /*
     public static String getReferenceLink2(String rowIndex)
     {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
-    } */
+    }
+    */
 
     public String getNotes()
     {

@@ -8,6 +8,9 @@ public class DataLists implements java.io.Serializable
 
     private static final long serialVersionUID = 2524269432605035990L;
 
+    //Note: should be private fields, but since they are accessed outside package anyway,
+    // so it doesn't matter as much.
+
     List<OrbisRecord> catalogAsList = new ArrayList<OrbisRecord>();
     List<OrbisRecord> catalogSortedRaw = new ArrayList<OrbisRecord>();
     List<Report> culpritList = new ArrayList<Report>(); // for alt logic
