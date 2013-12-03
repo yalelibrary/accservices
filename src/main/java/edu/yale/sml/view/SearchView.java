@@ -395,8 +395,7 @@ public class SearchView implements Serializable
     public String process() throws IllegalAccessException, InvocationTargetException, IOException,
             HibernateException, NullFileException
     {
-        boolean allowExistingFileProcessing = LogicHelper
-                .isApplicationPropertyChecked("form.shelfscan.allowProcessingExistingFiles"); // TODO
+
         List<String> toFind = new ArrayList<String>();
         Integer persistId = 0;
         boolean selectBoxInput = false;
@@ -405,29 +404,13 @@ public class SearchView implements Serializable
         {
             try
             {
-                if (allowExistingFileProcessing
-                        && ((UploadedFile) FacesContext.getCurrentInstance().getExternalContext()
-                                .getSessionMap().get(PF_FILE_PREFIX)) == null)
-                {
-                    if (selectBoxFileName != null)
-                    {
-                        fileName = selectBoxFileName.replace("[", "");
-                        fileName = fileName.replace("]", "");
-                        logger.debug("Processing existing file:" + fileName);
-                        setFileName(fileName);
-                        toFind = LogicHelper.readFile(fileName);
-                        selectBoxInput = true;
-                    }
-                }
-                else
-                {
-                    // Report Header
-                    setFileName(((UploadedFile) FacesContext.getCurrentInstance()
+                // Report Header
+                setFileName(((UploadedFile) FacesContext.getCurrentInstance()
                             .getExternalContext().getSessionMap().get(PF_FILE_PREFIX))
                             .getFileName());
-                    toFind = LogicHelper.readFile((UploadedFile) FacesContext.getCurrentInstance()
+                 toFind = LogicHelper.readFile((UploadedFile) FacesContext.getCurrentInstance()
                             .getExternalContext().getSessionMap().get(PF_FILE_PREFIX));
-                }
+
             }
             catch (NullPointerException e) // ?
             {
@@ -452,17 +435,10 @@ public class SearchView implements Serializable
 
             InputFile inputFile = null;
 
-            if (allowExistingFileProcessing && selectBoxInput)
-            {
-                FileDAO fileDAO = new FileHibernateDAO();
-                inputFile = fileDAO.findInputFileByName(fileName);
-            }
-            else
-            {
-                inputFile = LogicHelper.getInputFile(
+            inputFile = LogicHelper.getInputFile(
                         (UploadedFile) FacesContext.getCurrentInstance().getExternalContext()
                                 .getSessionMap().get(PF_FILE_PREFIX), "netid", "date");
-            }
+
             persistId = saveHistory(inputFile, reportLists.getShelvingError(), user,
                     String.valueOf(toFind.size()), finalLocationName);
             // clear session map for PrimeFaces uploade file
