@@ -26,35 +26,30 @@ import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.MessagesDAO;
 import edu.yale.sml.persistence.MessagesHibernateDAO;
 
-public class LogicHelper
-{
+public class LogicHelper {
 
     private final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.logic.LogicHelper");
     private final static int MIN_BARCODE_LEN = 1;    //should be 14, but not needed right now
 
     /**
-     * @param fileUploadController
-     *            PrimeFaces component
+     * @param fileUploadController PrimeFaces component
      * @return Contents of barcode file as List<String>
      * @throws IOException
      */
 
-    public static List<String> readFile(final UploadedFile fileUploadController) throws IOException
-    {
+    public static List<String> readFile(final UploadedFile fileUploadController) throws IOException {
 
         InputStream is = null;
         List<String> toFind = new ArrayList<String>();
         int count = 0;
 
-        try
-        {
+        try {
             is = fileUploadController.getInputstream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             StringBuilder sb = new StringBuilder();
             String line;
             List<String> added = new ArrayList<String>();
-            while ((line = br.readLine()) != null)
-            {
+            while ((line = br.readLine()) != null) {
                 if (added.contains(line)) // 39002091235557 -- replace w/ regex
                 {
                 }
@@ -64,36 +59,25 @@ public class LogicHelper
             }
             br.close();
             Scanner s = new Scanner(sb.toString()).useDelimiter("\n");
-            while (s.hasNext())
-            {
+            while (s.hasNext()) {
                 String a = s.next().trim(); // always trim a string
-                if (a.length() < MIN_BARCODE_LEN)
-                {
+                if (a.length() < MIN_BARCODE_LEN) {
                     logger.debug("Skipping string:" + a);
                     continue;
                 }
                 toFind.add(a);
             }
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            if (is != null)
-            {
-                try
-                {
+        } finally {
+            if (is != null) {
+                try {
                     is.close();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     // TODO
                 }
             }
-            if (count > BasicShelfScanEngine.MAX_QUERY_COUNT)
-            {
+            if (count > BasicShelfScanEngine.MAX_QUERY_COUNT) {
                 return null; // throw exception
             }
         }
@@ -101,28 +85,24 @@ public class LogicHelper
     }
 
     /**
-     * @param fileUploadController
-     *            PrimeFaces component
+     * @param fileUploadController PrimeFaces component
      * @return Contents of barcode file as List<String>
      * @throws IOException
      */
     public static String readFileAsString(final UploadedFile fileUploadController)
-            throws IOException
-    {
+            throws IOException {
 
         StringBuilder sb = new StringBuilder();
         InputStream is = null;
         List<String> toFind = new ArrayList<String>();
         int count = 0;
-        try
-        {
+        try {
             is = fileUploadController.getInputstream();
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String line;
             List<String> added = new ArrayList<String>();
 
-            while ((line = br.readLine()) != null)
-            {
+            while ((line = br.readLine()) != null) {
                 if (added.contains(line)) // 39002091235557 -- replace w/ regex
                 {
                 }
@@ -134,37 +114,26 @@ public class LogicHelper
             br.close();
             Scanner s = new Scanner(sb.toString()).useDelimiter("\n");
             sb = new StringBuilder();
-            while (s.hasNext())
-            {
+            while (s.hasNext()) {
                 String a = s.next().trim(); // always trim a string
-                if (a.length() < MIN_BARCODE_LEN)
-                {
+                if (a.length() < MIN_BARCODE_LEN) {
                     logger.debug("Skipping string:" + a);
                     continue;
                 }
                 sb.append(a + "\n");
             }
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             e.printStackTrace();
-        }
-        finally
-        {
-            if (is != null)
-            {
-                try
-                {
+        } finally {
+            if (is != null) {
+                try {
                     is.close();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     logger.debug("Error closing File stream.");
                 }
             }
 
-            if (count > BasicShelfScanEngine.MAX_QUERY_COUNT)
-            {
+            if (count > BasicShelfScanEngine.MAX_QUERY_COUNT) {
                 return null; // throw exception
             }
         }
@@ -173,9 +142,7 @@ public class LogicHelper
 
     /**
      * Saves contents from PrimeFaces component to database using DAO
-     * 
-     * TODO currently instanties an instance of FileDAO
-     * 
+     *
      * @param fileUploadController
      * @param author
      * @param date
@@ -183,19 +150,16 @@ public class LogicHelper
      * @throws IOException
      */
     public static Integer saveFile(final UploadedFile fileUploadController, String author,
-            String date) throws IOException
-    {
+                                   String date) throws IOException {
         InputStream is = null;
-        try
-        {
+        try {
             is = fileUploadController.getInputstream();
             byte[] bytes = fileUploadController.getContents();
             String md5 = DigestUtils.md5Hex(bytes);
             FileDAO dao = new FileHibernateDAO();
             List<InputFile> inputFileList = dao.findInputFileByMD5(md5);
             if (inputFileList != null && inputFileList.get(0).getName() != null
-                    && inputFileList.get(0).getName().equals(fileUploadController.getFileName()))
-            {
+                    && inputFileList.get(0).getName().equals(fileUploadController.getFileName())) {
                 return new Integer(inputFileList.get(0).getId());
             }
 
@@ -205,23 +169,15 @@ public class LogicHelper
                     "sample text"));
 
             return fileId;
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.debug("Exeption finding/saving file");
             e.printStackTrace();
             logger.debug(e.getMessage());
-        }
-        finally
-        {
-            if (is != null)
-            {
-                try
-                {
+        } finally {
+            if (is != null) {
+                try {
                     is.close();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                 }
             }
         }
@@ -230,9 +186,8 @@ public class LogicHelper
 
     /**
      * Called from SearchView. Saves contents from PrimeFaces component to database using DAO
-     * 
      * TODO currently instanties an instance of FileDAO
-     * 
+     *
      * @param fileUploadController
      * @param author
      * @param date
@@ -240,91 +195,52 @@ public class LogicHelper
      * @throws IOException
      */
     public static InputFile getInputFile(final UploadedFile fileUploadController, String author,
-            String date) throws IOException
-    {
+                                         String date) throws IOException {
         InputStream is = null;
 
-        try
-        {
+        try {
             is = fileUploadController.getInputstream();
             byte[] bytes = fileUploadController.getContents();
             String md5 = DigestUtils.md5Hex(bytes);
             FileDAO dao = new FileHibernateDAO();
             List<InputFile> inputFileList = dao.findInputFileByMD5(md5);
             if (inputFileList != null && inputFileList.get(0).getName() != null
-                    && inputFileList.get(0).getName().equals(fileUploadController.getFileName()))
-            {
+                    && inputFileList.get(0).getName().equals(fileUploadController.getFileName())) {
                 return inputFileList.get(0);
             }
             Integer fileId = 0;
             return (new InputFile(fileUploadController.getFileName(), md5, author, new Date(
                     System.currentTimeMillis()), readFileAsString(fileUploadController),
                     "sample text"));
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
 
             e.printStackTrace();
-        }
-        finally
-        {
-            if (is != null)
-            {
-                try
-                {
+        } finally {
+            if (is != null) {
+                try {
                     is.close();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                 }
             }
         }
-
         return null;
     }
 
-    /*
-    @Deprecated
-    public static String getFileBytesAsString(InputStream is) throws IOException
-    {
-        List<String> toFind = new ArrayList<String>();
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        List<String> added = new ArrayList<String>();
-        while ((line = br.readLine()) != null)
-        {
-            sb.append(line + "\n\r");
-            added.add(line);
-        }
-        br.close();
-        Scanner s = new Scanner(sb.toString()).useDelimiter("\n");
-        while (s.hasNext())
-        {
-            String a = s.next().trim(); // always trim a string
-            toFind.add(a);
-        }
-        return toFind.toString();
-    }
-    */
-
     /**
      * Get CAS user from url
-     * 
+     *
      * @param
      * @param contents
      * @return
      * @throws IOException
      */
     public static List<String> getCASUser(final String cas_server_url, final StringBuffer contents)
-            throws IOException
-    {
+            throws IOException {
         OutputStreamWriter writer = null;
         BufferedReader in = null;
         List<String> response = new ArrayList<String>();
         StringBuffer response_body = new StringBuffer();
-        try
-        {
+        try {
             URL url = new URL(cas_server_url);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
@@ -334,86 +250,64 @@ public class LogicHelper
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             response.add(new String(Integer.toString(conn.getResponseCode())));
             String decodedString = "";
-            while ((decodedString = in.readLine()) != null)
-            {
-                if (decodedString.length() > 0)
-                {
+            while ((decodedString = in.readLine()) != null) {
+                if (decodedString.length() > 0) {
                     response_body.append(decodedString + "\n");
                     response.add(decodedString);
                 }
             }
-        }
-        catch (java.net.UnknownHostException e)
-        {
+        } catch (java.net.UnknownHostException e) {
             throw new java.net.UnknownHostException();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new IOException(e);
-        }
-        finally
-        {
-            try
-            {
-                if (writer != null)
-                {
+        } finally {
+            try {
+                if (writer != null) {
                     writer.close();
                 }
-                if (in != null)
-                {
+                if (in != null) {
                     in.close();
                 }
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 throw new IOException(e);
             }
         }
         return response;
     }
 
-    // Reads from InputFileDAO
-
-    public static List<String> readFile(String selectBoxFileName)
-    {
+    /**
+     * Reads from inputfiledao
+     * @param selectBoxFileName
+     * @return
+     */
+    public static List<String> readFile(String selectBoxFileName) {
         InputStream is = null;
         List<String> toFind = new ArrayList<String>();
         int count = 0;
 
-        try
-        {
+        try {
             FileDAO dao = new FileHibernateDAO();
             String sb = dao.findContentsByFileName(selectBoxFileName);
             Scanner s = new Scanner(sb.toString()).useDelimiter("\n");
-            while (s.hasNext())
-            {
+            while (s.hasNext()) {
                 String a = s.next().trim();
-                if (a.length() < MIN_BARCODE_LEN)
-                {
+                if (a.length() < MIN_BARCODE_LEN) {
                     logger.debug("Skipping string:" + a);
                     continue;
 
                 }
                 toFind.add(a);
             }
-        }
-
-        finally
-        {
-            if (is != null)
-            {
-                try
-                {
+        } finally {
+            if (is != null) {
+                try {
                     is.close();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
-            if (count > BasicShelfScanEngine.MAX_QUERY_COUNT)
-            {
+            if (count > BasicShelfScanEngine.MAX_QUERY_COUNT) {
                 return null; // throw exception
             }
         }
@@ -421,70 +315,9 @@ public class LogicHelper
     }
 
     /**
-     * For reading application property
-     * 
-     * @param property
-     * @return
-     */
-    public static String getApplicationProperty(String property)
-    {
-        try
-        {
-            MessagesDAO dao = new MessagesHibernateDAO();
-            List<Messages> messageList = dao.findAll(Messages.class);
-            for (Messages m : messageList)
-            {
-                if (m.getNAME().equals(property))
-                {
-                    return m.getVALUE();
-                }
-            }
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * For reading application property as boolean (true, false)
-     * 
-     * @param property
-     * @return
-     */
-    public static boolean isApplicationPropertyChecked(String property)
-    {
-        try
-        {
-            MessagesDAO dao = new MessagesHibernateDAO();
-            List<Messages> messageList = dao.findAll(Messages.class);
-            for (Messages m : messageList)
-            {
-                if (m.getNAME().equals(property))
-                {
-                    if (m.getVALUE() != null)
-                    {
-                        if (m.getVALUE().equalsIgnoreCase("true"))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /**
      * Log message to tdatabase
      */
-    public static void logMessage(String operation, String inputFileName, String message)
-    {
+    public static void logMessage(String operation, String inputFileName, String message) {
         GenericDAO genericDAO = new GenericHibernateDAO();
         Log log = new Log();
         // log.setNet_id(user);
@@ -492,137 +325,81 @@ public class LogicHelper
         log.setTimestamp(new Date());
         log.setInput_file(inputFileName);
         log.setStacktrace(message);
-        try
-        {
+        try {
             genericDAO.save(log);
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }
 
-    public static void printBarcodes(final List<Report> report)
-    {
+    public static void printBarcodes(final List<Report> report) {
         logger.debug("--------------------------------------------");
-        for (Report item : report)
-        {
+        for (Report item : report) {
             logger.debug("Element:" + item.getITEM_BARCODE());
         }
         logger.debug("---------------------------------------------");
         logger.debug("Report list size:" + report.size());
-
     }
 
     /**
-     * Helper method
+     * Prints error messages
+     * TODO remove
      */
-    public static void printErrors(String msg, Throwable e)
-    {
+    public static void printErrors(String msg, Throwable e) {
         logger.debug(msg);
-        if (e.getCause() != null)
-        {
+        if (e.getCause() != null) {
             logger.error(e.getCause().toString());
-
         }
-        if (e.getMessage() != null)
-        {
+        if (e.getMessage() != null) {
             logger.error(e.getMessage());
-
         }
         e.printStackTrace();
-    }
-
-    @Deprecated
-    public static boolean getCheckLatestPreference(final String preference)
-    {
-        if (preference != null
-                && (preference.equalsIgnoreCase("yes") || preference.equalsIgnoreCase("true")))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    @Deprecated
-    public static boolean getRetainPreference(final String preference_RetainInvalidStatusItems)
-    {
-        if (preference_RetainInvalidStatusItems != null
-                && (preference_RetainInvalidStatusItems.equalsIgnoreCase("yes") || preference_RetainInvalidStatusItems
-                .equalsIgnoreCase("true")))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
     }
 
     /**
      * Finds prior physical
      */
-    
-    public static OrbisRecord priorPhysical (List<OrbisRecord> orbisList, String barcode)
-    {
-           for (int i = 1 ; i < orbisList.size(); i++)
-           {
-               if (orbisList.get(i).getITEM_BARCODE().equals(barcode))
-               {
-                   return orbisList.get(i-1);
-               }
-           }
+
+    public static OrbisRecord priorPhysical(List<OrbisRecord> orbisList, String barcode) {
+        for (int i = 1; i < orbisList.size(); i++) {
+            if (orbisList.get(i).getITEM_BARCODE().equals(barcode)) {
+                return orbisList.get(i - 1);
+            }
+        }
         return null;  //will also return for 2nd item in list      
     }
+
     /**
      * Compare Orbis item and Report item
+     *
      * @param item
      * @param orbisItem
      * @return
      */
 
-    public static boolean evaluateFullMatch(final Report item, final OrbisRecord orbisItem)
-    {
-        if (item.getITEM_BARCODE().trim().equals(orbisItem.getITEM_BARCODE().trim()))
-        {
-            if (item.getITEM_ENUM() != null && orbisItem.getITEM_ENUM() != null)
-            {
-                if (item.getITEM_ENUM().equals(orbisItem.getITEM_ENUM()))
-                {
-                }
-                else
-                {
+    public static boolean evaluateFullMatch(final Report item, final OrbisRecord orbisItem) {
+        if (item.getITEM_BARCODE().trim().equals(orbisItem.getITEM_BARCODE().trim())) {
+            if (item.getITEM_ENUM() != null && orbisItem.getITEM_ENUM() != null) {
+                if (item.getITEM_ENUM().equals(orbisItem.getITEM_ENUM())) {
+                } else {
                     return false;
                 }
-            }
-            else
-            {
+            } else {
                 if ((item.getITEM_ENUM() == null && orbisItem.getITEM_ENUM() != null)
-                        || item.getITEM_ENUM() != null && orbisItem.getITEM_ENUM() == null)
-                {
+                        || item.getITEM_ENUM() != null && orbisItem.getITEM_ENUM() == null) {
                     return false;
                 }
             }
 
             // 2nd match item status desc
-            if (item.getITEM_STATUS_DESC() != null && orbisItem.getITEM_STATUS_DESC() != null)
-            {
-                if (item.getITEM_STATUS_DESC().equals(orbisItem.getITEM_STATUS_DESC()))
-                {
-                }
-                else
-                {
+            if (item.getITEM_STATUS_DESC() != null && orbisItem.getITEM_STATUS_DESC() != null) {
+                if (item.getITEM_STATUS_DESC().equals(orbisItem.getITEM_STATUS_DESC())) {
+                } else {
                     return false;
                 }
-            }
-            else
-            {
+            } else {
                 if ((item.getITEM_STATUS_DESC() == null && orbisItem.getITEM_STATUS_DESC() != null)
-                        || item.getITEM_STATUS_DESC() != null && orbisItem.getITEM_STATUS_DESC() == null)
-                {
+                        || item.getITEM_STATUS_DESC() != null && orbisItem.getITEM_STATUS_DESC() == null) {
                     return false;
                 }
             }
@@ -633,23 +410,18 @@ public class LogicHelper
 
     /**
      * Find first item in a List<Report> that matches
-     * TODO Used by ShelfscanEngine only?
+     *
      * @param reportItems
      * @param orbisItem
      * @return
      */
-    public static Report findFirstItemIndex(final List<Report> reportItems, final OrbisRecord orbisItem)
-    {
-        for (int i = 0; i < reportItems.size(); i++)
-        {
+    public static Report findFirstItemIndex(final List<Report> reportItems, final OrbisRecord orbisItem) {
+        for (int i = 0; i < reportItems.size(); i++) {
             // logicHelper method to compre orbis item to report item is used here
-            if (LogicHelper.evaluateFullMatch(reportItems.get(i), orbisItem))
-            {
+            if (LogicHelper.evaluateFullMatch(reportItems.get(i), orbisItem)) {
                 return reportItems.get(i);
             }
         }
         return null;
     }
-
-
 }
