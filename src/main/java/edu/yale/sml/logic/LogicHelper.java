@@ -341,20 +341,6 @@ public class LogicHelper {
         logger.debug("Report list size:" + report.size());
     }
 
-    /**
-     * Prints error messages
-     * TODO remove
-     */
-    public static void printErrors(String msg, Throwable e) {
-        logger.debug(msg);
-        if (e.getCause() != null) {
-            logger.error(e.getCause().toString());
-        }
-        if (e.getMessage() != null) {
-            logger.error(e.getMessage());
-        }
-        e.printStackTrace();
-    }
 
     /**
      * Finds prior physical
