@@ -1,4 +1,4 @@
-package edu.yale.sml.util;
+package edu.yale.sml.view;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
