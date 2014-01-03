@@ -5,7 +5,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
 
-import edu.yale.sml.logic.BasicShelfScanEngine;
+import edu.yale.sml.logic.Rules;
 
 @FacesConverter("edu.yale.sml.jsf.ItemStatusDescConverter")
 public class ItemStatusDescConverter implements Converter
@@ -20,6 +20,6 @@ public class ItemStatusDescConverter implements Converter
 	public String getAsString(FacesContext context, UIComponent component,
 			Object value)
 	{
-		return ((String) value).equals(BasicShelfScanEngine.NOT_CHARGED_STRING) ? "1" : "";
+		return ((String) value).equals(Rules.NOT_CHARGED_STRING) ? "1" : "";
 	}
 }

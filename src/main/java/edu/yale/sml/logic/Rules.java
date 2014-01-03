@@ -23,7 +23,11 @@ public class Rules {
 
     final static Logger logger = LoggerFactory.getLogger(Rules.class);
 
-    private static final String NULL_BARCODE_STRING = "00000000";
+    public static final String ITEM_FLAG_STRING = "*";
+    public static final String LC_STRING_1 = "( LC )";
+    public static final String LC_STRING_2 = "(LC)";
+    public static final String NOT_CHARGED_STRING = "Not Charged";
+    public static final String NULL_BARCODE_STRING = "00000000";
 
     /**
      * @param desc item status

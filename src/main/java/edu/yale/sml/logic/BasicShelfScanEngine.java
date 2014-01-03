@@ -38,12 +38,6 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     final static Logger logger = LoggerFactory
             .getLogger(BasicShelfScanEngine.class);
-    public static final String ITEM_FLAG_STRING = "*";
-    public static final String LC_STRING_1 = "( LC )";
-    public static final String LC_STRING_2 = "(LC)";
-    public static final int MAX_QUERY_COUNT = 1500;
-    public static final String NOT_CHARGED_STRING = "Not Charged";
-    public static final String NULL_BARCODE_STRING = "00000000";
 
     private DataLists reportLists; // main data structure
 
@@ -155,7 +149,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             reportLists.setCulpritList(culpritList); // ?
 
             //null barcodes in list supplied:
-            int nullBarcodesCount = Collections.frequency(barcodes, NULL_BARCODE_STRING);
+            int nullBarcodesCount = Collections.frequency(barcodes, Rules.NULL_BARCODE_STRING);
 
             // Calculate shelving error count
             shelvingError = new ShelvingErrorPopulator().populateShelvingError(
@@ -176,7 +170,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     }
 
     /**
-     * Initialize datastructure that's used for all subsequent processing
+     * Initialize data structure that's used for all subsequent processing
      *
      * @param list
      * @throws InvocationTargetException
@@ -188,12 +182,12 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         //nullBarcodes = computeNullBarcodes(Collections.unmodifiableList(list));
         if (reportLists.getCatalogAsList() != null) {
             logger.debug("Pre-CatalogInit processing, list size: " +
-                    reportLists.getCatalogAsList().size());
+                    getOrbisList(reportLists).size());
         }
         reportLists = CatalogInit.processCatalogList(Collections
                 .unmodifiableList(list));
         logger.debug("Post-CatalogInit processing, list size : "
-                + reportLists.getCatalogAsList().size());
+                + getOrbisList(reportLists).size());
         return reportLists;
     }
 
@@ -264,7 +258,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         logger.debug("Cleaning up list. Removing null barcodes");
         for (OrbisRecord o : reportLists.getCatalogAsList()) {
             if (o.getITEM_BARCODE() == null
-                    || o.getITEM_BARCODE().equals(NULL_BARCODE_STRING)) {
+                    || o.getITEM_BARCODE().equals(Rules.NULL_BARCODE_STRING)) {
                 reportLists.getCatalogSortedRaw().remove(o);
             }
         }
@@ -279,7 +273,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         Collections.copy(refList, markedList);
         for (OrbisRecord o : refList) {
             if (o.getITEM_BARCODE() == null
-                    || o.getITEM_BARCODE().equals(NULL_BARCODE_STRING)) {
+                    || o.getITEM_BARCODE().equals(Rules.NULL_BARCODE_STRING)) {
                 markedList.remove(o);
             }
         }
@@ -294,7 +288,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
      */
 
     private void markOutOfPlaceItems(List<OrbisRecord> list) {
-        logger.debug("Decorating list with " + ITEM_FLAG_STRING);
+        logger.debug("Decorating list with " + Rules.ITEM_FLAG_STRING);
         for (int i = 1; i < list.size(); i++) {
             if (list.get(i).getNORMALIZED_CALL_NO() == null
                     || list.get(i - 1).getNORMALIZED_CALL_NO() == null
@@ -306,7 +300,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             String item2 = replaceLCString(list.get(i - 1).getNORMALIZED_CALL_NO());
             if (item1.trim().compareTo(item2.trim()) < 0) {
                 list.get(i).setDISPLAY_CALL_NO(
-                        ITEM_FLAG_STRING
+                        Rules.ITEM_FLAG_STRING
                                 + list.get(i).getDISPLAY_CALL_NO());
             }
         }
@@ -437,8 +431,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
      * @return
      */
     public String replaceLCString(String str) {
-        str =  str.replace(LC_STRING_1, " ");
-        str = str.replace(LC_STRING_2, " ");
+        str =  str.replace(Rules.LC_STRING_1, " ");
+        str = str.replace(Rules.LC_STRING_2, " ");
         return str;
     }
 
@@ -538,8 +532,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         return Collections.unmodifiableList(list);
     }
 
-    public static boolean anyNull(String str, String str2) {
-        return (str == null || str2 == null) ? true : false;
+    public static boolean anyNull(String s, String t) {
+        return (s == null || t == null) ? true : false;
     }
 
     public BasicShelfScanEngine() {
