@@ -44,12 +44,12 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     public static final String NOT_CHARGED_STRING = "Not Charged";
     public static final String NULL_BARCODE_STRING = "00000000";
 
-    private List<OrbisRecord> badBarcodes = new ArrayList<OrbisRecord>();
-    private List<Report> culpritList = new ArrayList<Report>();
-    private List<Report> enumWarnings = new ArrayList<Report>();
-    private List<Report> reportListCopy = new ArrayList<Report>();
-    private DataLists reportLists = new DataLists(); // main data structure
-    private ShelvingError shelvingError = new ShelvingError();
+    private DataLists reportLists; // main data structure
+
+    private List<Report> culpritList;      // list of errors
+    private List<Report> enumWarnings;     // list of warnings
+    private List<Report> reportListCopy;   // for ui
+    private ShelvingError shelvingError;   // represents error count breakdown
 
     /**
      * Main Function
@@ -479,9 +479,9 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     }
     */
 
-    public List<OrbisRecord> getBadBarcodes() {
+    /*public List<OrbisRecord> getBadBarcodes() {
         return badBarcodes;
-    }
+    }*/
 
     public List<Report> getCulpritList() {
         return culpritList;
@@ -499,9 +499,10 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         return shelvingError;
     }
 
+    /*
     public void setBadBarcodes(List<OrbisRecord> badBarcodes) {
         this.badBarcodes = badBarcodes;
-    }
+    } */
 
     public void setCulpritList(List<Report> culpritList) {
         this.culpritList = culpritList;
@@ -542,5 +543,11 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     public BasicShelfScanEngine() {
         super();
+        //badBarcodes = new ArrayList<OrbisRecord>();
+        culpritList = new ArrayList<Report>();
+        enumWarnings = new ArrayList<Report>();
+        reportListCopy = new ArrayList<Report>();
+        reportLists = new DataLists();
+        shelvingError = new ShelvingError();
     }
 }
