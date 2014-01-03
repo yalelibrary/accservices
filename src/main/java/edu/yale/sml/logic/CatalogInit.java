@@ -62,7 +62,7 @@ public class CatalogInit {
                 OrbisRecord catalogObj = new OrbisRecord();
                 java.sql.Date date = null;
                 Converter dc = new DateConverter(date);
-                ConvertUtils.register(dc, java.sql.Date.class); // sql bug?
+                ConvertUtils.register(dc, java.sql.Date.class);
                 BeanUtils.populate(catalogObj, m);
 
                 // logger.debug("Added:" + catalogObj.getITEM_BARCODE());

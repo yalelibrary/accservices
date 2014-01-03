@@ -207,7 +207,7 @@ public class MisshelfErrorsProcessor {
                     .get(i - 1).getNORMALIZED_CALL_NO())) {
                 logger.debug("Null norm. call num. case for barcode : "
                         + sortedList.get(i).getITEM_BARCODE());
-                continue; // bug
+                continue;
             }
 
 	    /*

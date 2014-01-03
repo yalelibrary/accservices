@@ -606,7 +606,6 @@ public class SearchView implements Serializable
 
     public List<Location> getLocationAsList()
     {
-        // TODO: BUG (bug because it's hit many a times)
         return new LocationView().findAll();
     }
 

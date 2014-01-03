@@ -21,7 +21,6 @@ public class FileView
     public FileView()
     {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     @PostConstruct
@@ -42,7 +41,7 @@ public class FileView
            }
         catch (Exception e)
         {
-            e.printStackTrace(); // todo: bug
+            e.printStackTrace();
         }
     }
 
@@ -58,7 +57,7 @@ public class FileView
         }
         catch (Exception e)
         {
-            e.printStackTrace(); // todo: bug
+            e.printStackTrace();
         }
         
         return fileNames;
@@ -95,7 +94,6 @@ public class FileView
         }
         catch (Throwable e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
