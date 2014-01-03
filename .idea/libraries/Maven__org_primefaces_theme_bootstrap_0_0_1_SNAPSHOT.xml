@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.primefaces.theme:bootstrap:0.0.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/primefaces/theme/bootstrap/0.0.1-SNAPSHOT/bootstrap-0.0.1-20130213.181025-1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/primefaces/theme/bootstrap/0.0.1-SNAPSHOT/bootstrap-0.0.1-20130213.181025-1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/primefaces/theme/bootstrap/0.0.1-SNAPSHOT/bootstrap-0.0.1-20130213.181025-1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

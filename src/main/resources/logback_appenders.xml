@@ -1,0 +1,72 @@
+<!-- Logback appenders -->
+
+
+<included>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%-5date %logger{35} - %msg %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<File>shelfscan.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%-4relative  %-5level %logger{35} - %msg %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="ENGINE_FILE" class="ch.qos.logback.core.FileAppender">
+		<File>powershelf_engine.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%-4relative  %-5level %logger{35} - %msg %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="EXCEPTIONSFILE" class="ch.qos.logback.core.FileAppender">
+		<File>powershelf_errorbean_2.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%-4relative  %-5level %logger{35} - %msg %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="HIBERNATEFILE" class="ch.qos.logback.core.FileAppender">
+		<File>shelfscan_hibernate.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%-4relative  %-5level %logger{35} - %msg %n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="LOGICHELPERFILE" class="ch.qos.logback.core.FileAppender">
+		<File>powershelf_logichelper.log</File>
+		<Append>true</Append>
+		<encoder>
+			<pattern>%-4relative %-5level %logger{35} - %msg %n</pattern>
+		</encoder>
+	</appender>
+	
+	
+	<!-- JSF Appender -->
+	<appender name="TransactionAppender" class="edu.yale.sml.util.logging.JSFAppender">
+		<layout class="edu.yale.sml.util.logging.HTMLayout">
+			<pattern>%date %-5level %logger - %msg%n"></pattern>
+		</layout>
+		<evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
+			<expression>
+				marker.contains("JSF_TRIGGER")
+			</expression>
+		</evaluator>
+		<discriminator class="ch.qos.logback.classic.sift.MDCBasedDiscriminator">
+			<key>txId</key>
+			<defaultValue>default</defaultValue>
+		</discriminator>
+	</appender>
+	
+</included>
+	
+
