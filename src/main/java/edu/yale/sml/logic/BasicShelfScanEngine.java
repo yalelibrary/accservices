@@ -90,7 +90,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
             // set priors, and mis-shelf -- another method also runs for this
             logger.debug("Calculating misshelf, step 1");
-            List<Report> legacyMisshelfs = legacyCalculateMisshelf(validBarcodesList,
+            List<Report> legacyMisshelfs = AccuracyErrorsProcessor.legacyCalculateMisshelf(validBarcodesList,
                     validBarcodesSorted);
 
             reportLists.setReportCatalogAsList(legacyMisshelfs);
@@ -294,82 +294,6 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         return markedList;
     }
 
-    /**
-     * Adds all catalogSorted objects. Items with accuracy, location errors are
-     * filtered out later by ShelfScanEngine.
-     *
-     * @param catalogList
-     * @param sortedList
-     * @param reportCatalogAsList
-     * @return
-     */
-    public List<Report> legacyCalculateMisshelf(List<OrbisRecord> catalogList,
-                                                List<OrbisRecord> sortedList) {
-        logger.debug("(Legacy) Process by sort order");
-
-        List<Report> reportCatalogAsList = new ArrayList<Report>();
-
-        int diff = 0;
-        for (int i = 0; i < sortedList.size(); i++) {
-            diff = 0;
-            if (i == 0) {
-                logger.debug("(Legacy) Skipping 1st in sorted list");
-                continue; // skip 1st
-            }
-
-            if (anyNull(sortedList.get(i).getNORMALIZED_CALL_NO(), sortedList
-                    .get(i - 1).getNORMALIZED_CALL_NO())) {
-                logger.debug("Null norm. call num. case for barcode : "
-                        + sortedList.get(i).getITEM_BARCODE());
-                continue; // bug
-            }
-
-	    /*
-	     * String sortItem1 = catalogSorted.get(i).getNORMALIZED_CALL_NO();
-	     * String sortItem2 = catalogSorted.get(i -
-	     * 1).getNORMALIZED_CALL_NO(); sortItem1 =
-	     * sortItem1.replace("( LC )", " "); // TODO replace w/ sortItem2 =
-	     * sortItem2.replace("( LC )", " ");
-	     */
-
-            if (catalogList.indexOf(sortedList.get(i - 1)) < catalogList
-                    .indexOf(sortedList.get(i))) {
-                Report item = Report.populateReport(
-                        sortedList.get(i),
-                        0,
-                        "N/A",
-                        catalogList.get(
-                                catalogList.indexOf(sortedList.get(i - 1)))
-                                .getDISPLAY_CALL_NO(),
-                        catalogList.get(catalogList.indexOf(sortedList
-                                .get(i - 1))), sortedList.get(i - 1)); // hold
-
-
-                reportCatalogAsList.add(item);
-                // logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE()
-                // + " with diff: " + diff);
-
-            } else {
-                diff = Math.abs(catalogList.indexOf(sortedList.get(i - 1))
-                        - catalogList.indexOf(sortedList.get(i)));
-                Report item = Report.populateReport(
-                        sortedList.get(i),
-                        diff,
-                        "N/A",
-                        catalogList.get(
-                                catalogList.indexOf(sortedList.get(i - 1)))
-                                .getDISPLAY_CALL_NO(),
-                        catalogList.get(catalogList.indexOf(sortedList
-                                .get(i - 1))), sortedList.get(i - 1)); // hold
-
-
-                reportCatalogAsList.add(item);
-                logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE()
-                        + " with diff: " + diff);
-            }
-        }
-        return reportCatalogAsList;
-    }
 
     /*
      * Adds * Mark list is used in the main results page tab as well. It
