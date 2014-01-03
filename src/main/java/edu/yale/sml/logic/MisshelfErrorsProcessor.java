@@ -11,14 +11,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AccuracyErrorsProcessor {
+/**
+ * Calculates misshelf. Currently, there are 2 static methods representing 2 passes.
+ *
+ * TODO description
+ * In first pass . . . Other items are then added. 2nd pass . . .
+ */
+
+public class MisshelfErrorsProcessor {
     final private static Logger logger = LoggerFactory
-            .getLogger(BasicShelfScanEngine.class);
-    final private static String op = "Shelfscan";
+            .getLogger(MisshelfErrorsProcessor.class);
+    final private static String APP_NAME = "Shelfscan";
     final private static String ITEM_FLAG_STRING = "*";
 
     /**
-     * works of plain list, populates a List<Report>
+     * Calculates misshelfs. Pass 2.
      *
      * @param dataLists
      * @return
@@ -26,9 +33,8 @@ public class AccuracyErrorsProcessor {
     public static List<Report> processMisshelfs(final DataLists dataLists)
 
     {
-        logger.debug("(New) Processing acc. errors");
+        logger.debug("(Pass/Step 2) Calculate Misshelf");
 
-        //TODO check double step
         //uses markedCatalogAsList and catalogSortedRaw
         List<OrbisRecord> itemList = new ArrayList<OrbisRecord>(
                 dataLists.getMarkedCatalogAsList());
@@ -43,7 +49,7 @@ public class AccuracyErrorsProcessor {
                 if (o.getDISPLAY_CALL_NO() == null) {
                     logger.debug("Disp. Call. Null :" + BARCODE
                             + "cant calc. misshelf");
-                    LogicHelper.logMessage(op, "", "Disp. Call. Null :"
+                    LogicHelper.logMessage(APP_NAME, "", "Disp. Call. Null :"
                             + BARCODE + "cannot calc. misshelf");
                     continue;
                 }
@@ -87,7 +93,7 @@ public class AccuracyErrorsProcessor {
                                             .get(pos - 2); // TODO
                                 } else {
                                     LogicHelper.logMessage(
-                                            op,
+                                            APP_NAME,
                                             "",
                                             "can't prior for:"
                                                     + o.getITEM_BARCODE());
@@ -173,7 +179,9 @@ public class AccuracyErrorsProcessor {
 
 
     /**
-     * Adds all catalogSorted objects. Items with accuracy, location errors are
+     * Calculate misshelfs. Pass 1.
+     *
+     * Items with accuracy, location errors are
      * filtered out later by ShelfScanEngine.
      *
      * @param catalogList
@@ -183,7 +191,7 @@ public class AccuracyErrorsProcessor {
      */
     public static List<Report> legacyCalculateMisshelf(List<OrbisRecord> catalogList,
                                                 List<OrbisRecord> sortedList) {
-        logger.debug("(Legacy) Process by sort order");
+        logger.debug("(Pass/Step 1) Calculate Misshelf");
 
         List<Report> reportCatalogAsList = new ArrayList<Report>();
 
@@ -191,7 +199,7 @@ public class AccuracyErrorsProcessor {
         for (int i = 0; i < sortedList.size(); i++) {
             diff = 0;
             if (i == 0) {
-                logger.debug("(Legacy) Skipping 1st in sorted list");
+                logger.debug("Skipping 1st item in sorted list.");
                 continue; // skip 1st
             }
 
@@ -242,7 +250,7 @@ public class AccuracyErrorsProcessor {
 
 
                 reportCatalogAsList.add(item);
-                logger.debug("(1st-pass misshelf) Added:" + item.getITEM_BARCODE()
+                logger.debug("Added:" + item.getITEM_BARCODE()
                         + " with diff: " + diff);
             }
         }
@@ -252,6 +260,4 @@ public class AccuracyErrorsProcessor {
     public static boolean anyNull(String str, String str2) {
         return (str == null || str2 == null) ? true : false;
     }
-
-
 }
