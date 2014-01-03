@@ -39,7 +39,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     final static Logger logger = LoggerFactory
             .getLogger(BasicShelfScanEngine.class);
     public static final String ITEM_FLAG_STRING = "*";
-    public static final String LC_STRING = "( LC )";
+    public static final String LC_STRING_1 = "( LC )";
+    public static final String LC_STRING_2 = "(LC)";
     public static final int MAX_QUERY_COUNT = 1500;
     public static final String NOT_CHARGED_STRING = "Not Charged";
     public static final String NULL_BARCODE_STRING = "00000000";
@@ -436,8 +437,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
      * @return
      */
     public String replaceLCString(String str) {
-        str =  str.replace("( LC )", " ");
-        str = str.replace("(LC)", " ");
+        str =  str.replace(LC_STRING_1, " ");
+        str = str.replace(LC_STRING_2, " ");
         return str;
     }
 
