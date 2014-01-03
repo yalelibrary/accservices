@@ -290,18 +290,19 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     private void markOutOfPlaceItems(List<OrbisRecord> list) {
         logger.debug("Decorating list with " + Rules.ITEM_FLAG_STRING);
         for (int i = 1; i < list.size(); i++) {
-            if (list.get(i).getNORMALIZED_CALL_NO() == null
-                    || list.get(i - 1).getNORMALIZED_CALL_NO() == null
-                    || list.get(i).getDISPLAY_CALL_NO() == null
-                    || list.get(i - 1).getDISPLAY_CALL_NO() == null) {
+            OrbisRecord item = list.get(i);
+            OrbisRecord prevItem = list.get(i-1);
+            if (item.getNORMALIZED_CALL_NO() == null
+                    || prevItem.getNORMALIZED_CALL_NO() == null
+                    || item.getDISPLAY_CALL_NO() == null
+                    || prevItem.getDISPLAY_CALL_NO() == null) {
                 continue;
             }
-            String item1 = replaceLCString(list.get(i).getNORMALIZED_CALL_NO());
-            String item2 = replaceLCString(list.get(i - 1).getNORMALIZED_CALL_NO());
-            if (item1.trim().compareTo(item2.trim()) < 0) {
-                list.get(i).setDISPLAY_CALL_NO(
-                        Rules.ITEM_FLAG_STRING
-                                + list.get(i).getDISPLAY_CALL_NO());
+            String currentNormalized = replaceLCString(item.getNORMALIZED_CALL_NO()).trim();
+            String prevNormalized = replaceLCString(prevItem.getNORMALIZED_CALL_NO()).trim();
+            if (currentNormalized.compareTo(prevNormalized) < 0) {
+                item.setDISPLAY_CALL_NO(Rules.ITEM_FLAG_STRING
+                                + item.getDISPLAY_CALL_NO());
             }
         }
         logger.debug("Done.");
