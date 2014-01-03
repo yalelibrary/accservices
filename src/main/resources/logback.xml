@@ -1,87 +1,20 @@
 <configuration>
 
-
 	<!-- Appenders -->
 
 	<include resource="logback_appenders.xml" />
-
-
-	<!-- Application loggers -->
-
-
-
-	<!-- App Context Listener -->
-	<logger name="edu.yale.sml.servlet.AppContextListener" level="INFO"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-
-
-
-
-	<!-- CAS Filter -->
-	<logger name="edu.yale.sml.servlet.CasNetIdFilter" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="LOGICHELPERFILE" />
-	</logger>
-
-	<!-- Logic Helper -->
-	<logger name="edu.yale.sml.logic.LogicHelper" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-
-	<!-- ShelfScan engine -->
-
-	<logger name="edu.yale.sml.logic.DefaultShelfScanEngine" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-
-	<!-- Stack Trace Bean -->
-
-	<logger name="edu.yale.sml.view.ErrorBean" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="EXCEPTIONSFILE" />
-	</logger>
-
-	<!-- History Page View -->
-
-	<logger name="edu.yale.sml.view.HistorySearchView" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-
-	<!-- Persistence -->
-
-	<logger name="edu.yale.sml.persistence.config.HibernateMySqlUtil"
-		level="DEBUG" additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-	
-	<logger name="edu.yale.sml.view.SearchView" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-	
-	
-	<logger name="edu.yale.sml.view" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-	
-	
-	<logger name="edu.yale.sml.logic" level="DEBUG"
-		additivity="false">
-		<appender-ref ref="STDOUT" />
-	</logger>
-
-	<!-- Logback root appender -->
+    <!-- Hibernate -->
+     <logger name="org.hibernate" level="INFO" additivity="false">
+       <appender-ref ref="HIBERNATEFILE" />
+     </logger>
+     <logger name="org.hibernate" level="DEBUG" additivity="false">
+       <appender-ref ref="HIBERNATEFILE" />
+    </logger>
 
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE" />
-	</root>
+        <appender-ref ref="HIBERNATEFILE" />
+    </root>
 
 
 </configuration>
