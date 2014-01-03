@@ -10,19 +10,14 @@
 			</pattern>
 		</encoder>
 	</appender>
-	<appender name="HIBERNATEFILE" class="ch.qos.logback.core.FileAppender">
-		<File>shelfscan_hibernate_only.log</File>
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+		<File>shelfscan.log</File>
 		<Append>true</Append>
 		<encoder>
 			<pattern>%-4relative  %-5level %logger{35} - %msg %n
 			</pattern>
 		</encoder>
 	</appender>
-
-	
-	
-
-	
 </included>
 	
 

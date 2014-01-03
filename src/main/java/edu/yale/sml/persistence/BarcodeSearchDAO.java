@@ -32,7 +32,6 @@ public final class BarcodeSearchDAO implements java.io.Serializable
 
     public List<SearchResult> findAllById(List<String> id)
     {
-        System.out.println("Finding all by id");
         List<SearchResult> aggregateList = new ArrayList<SearchResult>();
         Session session = null;
         try

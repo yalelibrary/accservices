@@ -1,28 +1,23 @@
 package edu.yale.sml.logic;
 
-public class InvalidFormatException extends Exception
-{
+public class InvalidFormatException extends Exception {
 
-    public InvalidFormatException()
-    {
+    public InvalidFormatException() {
         super();
         // TODO Auto-generated constructor stub
     }
 
-    public InvalidFormatException(String arg0, Throwable arg1)
-    {
+    public InvalidFormatException(String arg0, Throwable arg1) {
         super(arg0, arg1);
         // TODO Auto-generated constructor stub
     }
 
-    public InvalidFormatException(String arg0)
-    {
+    public InvalidFormatException(String arg0) {
         super(arg0);
         // TODO Auto-generated constructor stub
     }
 
-    public InvalidFormatException(Throwable arg0)
-    {
+    public InvalidFormatException(Throwable arg0) {
         super(arg0);
         // TODO Auto-generated constructor stub
     }

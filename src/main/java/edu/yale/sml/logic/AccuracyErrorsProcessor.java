@@ -166,7 +166,7 @@ public class AccuracyErrorsProcessor {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        LogicHelper.printBarcodes(errorItems);
+        //LogicHelper.printBarcodes(errorItems);
         logger.debug("Done.");
         return errorItems;
     }

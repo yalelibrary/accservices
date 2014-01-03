@@ -11,11 +11,6 @@ import java.util.List;
 /**
  * HOLD
  *
- * Created with IntelliJ IDEA.
- * User: odin
- * Date: 11/10/13
- * Time: 5:45 PM
- * To change this template use File | Settings | File Templates.
  */
 public class ListDecorator {
 
@@ -31,51 +26,47 @@ public class ListDecorator {
 
     /**
      * Adds * if sort order is messed up
+     *
      * @param catalogList
      * @return
      */
 
     // TODO replace LC logic w/ filter
-    public static List<OrbisRecord> decorateList(final List<OrbisRecord> catalogList)
-    {
+    public static List<OrbisRecord> decorateList(final List<OrbisRecord> catalogList) {
         logger.debug("Decorating list");
         List<OrbisRecord> itemList = new ArrayList<OrbisRecord>();
         Collections.copy(itemList, catalogList);
 
         //note loop starts with 1 (no prior for item 0)
-        for (int i = 1; i < itemList.size(); i++)
-        {
+        for (int i = 1; i < itemList.size(); i++) {
             OrbisRecord item = itemList.get(i);
-            OrbisRecord previousItem = itemList.get(i-1);
+            OrbisRecord previousItem = itemList.get(i - 1);
             // add to itemList
             if (anyNull(item.getNORMALIZED_CALL_NO(), item.getDISPLAY_CALL_NO(),
-                    previousItem.getNORMALIZED_CALL_NO(), previousItem.getDISPLAY_CALL_NO()))
-            {
+                    previousItem.getNORMALIZED_CALL_NO(), previousItem.getDISPLAY_CALL_NO())) {
                 logger.debug("Skipping decorating item (" + item.getITEM_BARCODE() + "). Normalized or " +
                         "display call num of this or previous item null");
                 continue;
             }
 
             String itemCallNum = itemList.get(i).getNORMALIZED_CALL_NO();
-            String previousItemCallNum = itemList.get(i-1).getNORMALIZED_CALL_NO();
+            String previousItemCallNum = itemList.get(i - 1).getNORMALIZED_CALL_NO();
             itemCallNum = itemCallNum.replace(LC_STRING, " ");
             itemCallNum = itemCallNum.replace(LC_2_STRING, " ");
             previousItemCallNum = previousItemCallNum.replace(LC_STRING, " ");
             previousItemCallNum = previousItemCallNum.replace(LC_2_STRING, " ");
 
-            if (itemCallNum.trim().compareTo(previousItemCallNum.trim()) < 0)
-            {
+            if (itemCallNum.trim().compareTo(previousItemCallNum.trim()) < 0) {
                 //catalogList.get(i).setDISPLAY_CALL_NO(
                 //        BasicShelfScanEngine.ITEM_FLAG_STRING + catalogList.get(i).getDISPLAY_CALL_NO());
                 itemList.get(i).setDISPLAY_CALL_NO(
-                               BasicShelfScanEngine.ITEM_FLAG_STRING + itemList.get(i).getDISPLAY_CALL_NO());
+                        BasicShelfScanEngine.ITEM_FLAG_STRING + itemList.get(i).getDISPLAY_CALL_NO());
             }
         }
         return itemList;
     }
 
-    public static boolean anyNull(String str, String str2, String str3, String str4)
-    {
-        return (str == null || str2 == null || str3 == null || str4 == null)? true: false;
+    public static boolean anyNull(String str, String str2, String str3, String str4) {
+        return (str == null || str2 == null || str3 == null || str4 == null) ? true : false;
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * HOLD
- *
+ * <p/>
  * Created with IntelliJ IDEA.
  * User: odin
  * Date: 11/10/13
@@ -25,25 +25,20 @@ public class ReportListFilter {
     /**
      * Filter list -- if no errors are found, the item is not displayed in the
      * final report
-     *
+     * <p/>
      * TODO scan date?   TODO check/report nulls
-     *
+     * <p/>
      * TODO replace with general pattern matcher
      *
-     * @param itemList
-     *            ArrayList<Report> of report entries that are displayed on the
-     *            final report
-     * @param finalLocationName
-     *            location entered by end user when running the report
-     * @param scanDate
-     *            scan date entered by end user
-     * @param oversize
-     *            user specification of the material (options: y, intermixed, n)
+     * @param itemList          ArrayList<Report> of report entries that are displayed on the
+     *                          final report
+     * @param finalLocationName location entered by end user when running the report
+     * @param scanDate          scan date entered by end user
+     * @param oversize          user specification of the material (options: y, intermixed, n)
      * @return
      */
     public static List<Report> filterReportList(final List<Report> itemList, final String finalLocationName,
-                                          final Date scanDate, final String oversize)
-    {
+                                                final Date scanDate, final String oversize) {
         logger.debug("Filtering out barcodes that do not have any errors");
         List<Report> filteredList = new ArrayList<Report>(itemList);
 
@@ -52,82 +47,61 @@ public class ReportListFilter {
 
         boolean foundError = false;
 
-        for (Report item : itemList)
-        {
+        for (Report item : itemList) {
             foundError = false;
-            try
-            {
+            try {
                 //TODO anyNull()
                 if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
                         || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null
-                        || item.getSUPPRESS_IN_OPAC() == null)
-                {
+                        || item.getSUPPRESS_IN_OPAC() == null) {
                     logger.debug("at least one field null for: " + item.getITEM_BARCODE());
                 }
 
-                if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode"))
-                {
+                if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode")) {
                     continue;
                 }
 
                 boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+") || item
                         .getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
 
-                if (oversize.equalsIgnoreCase("N"))
-                {
-                    if (oversizeCallNumber)
-                    {
+                if (oversize.equalsIgnoreCase("N")) {
+                    if (oversizeCallNumber) {
                         foundError = true;
                     }
-                }
-                else if (oversize.equalsIgnoreCase("Y"))
-                {
-                    if (oversizeCallNumber)
-                    {
-                    }
-                    else
-                    {
+                } else if (oversize.equalsIgnoreCase("Y")) {
+                    if (oversizeCallNumber) {
+                    } else {
                         foundError = true;
                     }
                 }
 
-                if (item.getText() != 0)
-                {
+                if (item.getText() != 0) {
                     foundError = true;
                 }
 
-                if (!item.getLOCATION_NAME().equals(finalLocationName))
-                {
+                if (!item.getLOCATION_NAME().equals(finalLocationName)) {
                     foundError = true;
                 }
 
                 if (item.getITEM_STATUS_DESC().equals("Not Charged")
-                        || item.getITEM_STATUS_DESC().equals("Discharged"))
-                {
+                        || item.getITEM_STATUS_DESC().equals("Discharged")) {
                     if (item.getITEM_STATUS_DATE() != null
-                            && scanDate.before(item.getITEM_STATUS_DATE()))
-                    {
+                            && scanDate.before(item.getITEM_STATUS_DATE())) {
                         foundError = true;
                     }
-                }
-                else
-                {
+                } else {
                     // System.out.print("Suspicious:" + r.getITEM_BARCODE());
                     foundError = true;
                 }
 
-                if (item.getSUPPRESS_IN_OPAC().equalsIgnoreCase("Y"))
-                {
+                if (item.getSUPPRESS_IN_OPAC().equalsIgnoreCase("Y")) {
                     foundError = true;
                 }
 
-                if (foundError == false)
-                {
+                if (foundError == false) {
                     filteredList.remove(item); // remove if no error was found!
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 logger.debug("Exception filtering barcodes");
                 e.printStackTrace();
                 continue; // ?

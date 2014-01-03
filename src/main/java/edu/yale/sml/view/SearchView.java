@@ -28,7 +28,6 @@ import org.hibernate.exception.DataException;
 import edu.yale.sml.logic.BasicShelfScanEngine;
 import edu.yale.sml.logic.InvalidFormatException;
 import edu.yale.sml.logic.LogicHelper;
-import edu.yale.sml.logic.ShelfScanEngine;
 import edu.yale.sml.model.DataLists;
 import edu.yale.sml.model.InputFile;
 import edu.yale.sml.model.Log;
@@ -580,7 +579,7 @@ public class SearchView implements Serializable
         return badBarcodes;
     }
 
-    public ShelfScanEngine getEngine()
+    public BasicShelfScanEngine getEngine()
     {
         return engine;
     }

@@ -5,16 +5,15 @@
 	<include resource="logback_appenders.xml" />
     <!-- Hibernate -->
      <logger name="org.hibernate" level="INFO" additivity="false">
-       <appender-ref ref="HIBERNATEFILE" />
+       <appender-ref ref="FILE" />
      </logger>
      <logger name="org.hibernate" level="DEBUG" additivity="false">
-       <appender-ref ref="HIBERNATEFILE" />
+       <appender-ref ref="FILE" />
     </logger>
 
 	<root level="debug">
 		<appender-ref ref="STDOUT" />
-        <appender-ref ref="HIBERNATEFILE" />
+        <appender-ref ref="FILE" />
     </root>
-
 
 </configuration>
