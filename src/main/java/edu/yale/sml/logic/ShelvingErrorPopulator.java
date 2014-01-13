@@ -56,7 +56,7 @@ public class ShelvingErrorPopulator {
             }
 
             if (item.getText() != null && item.getText() != 0) {
-                if (item.getITEM_ENUM() == null) {
+                if (item.getITEM_ENUM() == null || item.getITEM_ENUM().isEmpty()) {
                     accuracy_errors++;
                     misshelf_errors++;
                     //for report misshelf > 2
@@ -83,7 +83,11 @@ public class ShelvingErrorPopulator {
                 if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
                     if (item.getITEM_STATUS_DATE() != null) {
                         if (scanDate.before(item.getITEM_STATUS_DATE())) {
-                            status_errors++;
+                            //TODO not sure if item.getITEM_STATUS_DATE gets time or just date.
+                            if (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime() > 86400000)  {
+                                status_errors++;
+                             logger.debug("Incremented count for: " + item.getITEM_BARCODE() + ":" +  item.getITEM_STATUS_DESC());
+                            }
                         }
                     } else {
                          logger.debug("Item Status Desc valid, but status date Null. Not sure what to do in this case: "
@@ -92,6 +96,7 @@ public class ShelvingErrorPopulator {
                     }
                 } else // invalid status
                 {
+                    logger.debug("Incremented count for: " + item.getITEM_BARCODE() + ":" +  item.getITEM_STATUS_DESC());
                     status_errors++;
                 }
             } else {
@@ -117,7 +122,6 @@ public class ShelvingErrorPopulator {
             }
         }
         shelvingError.setAccuracy_errors(accuracy_errors);
-        shelvingError.setStatus_errors(status_errors);
         shelvingError.setEnum_warnings(enum_warnings);
         shelvingError.setNull_barcodes(nullBarcodes);
         shelvingError.setNull_result_barcodes(null_result_barcodes);
@@ -130,6 +134,9 @@ public class ShelvingErrorPopulator {
         shelvingError.setSuppress_errors(suppressedErrors);
 
         logger.debug("Location error count:" + location_errors);
+        logger.debug("Accuracy error count:" + accuracy_errors);
+        logger.debug("Status error count:" + status_errors);
+
         return shelvingError;
     }
 

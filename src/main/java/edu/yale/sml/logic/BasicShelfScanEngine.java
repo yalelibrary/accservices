@@ -154,7 +154,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
             // Calculate shelving error count
             shelvingError = new ShelvingErrorPopulator().populateShelvingError(
-                    getReportList(reportLists), location,
+                    culpritList, location,
                     scanDate, oversize, nullBarcodesCount, suppressedErrors);
             reportLists.setShelvingError(shelvingError); // ?
 
