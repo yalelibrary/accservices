@@ -23,10 +23,10 @@ public class ShelvingErrorPopulator {
     public static final int MIN_ERROR_DISPLAY = 2;
 
     /*
-    * Get error count. Suppress errors still done elsewhere
+    * Get error count.
     */
     public ShelvingError populateShelvingError(List<Report> reportCatalogAsList, String finalLocationName,
-                                               Date scanDate, String oversize, int nullBarcodes) {
+                                               Date scanDate, String oversize, int nullBarcodes, int suppressedErrors) {
         ShelvingError shelvingError = new ShelvingError();
         int accuracy_errors = 0;
         int total_errors = 0;
@@ -126,6 +126,7 @@ public class ShelvingErrorPopulator {
         shelvingError.setStatus_errors(status_errors);
         shelvingError.setMisshelf_errors(misshelf_errors);
         shelvingError.setMisshelf_threshold_errors(misshelf_threshold_errors);
+        shelvingError.setSuppress_errors(suppressedErrors);
 
         return shelvingError;
     }

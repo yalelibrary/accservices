@@ -26,6 +26,9 @@
         <module name="shelfscan-main-dev" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="shelfscan-main-dev" target="1.6" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 

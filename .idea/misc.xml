@@ -3,6 +3,10 @@
   <component name="EntryPointsManager">
     <entry_points version="2.0" />
   </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/../accservices-web" />
+  </component>
+  <component name="IdProvider" IDEtalkID="7DA1AFE553B8E99CC87F106A0F51F6A1" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

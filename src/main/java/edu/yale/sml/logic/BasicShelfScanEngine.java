@@ -75,7 +75,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
             // remove null items & add to suppress errors
             removeZeroBarcodes(validBarcodesList);
-            addSuppressed(validBarcodesList);
+            int suppressedErrors =  addSuppressed(validBarcodesList);
+
             List<OrbisRecord> validBarcodesSorted = new ArrayList<OrbisRecord>(
                     validBarcodesList);
             Collections.copy(validBarcodesSorted, validBarcodesList);
@@ -154,7 +155,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             // Calculate shelving error count
             shelvingError = new ShelvingErrorPopulator().populateShelvingError(
                     getReportList(reportLists), location,
-                    scanDate, oversize, nullBarcodesCount);
+                    scanDate, oversize, nullBarcodesCount, suppressedErrors);
             reportLists.setShelvingError(shelvingError); // ?
 
             reportLists.setEnumWarnings(enumWarnings); // ?
@@ -225,19 +226,22 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     }
 
     /**
-     * add suppressed
+     * add suppressed and return count of suppressed
      * TODO clean up
      */
-    public void addSuppressed(List<OrbisRecord> purgedList) {
+    public int addSuppressed(List<OrbisRecord> purgedList) {
         logger.debug("Adding suppressed list");
+        int suppressed = 0;
         for (OrbisRecord o : reportLists.getCatalogAsList()) {
-            if (o.getSUPPRESS_IN_OPAC().trim().equals("Y")) {
-                shelvingError.setSuppress_errors(shelvingError
-                        .getSuppress_errors() + 1);
+            if (o.getSUPPRESS_IN_OPAC().trim().equals("Y") || o.getDISPLAY_CALL_NO().contains("Suppressed")) { //Suppressed
+                //shelvingError.setSuppress_errors(shelvingError
+                //        .getSuppress_errors() + 1);
+                suppressed++;
                 reportLists.getSuppressedList().add(o);
                 continue;
             }
         }
+        return suppressed;
     }
 
     /**
