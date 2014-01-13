@@ -27,6 +27,7 @@ public class ShelvingErrorPopulator {
     */
     public ShelvingError populateShelvingError(List<Report> reportCatalogAsList, String finalLocationName,
                                                Date scanDate, String oversize, int nullBarcodes, int suppressedErrors) {
+        logger.debug("Calculating or setting summary count.");
         ShelvingError shelvingError = new ShelvingError();
         int accuracy_errors = 0;
         int total_errors = 0;
@@ -40,6 +41,7 @@ public class ShelvingErrorPopulator {
 
         for (Report item : reportCatalogAsList) {
             String displayCallNumber = item.getDISPLAY_CALL_NO();
+            logger.debug("considering:" + item.getITEM_BARCODE());
 
             if (displayCallNumber == null) {
                 logger.debug("Display call number null for : " + item.getITEM_BARCODE());
@@ -71,23 +73,22 @@ public class ShelvingErrorPopulator {
                 total_errors++;
             }
 
-            if (!item.getLOCATION_NAME().trim().equals(finalLocationName.trim())) {
+            if (!item.getLOCATION_NAME().trim().equals(finalLocationName.trim()) && item.getITEM_BARCODE().length() == 14) {
                 location_errors++;
                 accuracy_errors++;
             }
 
             if (item.getITEM_STATUS_DESC() != null) {
 
-                if (item.getITEM_STATUS_DESC().equals("Not Charged")
-                        || item.getITEM_STATUS_DESC().equals("Discharged")) {
+                if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
                     if (item.getITEM_STATUS_DATE() != null) {
                         if (scanDate.before(item.getITEM_STATUS_DATE())) {
                             status_errors++;
                         }
                     } else {
-                        // logger.debug("Item Status Desc valid, but status date Null. Not sure what to do in this case: "
-                        // + item.getITEM_BARCODE() + " , with desc:" +
-                        // item.getITEM_STATUS_DESC());
+                         logger.debug("Item Status Desc valid, but status date Null. Not sure what to do in this case: "
+                         + item.getITEM_BARCODE() + " , with desc:" +
+                         item.getITEM_STATUS_DESC());
                     }
                 } else // invalid status
                 {
@@ -128,6 +129,7 @@ public class ShelvingErrorPopulator {
         shelvingError.setMisshelf_threshold_errors(misshelf_threshold_errors);
         shelvingError.setSuppress_errors(suppressedErrors);
 
+        logger.debug("Location error count:" + location_errors);
         return shelvingError;
     }
 

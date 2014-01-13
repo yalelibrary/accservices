@@ -37,11 +37,11 @@ public class Rules {
         if (desc.equals("Missing") || desc.equals("Lost") || desc.equals("Charged") || desc.startsWith("Renewed") || desc.startsWith("In Transit") || desc.startsWith("Missing") || desc.startsWith("On Hold") || desc.startsWith("Withdrawn") || desc.startsWith("Claims Returned")
                 || desc.startsWith("Lost") || desc.startsWith("Recall Request") || desc.startsWith("Overdue") || desc.startsWith("Withdrawn") || desc.startsWith("Overdue")) {
             return false;
-        } else if (desc.equals("Not Charged") || desc.equals("Discharged") || desc.startsWith("Not Charged") || desc.startsWith("Discharged")) {
+        } else if (desc.equals("Not Charged") || desc.equals("Discharged") || desc.startsWith("Not Charged") || desc.startsWith("Discharged") || desc.startsWith("Circulation Review")) {
             // System.out.println("Invalid Status:  " + desc);
             return true;
         }
-        return false;
+        return false; //TODO: return unknown //bug
     }
 
     /**

@@ -106,7 +106,7 @@ public class CatalogInit {
                         dataLists.getCatalogAsList().add(catalogObj);
 
                     } else {
-                        //logger.debug("List does NOT contain this item." + catalogObj.getITEM_BARCODE());
+                        logger.debug("List does NOT contain valid item status:" + catalogObj.getITEM_BARCODE());
                         dataLists.getCatalogAsList().add(catalogObj);
                         barocodesAdded.add(catalogObj.getITEM_BARCODE());
                     }
