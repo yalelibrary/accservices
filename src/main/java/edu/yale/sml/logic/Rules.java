@@ -199,10 +199,9 @@ public class Rules {
                 foundError = true;
             }
 
-            if (item.getITEM_STATUS_DESC().equals("Not Charged")
-                    || item.getITEM_STATUS_DESC().equals("Discharged")) {
-                if (item.getITEM_STATUS_DATE() != null
-                        && scanDate.before(item.getITEM_STATUS_DATE())) {
+            if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
+                if (item.getITEM_STATUS_DATE() != null && scanDate.before(item.getITEM_STATUS_DATE())
+                        && (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime()) > 86400000)  {
                     foundError = true;
                 }
             } else {
