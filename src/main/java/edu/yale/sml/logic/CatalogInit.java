@@ -69,7 +69,7 @@ public class CatalogInit {
 
                 //used for testing:
                 if (catalogObj.getITEM_STATUS_DESC() != null)
-                    barcodeStatuses.put(searchResult.getId(), catalogObj.getITEM_STATUS_DESC());
+                    barcodeStatuses.put(searchResult.getId(), catalogObj.ITEM_STATUS_DESC());
 
 
                 // Not sure what to do if CN Type null
@@ -82,7 +82,7 @@ public class CatalogInit {
                         && (catalogObj.getNORMALIZED_CALL_NO() == null)
                         || catalogObj.getDISPLAY_CALL_NO() == null) {
                     logger.debug("Ignoring completely null record for Lauen"
-                            + catalogObj.getITEM_BARCODE());
+                            + catalogObj.BARCODE());
                     continue;
                 }
 

@@ -22,12 +22,12 @@ public class ShelvingErrorPopulator {
     final static Logger logger = LoggerFactory.getLogger(ShelvingErrorPopulator.class);
     public static final int MIN_ERROR_DISPLAY = 2;
 
-    /*
+    /**
     * Get error count.
     */
-    public ShelvingError populateShelvingError(List<Report> reportCatalogAsList, String finalLocationName,
+    public ShelvingError populateShelvingError(List<Report> list, String finalLocationName,
                                                Date scanDate, String oversize, int nullBarcodes, int suppressedErrors) {
-        logger.debug("Calculating or setting summary count.");
+        logger.debug("Calculating or setting report header summary count.");
         ShelvingError shelvingError = new ShelvingError();
         int accuracy_errors = 0;
         int total_errors = 0;
@@ -39,7 +39,7 @@ public class ShelvingErrorPopulator {
         int misshelf_errors = 0;
         int misshelf_threshold_errors = 0;
 
-        for (Report item : reportCatalogAsList) {
+        for (Report item : list) {
             String displayCallNumber = item.getDISPLAY_CALL_NO();
             logger.debug("considering:" + item.getITEM_BARCODE());
 

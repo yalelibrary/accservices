@@ -61,17 +61,17 @@ public class FullComparator implements Comparator<OrbisRecord> {
                 // logger.debug("Length not equal for :" + item1 + "and" + item2);
             }
 
-            if (o1.getENUM_VALUE() == null && o2.getENUM_VALUE() == null) {
+            if (o1.getITEM_ENUM() == null && o2.getITEM_ENUM() == null) {
                 // check for chron?
                 enum_diff = 0;
                 bothEnumNull = true;
             }
 
-            if (o1.getENUM_VALUE() == null || o2.getENUM_VALUE() == null) {
+            if (o1.getITEM_ENUM() == null || o2.getITEM_ENUM() == null) {
                 // check for chron?
                 eitherEnumNull = true;
             } else if (o1.getITEM_ENUM() != null && o2.getITEM_ENUM() != null) {
-                if (o1.getENUM_VALUE().length() > 0 && o2.getENUM_VALUE().length() > 0) {
+                if (o1.getITEM_ENUM().length() > 0 && o2.getITEM_ENUM().length() > 0) {
                     enum_found = true;
                 }
 
@@ -97,10 +97,10 @@ public class FullComparator implements Comparator<OrbisRecord> {
                     s2 = s2.replace("-", ":");
                 }
 
-                if (!o1.getENUM_VALUE().contains(":")) {
+                if (!o1.getITEM_ENUM().contains(":")) {
                     s1 = s1 + ":0";
                 }
-                if (!o2.getENUM_VALUE().contains(":")) {
+                if (!o2.getITEM_ENUM().contains(":")) {
                     s2 = s2 + ":0";
                 }
 
@@ -130,18 +130,18 @@ public class FullComparator implements Comparator<OrbisRecord> {
                     logger.debug("Number Format Exception" + n.getCause() + n.getMessage());
                     enum_diff = 0;
                 }
-            } else if (o1.getENUM_VALUE() != null && o2.getENUM_VALUE() == null) {
-            } else if (o1.getENUM_VALUE() == null && o2.getENUM_VALUE() != null) {
+            } else if (o1.getITEM_ENUM() != null && o2.getITEM_ENUM() == null) {
+            } else if (o1.getITEM_ENUM() == null && o2.getITEM_ENUM() != null) {
             }
 
             // compare for chron / year:
 
-            if (o1.getCHRON_VALUE() == null && o2.getCHRON_VALUE() == null) {
+            if (o1.getCHRON() == null && o2.getCHRON() == null) {
                 year_diff = 0;
-            } else if (o1.getCHRON() != null && notDVD(o1.getCHRON()) && o2.getCHRON() != null && notDVD(o2.getCHRON()) && (bothEnumNull || eitherEnumNull || o1.getENUM_VALUE().equals(o2.getENUM_VALUE()))) {
+            } else if (o1.getCHRON() != null && notDVD(o1.getCHRON()) && o2.getCHRON() != null && notDVD(o2.getCHRON()) && (bothEnumNull || eitherEnumNull || o1.getITEM_ENUM().equals(o2.getITEM_ENUM()))) {
                 year_diff = o1.getCHRON().compareTo(o2.getCHRON()); // tmp disabled
-            } else if (o1.getCHRON_VALUE() != null && o2.getCHRON_VALUE() == null) {
-            } else if (o1.getCHRON_VALUE() == null && o2.getCHRON_VALUE() != null) {
+            } else if (o1.getCHRON() != null && o2.getCHRON() == null) {
+            } else if (o1.getCHRON() == null && o2.getCHRON() != null) {
             } else {
             }
         }

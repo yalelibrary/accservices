@@ -313,20 +313,17 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     }
 
     /**
-     *
+     * filter obj -- e.g. PQ6613 Z9A394, separate Z9 A394
      * @param reportCatalogAsList
      * @return
      */
     public List<OrbisRecord> filterCallnumber(
             List<OrbisRecord> reportCatalogAsList) {
         logger.debug("Filter out string such as Z9");
-        // filter obj -- e.g. PQ6613 Z9A394, separate Z9 A394
-
         for (OrbisRecord o : reportCatalogAsList) {
             if (anyNull(o.getDISPLAY_CALL_NO(), o.getNORMALIZED_CALL_NO())) {
                 continue;
             }
-
             // TODO doesn't count Z9 instances
             if (o.getDISPLAY_CALL_NO().contains("Z9")) {
                 String[] str = o.getDISPLAY_CALL_NO().split("Z9");

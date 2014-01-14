@@ -29,23 +29,6 @@ public class OrbisRecord implements Serializable
     {
     }
 
-    // TODO remove
-    public OrbisRecord(String string)
-    {
-        this.ITEM_BARCODE = string;
-    }
-
-    public String getCHRON_VALUE()
-    {
-        return CHRON;
-    }
-
-    //TODO remove, along with getCHRON_VALUE (no longer modified)
-    public String getENUM_VALUE()
-    {
-        return ITEM_ENUM;
-    }
-
     @Override
     public boolean equals(Object obj)
     {
@@ -94,11 +77,6 @@ public class OrbisRecord implements Serializable
     public String getENCODING_LEVEL()
     {
         return ENCODING_LEVEL;
-    }
-
-    public String getInfo()
-    {
-        return "OrbisRecord [NORMALIZED_CALL_NO=" + NORMALIZED_CALL_NO + ", ITEM_ENUM=" + ITEM_ENUM + ", ITEM_BARCODE=" + ITEM_BARCODE + ", CHRON=" + CHRON + " ]";
     }
 
     public String getITEM_BARCODE()
@@ -159,26 +137,6 @@ public class OrbisRecord implements Serializable
     public String getYEAR()
     {
         return YEAR;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((ITEM_BARCODE == null) ? 0 : ITEM_BARCODE.hashCode());
-        return result;
-    }
-
-    public void setCALL_NO_TYPE(String cALL_NO_TYPE)
-    {
-
-        if (cALL_NO_TYPE == null)
-            CALL_NO_TYPE = "N/A";
-        else
-        { 
-            CALL_NO_TYPE = cALL_NO_TYPE;
-        }
     }
 
     public void setCHRON(String cHRON)
@@ -261,5 +219,113 @@ public class OrbisRecord implements Serializable
     {
         return "OrbisRecord [CHRON=" + CHRON + ", DISPLAY_CALL_NO=" + DISPLAY_CALL_NO + ", ENCODING_LEVEL=" + ENCODING_LEVEL + ", ITEM_BARCODE=" + ITEM_BARCODE + ", ITEM_ENUM=" + ITEM_ENUM + ", ITEM_ID=" + ITEM_ID + ", ITEM_STATUS_DATE=" + ITEM_STATUS_DATE + ", ITEM_STATUS_DESC=" + ITEM_STATUS_DESC
                 + ", LOCATION_NAME=" + LOCATION_NAME + ", MFHD_ID=" + MFHD_ID + ", NORMALIZED_CALL_NO=" + NORMALIZED_CALL_NO + ", PERM_LOCATION=" + PERM_LOCATION + ", prior=" + prior + ", SUPPRESS_IN_OPAC=" + SUPPRESS_IN_OPAC + ", YEAR=" + YEAR + ", CALL_NO_TYPE=" + CALL_NO_TYPE + "]";
+    }
+
+    public String getInfo()
+    {
+        return "OrbisRecord [NORMALIZED_CALL_NO=" + NORMALIZED_CALL_NO + ", ITEM_ENUM=" + ITEM_ENUM + ", ITEM_BARCODE=" + ITEM_BARCODE + ", CHRON=" + CHRON + " ]";
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ITEM_BARCODE == null) ? 0 : ITEM_BARCODE.hashCode());
+        return result;
+    }
+
+    public void setCALL_NO_TYPE(String cALL_NO_TYPE)
+    {
+
+        if (cALL_NO_TYPE == null)
+            CALL_NO_TYPE = "N/A";
+        else
+        {
+            CALL_NO_TYPE = cALL_NO_TYPE;
+        }
+    }
+
+
+    //Shorthand for getter. All in CAPS.
+
+    public String CALL_NO_TYPE()
+    {
+        return getCALL_NO_TYPE();
+    }
+
+    public String CHRON()
+    {
+        return getCHRON();
+    }
+
+    public String DISPLAY_CALL_NO()
+    {
+        return getDISPLAY_CALL_NO();
+    }
+
+    public String ENCODING_LEVEL()
+    {
+        return getENCODING_LEVEL();
+    }
+
+    public String BARCODE()
+    {
+        return getITEM_BARCODE();
+    }
+
+    public String ENUM()
+    {
+        return getITEM_ENUM();
+    }
+
+    public String ITEM_ID()
+    {
+        return getITEM_ID();
+    }
+
+    public Date ITEM_STATUS_DATE()
+    {
+        return getITEM_STATUS_DATE();
+    }
+
+    public String ITEM_STATUS_DESC()
+    {
+        return getITEM_STATUS_DESC();
+    }
+
+    public String LOCATION_NAME()
+    {
+        return  getLOCATION_NAME();
+    }
+
+    public String MFHD_ID()
+    {
+        return getMFHD_ID();
+    }
+
+    public String NORMALIZED_CALL()
+    {
+        return getNORMALIZED_CALL_NO();
+    }
+
+    public String PERM_LOCATION()
+    {
+        return getPERM_LOCATION();
+    }
+
+    public String PRIOR()
+    {
+        return getPrior();
+    }
+
+    public String SUPPRESS()
+    {
+        return getSUPPRESS_IN_OPAC();
+    }
+
+    public String YEAR()
+    {
+        return getYEAR();
     }
 }

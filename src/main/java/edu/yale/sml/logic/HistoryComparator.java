@@ -11,10 +11,8 @@ import edu.yale.sml.model.History;
  */
 public class HistoryComparator implements Comparator<History> // implements Comparator<Report>
 {
-
     String sortField = "";
     SortOrder sortOrder;
-    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(HistoryComparator.class);
 
     public HistoryComparator(String sortField, SortOrder sortOrder) {
         super();
