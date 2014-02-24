@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 
 
-public class Report implements Serializable
-{
+public class Report implements Serializable {
 
     private static final long serialVersionUID = 5079435243211265712L;
 
@@ -36,26 +35,20 @@ public class Report implements Serializable
     private Integer text; // TODO rename..represents acc error
 
 
-    public Report()
-    {
+    public Report() {
     }
 
-    public static Report populateReport(OrbisRecord o, Integer flag, String prior, String physicalPrior, OrbisRecord physicalPriorO, OrbisRecord priorO)
-    {
+    public static Report populateReport(OrbisRecord o, Integer flag, String prior, String physicalPrior, OrbisRecord physicalPriorO, OrbisRecord priorO) {
 
         String oversize = "N";
 
-        if (o.getNORMALIZED_CALL_NO().contains("+") || o.getNORMALIZED_CALL_NO().contains("Oversize"))
-        {
+        if (o.getNORMALIZED_CALL_NO().contains("+") || o.getNORMALIZED_CALL_NO().contains("Oversize")) {
             oversize = "Y";
         }
 
-        try
-        {
+        try {
             new Report(flag, o.getITEM_BARCODE(), o.getDISPLAY_CALL_NO(), o.getITEM_ENUM(), oversize, o.getCHRON(), o.getCHRON(), o.getLOCATION_NAME(), o.getITEM_STATUS_DESC(), o.getITEM_STATUS_DATE(), o.getSUPPRESS_IN_OPAC(), o.getCALL_NO_TYPE());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //ok to just report the exception, not raise it
         }
 
@@ -71,8 +64,7 @@ public class Report implements Serializable
             rc.setPriorChron(priorO.getCHRON());
         }
 
-        if (physicalPriorO != null)
-        {
+        if (physicalPriorO != null) {
 
             rc.setPriorPhysicalEnum(physicalPriorO.getITEM_ENUM());
             rc.setPriorPhysicalChron(physicalPriorO.getCHRON());
@@ -81,59 +73,48 @@ public class Report implements Serializable
         return rc;
     }
 
-    public OrbisRecord getPhysicalPrior()
-    {
+    public OrbisRecord getPhysicalPrior() {
         return physicalPrior;
     }
 
-    public void setPhysicalPrior(OrbisRecord physicalPrior)
-    {
+    public void setPhysicalPrior(OrbisRecord physicalPrior) {
         this.physicalPrior = physicalPrior;
     }
 
-    public String getPriorEnum()
-    {
+    public String getPriorEnum() {
         return priorEnum;
     }
 
-    public void setPriorEnum(String priorEnum)
-    {
+    public void setPriorEnum(String priorEnum) {
         this.priorEnum = priorEnum;
     }
 
-    public String getPriorChron()
-    {
+    public String getPriorChron() {
         return priorChron;
     }
 
-    public void setPriorChron(String priorChron)
-    {
+    public void setPriorChron(String priorChron) {
         this.priorChron = priorChron;
     }
 
-    public String getPriorPhysicalEnum()
-    {
+    public String getPriorPhysicalEnum() {
         return priorPhysicalEnum;
     }
 
-    public void setPriorPhysicalEnum(String priorPhysicalEnum)
-    {
+    public void setPriorPhysicalEnum(String priorPhysicalEnum) {
         this.priorPhysicalEnum = priorPhysicalEnum;
     }
 
-    public String getPriorPhysicalChron()
-    {
+    public String getPriorPhysicalChron() {
         return priorPhysicalChron;
     }
 
-    public void setPriorPhysicalChron(String priorPhysicalChron)
-    {
+    public void setPriorPhysicalChron(String priorPhysicalChron) {
         this.priorPhysicalChron = priorPhysicalChron;
     }
 
     // this is used by report only
-    public Report(Integer text, String iTEM_BARCODE, String dISPLAY_CALL_NO, String iTEM_ENUM, String o, String year, String chron, String location_name, String item_status_desc, Date item_status_date, String item_suppress, String call_no_type)
-    {
+    public Report(Integer text, String iTEM_BARCODE, String dISPLAY_CALL_NO, String iTEM_ENUM, String o, String year, String chron, String location_name, String item_status_desc, Date item_status_date, String item_suppress, String call_no_type) {
         super();
         if (text >= 0)
             this.text = text;
@@ -154,8 +135,7 @@ public class Report implements Serializable
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj == null)
@@ -163,236 +143,189 @@ public class Report implements Serializable
         if (getClass() != obj.getClass())
             return false;
         Report other = (Report) obj;
-        if (ITEM_BARCODE == null)
-        {
-            if (other.ITEM_BARCODE != null)
-            {
+        if (ITEM_BARCODE == null) {
+            if (other.ITEM_BARCODE != null) {
                 return false;
             }
+        } else if (!ITEM_BARCODE.equals(other.ITEM_BARCODE)) {
+            return false;
         }
-        else if (!ITEM_BARCODE.equals(other.ITEM_BARCODE)) 
-        {
-        	return false;
-        }            
         return true;
     }
 
-    public String getCHRON()
-    {
+    public String getCHRON() {
         return CHRON;
     }
 
-    public String getDISPLAY_CALL_NO()
-    {
+    public String getDISPLAY_CALL_NO() {
         return DISPLAY_CALL_NO;
     }
 
-    public String getENCODING_LEVEL()
-    {
+    public String getENCODING_LEVEL() {
         return ENCODING_LEVEL;
     }
 
-    public String getITEM_BARCODE()
-    {
+    public String getITEM_BARCODE() {
         return ITEM_BARCODE;
     }
 
-    public String getITEM_ENUM()
-    {
+    public String getITEM_ENUM() {
         return ITEM_ENUM;
     }
 
-    public String getITEM_ID()
-    {
+    public String getITEM_ID() {
         return ITEM_ID;
     }
 
-    public Date getITEM_STATUS_DATE()
-    {
+    public Date getITEM_STATUS_DATE() {
         return ITEM_STATUS_DATE;
     }
 
-    public String getITEM_STATUS_DESC()
-    {
+    public String getITEM_STATUS_DESC() {
         return ITEM_STATUS_DESC;
     }
 
-    public String getLOCATION_NAME()
-    {
+    public String getLOCATION_NAME() {
         return LOCATION_NAME;
     }
 
-    public String getMarker()
-    {
+    public String getMarker() {
         return marker;
     }
 
-    public String getMFHD_ID()
-    {
+    public String getMFHD_ID() {
         return MFHD_ID;
     }
 
-    public String getNORMALIZED_CALL_NO()
-    {
+    public String getNORMALIZED_CALL_NO() {
         return NORMALIZED_CALL_NO;
     }
 
-    public String getOVERSIZE()
-    {
+    public String getOVERSIZE() {
         return OVERSIZE;
     }
 
-    public String getPrior()
-    {
+    public String getPrior() {
         return prior;
     }
 
-    public String getPriorPhysical()
-    {
+    public String getPriorPhysical() {
         return priorPhysical;
     }
 
-    public String getSUPPRESS_IN_OPAC()
-    {
+    public String getSUPPRESS_IN_OPAC() {
         return SUPPRESS_IN_OPAC;
     }
 
-    public Integer getText()
-    {
+    public Integer getText() {
         return text;
     }
 
-    public String getYEAR()
-    {
+    public String getYEAR() {
         return YEAR;
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((ITEM_BARCODE == null) ? 0 : ITEM_BARCODE.hashCode());
         return result;
     }
 
-    public void setCHRON(String cHRON)
-    {
+    public void setCHRON(String cHRON) {
         CHRON = cHRON;
     }
 
-    public void setDISPLAY_CALL_NO(String dISPLAY_CALL_NO)
-    {
+    public void setDISPLAY_CALL_NO(String dISPLAY_CALL_NO) {
         DISPLAY_CALL_NO = dISPLAY_CALL_NO;
     }
 
-    public void setENCODING_LEVEL(String eNCODING_LEVEL)
-    {
+    public void setENCODING_LEVEL(String eNCODING_LEVEL) {
         ENCODING_LEVEL = eNCODING_LEVEL;
     }
 
-    public void setITEM_BARCODE(String iTEM_BARCODE)
-    {
+    public void setITEM_BARCODE(String iTEM_BARCODE) {
         ITEM_BARCODE = iTEM_BARCODE;
     }
 
-    public void setITEM_ENUM(String iTEM_ENUM)
-    {
+    public void setITEM_ENUM(String iTEM_ENUM) {
         ITEM_ENUM = iTEM_ENUM;
     }
 
-    public void setITEM_ID(String iTEM_ID)
-    {
+    public void setITEM_ID(String iTEM_ID) {
         ITEM_ID = iTEM_ID;
     }
 
-    public void setITEM_STATUS_DATE(Date iTEM_STATUS_DATE)
-    {
+    public void setITEM_STATUS_DATE(Date iTEM_STATUS_DATE) {
         ITEM_STATUS_DATE = iTEM_STATUS_DATE;
     }
 
-    public void setITEM_STATUS_DESC(String iTEM_STATUS_DESC)
-    {
+    public void setITEM_STATUS_DESC(String iTEM_STATUS_DESC) {
         ITEM_STATUS_DESC = iTEM_STATUS_DESC;
     }
 
-    public void setLOCATION_NAME(String lOCATION_NAME)
-    {
+    public void setLOCATION_NAME(String lOCATION_NAME) {
         LOCATION_NAME = lOCATION_NAME;
     }
 
-    public void setMarker(String marker)
-    {
+    public void setMarker(String marker) {
         this.marker = marker;
     }
 
-    public void setMFHD_ID(String mFHD_ID)
-    {
+    public void setMFHD_ID(String mFHD_ID) {
         MFHD_ID = mFHD_ID;
     }
 
-    public void setNORMALIZED_CALL_NO(String nORMALIZED_CALL_NO)
-    {
+    public void setNORMALIZED_CALL_NO(String nORMALIZED_CALL_NO) {
         NORMALIZED_CALL_NO = nORMALIZED_CALL_NO;
     }
 
-    public void setOVERSIZE(String oVERSIZE)
-    {
+    public void setOVERSIZE(String oVERSIZE) {
         OVERSIZE = oVERSIZE;
     }
 
-    public void setPrior(String prior)
-    {
+    public void setPrior(String prior) {
         this.prior = prior;
     }
 
-    public void setPriorPhysical(String priorPhysical)
-    {
+    public void setPriorPhysical(String priorPhysical) {
         this.priorPhysical = priorPhysical;
     }
 
-    public OrbisRecord getOrbisRecord()
-    {
+    public OrbisRecord getOrbisRecord() {
         return orbisRecord;
     }
 
-    public void setOrbisRecord(OrbisRecord orbisRecord)
-    {
+    public void setOrbisRecord(OrbisRecord orbisRecord) {
         this.orbisRecord = orbisRecord;
     }
 
-    public void setSUPPRESS_IN_OPAC(String sUPPRESS_IN_OPAC)
-    {
+    public void setSUPPRESS_IN_OPAC(String sUPPRESS_IN_OPAC) {
         SUPPRESS_IN_OPAC = sUPPRESS_IN_OPAC;
     }
 
-    public void setText(Integer text)
-    {
-        if (text < 0)
-        {
+    public void setText(Integer text) {
+        if (text < 0) {
             text = text * -1;
         }
         this.text = text;
     }
 
-    public void setYEAR(String yEAR)
-    {
+    public void setYEAR(String yEAR) {
         YEAR = yEAR;
     }
-    
-    public String getCALL_NO_TYPE()
-    {
+
+    public String getCALL_NO_TYPE() {
         return CALL_NO_TYPE;
     }
 
-    public void setCALL_NO_TYPE(String cALL_NO_TYPE)
-    {
+    public void setCALL_NO_TYPE(String cALL_NO_TYPE) {
         CALL_NO_TYPE = cALL_NO_TYPE;
     }
 
     @Deprecated
-    public String printBarcodesString()
-    {
+    public String printBarcodesString() {
         return "Report [" + ITEM_BARCODE + "]";
     }
 

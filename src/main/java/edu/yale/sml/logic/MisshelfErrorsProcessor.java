@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Calculates misshelf. Currently, there are 2 static methods representing 2 passes.
- *
+ * <p/>
  * TODO description
  * In first pass . . . Other items are then added. 2nd pass . . .
  */
@@ -180,7 +180,7 @@ public class MisshelfErrorsProcessor {
 
     /**
      * Calculate misshelfs. Pass 1.
-     *
+     * <p/>
      * Items with accuracy, location errors are
      * filtered out later by ShelfScanEngine.
      *
@@ -190,7 +190,7 @@ public class MisshelfErrorsProcessor {
      * @return
      */
     public static List<Report> legacyCalculateMisshelf(List<OrbisRecord> catalogList,
-                                                List<OrbisRecord> sortedList) {
+                                                       List<OrbisRecord> sortedList) {
         logger.debug("(Pass/Step 1) Calculate Misshelf");
 
         List<Report> reportCatalogAsList = new ArrayList<Report>();
@@ -211,7 +211,7 @@ public class MisshelfErrorsProcessor {
             }
 
 	    /*
-	     * String sortItem1 = catalogSorted.get(i).getNORMALIZED_CALL_NO();
+         * String sortItem1 = catalogSorted.get(i).getNORMALIZED_CALL_NO();
 	     * String sortItem2 = catalogSorted.get(i -
 	     * 1).getNORMALIZED_CALL_NO(); sortItem1 =
 	     * sortItem1.replace("( LC )", " "); // TODO replace w/ sortItem2 =

@@ -9,30 +9,25 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 
 
-
 @ManagedBean
 @SessionScoped
-public class FileUploadController implements java.io.Serializable
-{
+public class FileUploadController implements java.io.Serializable {
 
     private static final long serialVersionUID = 9177080916752001407L;
     private UploadedFile file;
 
-    public UploadedFile getFile()
-    {
+    public UploadedFile getFile() {
         return file;
     }
 
-    public void handleFileUpload(FileUploadEvent event)
-    {
+    public void handleFileUpload(FileUploadEvent event) {
         System.out.println("FileUploadController : fileName : " + event.getFile().getFileName());
         FacesMessage msg = new FacesMessage("File uploaded.");
         setFile(event.getFile());
         FacesContext.getCurrentInstance().addMessage(null, msg);
     }
 
-    public void setFile(UploadedFile file)
-    {
+    public void setFile(UploadedFile file) {
         this.file = file;
     }
 }

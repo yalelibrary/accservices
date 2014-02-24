@@ -17,8 +17,7 @@ import edu.yale.sml.persistence.GenericDAO;
 
 @ManagedBean
 @ViewScoped
-public class LocationView implements java.io.Serializable
-{
+public class LocationView implements java.io.Serializable {
 
     private static final long serialVersionUID = -1090685442307176628L;
 
@@ -29,132 +28,105 @@ public class LocationView implements java.io.Serializable
     List<Location> locationAsList = new ArrayList<Location>();
 
     Location locationCatalog; // for primefaces -- not sure if this is
-                              // the best way
+    // the best way
     String name = "";
 
-    public void addInfo(ActionEvent actionEvent)
-    {
+    public void addInfo(ActionEvent actionEvent) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Changes Saved."));
     }
 
     // Used by SearchView
-    public List findAll()
-    {
+    public List findAll() {
         initialize();
         return locationAsList;
     }
 
     // Used by SearchView
 
-    public List<String> findLocationNames()
-    {
+    public List<String> findLocationNames() {
         initialize();
         List<String> locationNameList = new ArrayList<String>();
-        for (Location l : locationAsList)
-        {
+        for (Location l : locationAsList) {
             locationNameList.add(l.getName());
         }
         return locationNameList;
     }
 
-    public Date getDate()
-    {
+    public Date getDate() {
         return date;
     }
 
-    public String getEditor()
-    {
+    public String getEditor() {
         return editor;
     }
 
-    public List<Location> getLocationAsList()
-    {
+    public List<Location> getLocationAsList() {
         return locationAsList;
     }
 
-    public Location getLocationCatalog()
-    {
+    public Location getLocationCatalog() {
         return locationCatalog;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
         GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
-        try
-        {
+        try {
             locationAsList = dao.findAll(Location.class);
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public void remove(Location locationCatalog)
-    {
+    public void remove(Location locationCatalog) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Deleted!"));
         GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
-        try
-        {
+        try {
             dao.delete(locationCatalog);
             locationAsList.remove(locationCatalog);
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
     // TODO uses direct access
-    public void saveAll()
-    {
-        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null)
-        {
+    public void saveAll() {
+        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null) {
             editor = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString();
         }
 
         Location item = new Location(name, editor, date);
-        try
-        {
+        try {
             GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
             dao.save(item);
-            
+
             initialize();
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public void setDate(Date date)
-    {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public void setEditor(String editor)
-    {
+    public void setEditor(String editor) {
         this.editor = editor;
     }
 
-    public void setLocationAsList(List<Location> locationAsList)
-    {
+    public void setLocationAsList(List<Location> locationAsList) {
         this.locationAsList = locationAsList;
     }
 
-    public void setLocationCatalog(Location locationCatalog)
-    {
+    public void setLocationCatalog(Location locationCatalog) {
         this.locationCatalog = locationCatalog;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 }

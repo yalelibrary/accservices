@@ -15,8 +15,7 @@ import edu.yale.sml.persistence.AdminHibernateDAO;
 
 @ManagedBean
 @RequestScoped
-public class AdminView
-{
+public class AdminView {
 
     List<Admin> adminAsList = new ArrayList<Admin>();
 
@@ -26,131 +25,104 @@ public class AdminView
     String netid = "";
     List<String> permissionTypes = new ArrayList<String>();
 
-    public void addInfo(ActionEvent actionEvent)
-    {
+    public void addInfo(ActionEvent actionEvent) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Changes Saved."));
     }
 
-    public List findAll()
-    {
+    public List findAll() {
         initialize();
         return adminAsList;
     }
 
-    public List<Admin> getAdminAsList()
-    {
+    public List<Admin> getAdminAsList() {
         return adminAsList;
     }
 
-    public Admin getAdminCatalog()
-    {
+    public Admin getAdminCatalog() {
         return adminCatalog;
     }
 
-    public String getAdminCode()
-    {
+    public String getAdminCode() {
         return adminCode;
-    }   
+    }
 
-    public String getEditor()
-    {
+    public String getEditor() {
         return editor;
     }
 
-    public String getNetid()
-    {
+    public String getNetid() {
         return netid;
     }
 
-    public List<String> getPermissionTypes()
-    {
+    public List<String> getPermissionTypes() {
         return permissionTypes;
     }
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
 
         permissionTypes.add("Admin");
         permissionTypes.add("Student");
 
-        try
-        {
+        try {
             AdminDAO adminDAO = new AdminHibernateDAO();
             adminAsList = adminDAO.findAll(Admin.class);
-        }
-        catch (Throwable e)
-        {
-        	e.printStackTrace(); 
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 
-    public void remove(Admin adminCatalog)
-    {
+    public void remove(Admin adminCatalog) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Deleted!"));
-        AdminDAO adminDAO = new AdminHibernateDAO();      
+        AdminDAO adminDAO = new AdminHibernateDAO();
 
-        try
-        {
+        try {
             adminDAO.delete(adminCatalog);
             adminAsList.remove(adminCatalog);
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    public void saveAll()
-    {
+    public void saveAll() {
 
-        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null)
-        {
+        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null) {
             editor = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString();
         }
 
         Admin adminCatalog = new Admin(netid, editor, adminCode);
-        AdminDAO adminDAO = new AdminHibernateDAO();   
-        
-        try
-        {
-          adminDAO.save(adminCatalog);
-          initialize();
-        }
-        catch (Throwable e)
-        {
+        AdminDAO adminDAO = new AdminHibernateDAO();
+
+        try {
+            adminDAO.save(adminCatalog);
+            initialize();
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public void setAdminAsList(List<Admin> adminAsList)
-    {
+    public void setAdminAsList(List<Admin> adminAsList) {
         this.adminAsList = adminAsList;
     }
 
-    public void setAdminCatalog(Admin adminCatalog)
-    {
+    public void setAdminCatalog(Admin adminCatalog) {
         this.adminCatalog = adminCatalog;
     }
 
-    public void setAdminCode(String adminCode)
-    {
+    public void setAdminCode(String adminCode) {
         this.adminCode = adminCode;
     }
-    
-    public void setEditor(String editor)
-    {
+
+    public void setEditor(String editor) {
         this.editor = editor;
     }
 
-    public void setNetid(String netid)
-    {
+    public void setNetid(String netid) {
         this.netid = netid;
     }
 
-    public void setPermissionTypes(List<String> permissionTypes)
-    {
+    public void setPermissionTypes(List<String> permissionTypes) {
         this.permissionTypes = permissionTypes;
     }
 }

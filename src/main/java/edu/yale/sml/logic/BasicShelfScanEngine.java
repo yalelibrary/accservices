@@ -21,13 +21,12 @@ import edu.yale.sml.view.NullFileException;
 
 /**
  * Types of methods: decorate, filter, process, calculate diff
- *
+ * <p/>
  * NOTE: Do not remove/rename fields. Object is serialized for history page.
- *
+ * <p/>
  * TODO (refactoring) remove null barcode reference
  * TODO (refactoring) extract logic out of fullComparator
  * TODO (refactoring) see if all reportLists.setXXX methods can be re-factored
- *
  */
 public class BasicShelfScanEngine implements java.io.Serializable {
     // int nullBarcodes = 0;  //?
@@ -48,20 +47,20 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     /**
      * Main Function
-     *
+     * <p/>
      * 'bad barcodes' (no voyager/orbis results) != 'null barcodes' (0000...)
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public DataLists process(final List<String> barcodes, final String location,
                              final Date scanDate, final String oversize) throws IllegalAccessException,
-                             InvocationTargetException, IOException, HibernateException,
-                             NullFileException {
+            InvocationTargetException, IOException, HibernateException,
+            NullFileException {
 
         logger.debug("Engine Processing . . .");
 
         try {
             // call Voyager
-            List<SearchResult> list =  new BarcodeSearchDAO().findAllById(barcodes);
+            List<SearchResult> list = new BarcodeSearchDAO().findAllById(barcodes);
 
             reportLists = initCatalogList(immutableList(list));
 
@@ -75,7 +74,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
             // remove null items & add to suppress errors
             removeZeroBarcodes(validBarcodesList);
-            int suppressedErrors =  addSuppressed(validBarcodesList);
+            int suppressedErrors = addSuppressed(validBarcodesList);
 
             List<OrbisRecord> validBarcodesSorted = new ArrayList<OrbisRecord>(
                     validBarcodesList);
@@ -122,7 +121,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             markOutOfPlaceItems(reportLists.getMarkedCatalogAsList());
 
             //N.B. reset misshelfs to 0:
-            for (Report item: getReportList(reportLists)) {
+            for (Report item : getReportList(reportLists)) {
                 if (item.getText() != 0) {
                     logger.debug("Erasing prior misshelf value :" + item.getITEM_BARCODE() + " : " + item.getText());
                     item.setText(0); //N.B.
@@ -295,7 +294,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         logger.debug("Decorating list with " + Rules.ITEM_FLAG_STRING);
         for (int i = 1; i < list.size(); i++) {
             OrbisRecord item = list.get(i);
-            OrbisRecord prevItem = list.get(i-1);
+            OrbisRecord prevItem = list.get(i - 1);
             if (item.getNORMALIZED_CALL_NO() == null
                     || prevItem.getNORMALIZED_CALL_NO() == null
                     || item.getDISPLAY_CALL_NO() == null
@@ -306,7 +305,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             String prevNormalized = replaceLCString(prevItem.getNORMALIZED_CALL_NO()).trim();
             if (currentNormalized.compareTo(prevNormalized) < 0) {
                 item.setDISPLAY_CALL_NO(Rules.ITEM_FLAG_STRING
-                                + item.getDISPLAY_CALL_NO());
+                        + item.getDISPLAY_CALL_NO());
             }
         }
         logger.debug("Done.");
@@ -314,6 +313,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     /**
      * filter obj -- e.g. PQ6613 Z9A394, separate Z9 A394
+     *
      * @param reportCatalogAsList
      * @return
      */
@@ -385,8 +385,6 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     }
 
     /**
-     *
-     *
      * @param culpritList
      * @param reportCatalogAsList
      */
@@ -429,17 +427,19 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     /**
      * Removes LC occurence
+     *
      * @param str
      * @return
      */
     public String replaceLCString(String str) {
-        str =  str.replace(Rules.LC_STRING_1, " ");
+        str = str.replace(Rules.LC_STRING_1, " ");
         str = str.replace(Rules.LC_STRING_2, " ");
         return str;
     }
 
     /**
      * helper
+     *
      * @param reportLists
      * @return
      */
@@ -449,6 +449,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     /**
      * helper
+     *
      * @param reportLists
      * @return
      */

@@ -41,8 +41,7 @@ import edu.yale.sml.persistence.ShelvingHibernateDAO;
 
 @ManagedBean
 @ViewScoped
-public class ShelvingApplication implements java.io.Serializable
-{
+public class ShelvingApplication implements java.io.Serializable {
 
     private static final long serialVersionUID = 716362163607646863L;
     List<Shelving> historyAsList = new ArrayList<Shelving>();
@@ -59,13 +58,11 @@ public class ShelvingApplication implements java.io.Serializable
 
     SelectItem[] netidOptions;
 
-    public List<String> getFloorNames()
-    {
+    public List<String> getFloorNames() {
         return floorNames;
     }
 
-    public void setFloorNames(List<String> floorNames)
-    {
+    public void setFloorNames(List<String> floorNames) {
         this.floorNames = floorNames;
     }
 
@@ -75,14 +72,12 @@ public class ShelvingApplication implements java.io.Serializable
 
     List<String> teamAsList = new ArrayList<String>();
 
-    public String selectElement()
-    {
+    public String selectElement() {
         return "edit_shelving.xhtml?faces-redirect=true&id=" + selectedHistory.getId();
     }
 
     @Deprecated
-    public void onCellEdit(CellEditEvent event)
-    {
+    public void onCellEdit(CellEditEvent event) {
         logger.debug("Deprecated method onCellEdit called");
 
         Object oldValue = event.getOldValue();
@@ -90,12 +85,10 @@ public class ShelvingApplication implements java.io.Serializable
     }
 
     // for netids list
-    private SelectItem[] createFilterOptions(List<Shelving> historyAsList2)
-    {
+    private SelectItem[] createFilterOptions(List<Shelving> historyAsList2) {
 
         List<String> netids = new ArrayList<String>(historyAsList.size());
-        for (Shelving h : historyAsList2)
-        {
+        for (Shelving h : historyAsList2) {
             netids.add(h.getNETID());
         }
 
@@ -103,16 +96,14 @@ public class ShelvingApplication implements java.io.Serializable
         SelectItem[] options = new SelectItem[set.size() + 1];
         options[0] = new SelectItem("", "Select");
         int i = 0;
-        for (String h : set)
-        {
+        for (String h : set) {
             options[i + 1] = new SelectItem(h);
             i++;
         }
         return options;
     }
 
-    private SelectItem[] createFilterOptionsPaginated()
-    {
+    private SelectItem[] createFilterOptionsPaginated() {
 
         List<String> netids = new ArrayList<String>();
         HistoryDAO dao = new HistoryHibernateDAO();
@@ -121,19 +112,16 @@ public class ShelvingApplication implements java.io.Serializable
         SelectItem[] options = new SelectItem[set.size() + 1];
         options[0] = new SelectItem("", "Select");
         int i = 0;
-        for (String h : set)
-        {
+        for (String h : set) {
             options[i + 1] = new SelectItem(h);
             i++;
         }
         return options;
     }
 
-    private SelectItem[] createLocationFilterOptions(List<Shelving> historyAsList2)
-    {
+    private SelectItem[] createLocationFilterOptions(List<Shelving> historyAsList2) {
         List<String> locations = new ArrayList<String>(historyAsList.size());
-        for (Shelving h : historyAsList2)
-        {
+        for (Shelving h : historyAsList2) {
             locations.add(h.getSCANLOCATION());
         }
 
@@ -144,83 +132,69 @@ public class ShelvingApplication implements java.io.Serializable
         options[0] = new SelectItem("", "...");
 
         int i = 0;
-        for (String h : set)
-        {
+        for (String h : set) {
             options[i + 1] = new SelectItem(h);
             i++;
         }
         return options;
     }
 
-    private SelectItem[] createLocationFilterOptionsPaginated()
-    {
+    private SelectItem[] createLocationFilterOptionsPaginated() {
         List<String> locations = new ArrayList<String>();
         locations = new HistoryHibernateDAO().findUniqueLocations();
         Set<String> set = new HashSet<String>(locations); // need unique
         SelectItem[] options = new SelectItem[set.size() + 1];
         options[0] = new SelectItem("", "Select");
         int i = 0;
-        for (String h : set)
-        {
+        for (String h : set) {
             options[i + 1] = new SelectItem(h);
             i++;
         }
         return options;
     }
 
-    public List<Shelving> getHistoryAsList()
-    {
+    public List<Shelving> getHistoryAsList() {
         return historyAsList;
     }
 
-    public Shelving getItem()
-    {
+    public Shelving getItem() {
         return item;
     }
 
-    public LazyDataModel<Shelving> getLazyModel()
-    {
+    public LazyDataModel<Shelving> getLazyModel() {
         return lazyModel;
     }
 
-    public String getLocationName()
-    {
+    public String getLocationName() {
         return locationName;
     }
 
-    public List<String> getLocationNames()
-    {
+    public List<String> getLocationNames() {
         return locationNames;
     }
 
-    public SelectItem[] getLocationSelectOptions()
-    {
+    public SelectItem[] getLocationSelectOptions() {
         return locationSelectOptions;
     }
 
-    public SelectItem[] getNetidOptions()
-    {
+    public SelectItem[] getNetidOptions() {
         return netidOptions;
     }
 
-    public List<String> getOversizeAsList()
-    {
+    public List<String> getOversizeAsList() {
         return oversizeAsList;
     }
 
-    public Shelving getSelectedHistory()
-    {
+    public Shelving getSelectedHistory() {
         return selectedHistory;
     }
 
-    public List<String> getTeamAsList()
-    {
+    public List<String> getTeamAsList() {
         return teamAsList;
     }
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
         ShelvingDAO dao = new ShelvingHibernateDAO();
         int historyAsListSize = 0;
         boolean paginate = true;
@@ -237,27 +211,19 @@ public class ShelvingApplication implements java.io.Serializable
         locationNames = new LocationView().findLocationNames();
         floorNames = new FloorView().findFloorNames();
 
-        try
-        {
+        try {
             historyAsList = new ArrayList<Shelving>();
-            try
-            {
-                if (paginate)
-                {
+            try {
+                if (paginate) {
                     historyAsListSize = dao.count();
-                }
-                else
+                } else
                     historyAsList = dao.findAll(Shelving.class);
 
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("Exception initializing");
         }
 
@@ -265,8 +231,7 @@ public class ShelvingApplication implements java.io.Serializable
         locationSelectOptions = createLocationFilterOptions(historyAsList);
 
 
-        if (lazyModel == null && paginate)
-        {
+        if (lazyModel == null && paginate) {
 
             lazyModel = new LazyHistoryNewShelvingDataModel(historyAsListSize);
             locationSelectOptions = createLocationFilterOptionsPaginated();
@@ -275,18 +240,14 @@ public class ShelvingApplication implements java.io.Serializable
 
     }
 
-    public void save(ActionEvent actionEvent)
-    {
+    public void save(ActionEvent actionEvent) {
         FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getFlash().setKeepMessages(true); 
+        context.getExternalContext().getFlash().setKeepMessages(true);
         context.addMessage(null, new FacesMessage("Saving Shelving Entry"));
-        try
-        {
+        try {
             process();
             context.addMessage(null, new FacesMessage("Saved shelving history entry."));
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             context.addMessage(null, new FacesMessage("Error encountered while saving item. . ."));
         }
     }
@@ -294,13 +255,12 @@ public class ShelvingApplication implements java.io.Serializable
 
     /**
      * TODO needs logic clean up
-     * Main method. 
+     * Main method.
      *
      * @return
      * @throws Throwable
      */
-    public String process() throws Throwable
-    {
+    public String process() throws Throwable {
         FacesContext context = FacesContext.getCurrentInstance();
         context.getExternalContext().getFlash().setKeepMessages(true); // http://stackoverflow.com/questions/9932446/how-to-use-primefaces-pgrowl-and-redirect-to-a-page
 
@@ -321,80 +281,63 @@ public class ShelvingApplication implements java.io.Serializable
         List<OrbisRecord> orbisList = new ArrayList<OrbisRecord>();
         toFind.add(item.getBarcodeStart());
         toFind.add(item.getBarcodeEnd());
-        
+
         Map<String, Date> barcodesAdded = new HashMap<String, Date>();
 
-        try
-        {
+        try {
             List<SearchResult> list = barcodeSearchDAO.findAllById(toFind);
-            for (SearchResult searchResult : list)
-            {
-                if (searchResult.getResult().size() == 0)
-                {
+            for (SearchResult searchResult : list) {
+                if (searchResult.getResult().size() == 0) {
                     continue; // skip full object populating
                 }
-                for (Map<String, Object> m : searchResult.getResult())
-                {
+                for (Map<String, Object> m : searchResult.getResult()) {
                     OrbisRecord catalogObj = new OrbisRecord();
                     java.sql.Date date = null;
                     Converter dc = new DateConverter(date);
                     ConvertUtils.register(dc, java.sql.Date.class);
                     BeanUtils.populate(catalogObj, m);
-                    
-                    
+
+
                     // we want only one entry per barcode... 
-                    
+
                     String barcode = catalogObj.getITEM_BARCODE();
-                    
+
                     DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
-                    if (barcodesAdded.containsKey(barcode))
-                    {
+                    if (barcodesAdded.containsKey(barcode)) {
                         logger.debug("Have seen this barcode before." + catalogObj.getITEM_BARCODE());
-                        
-                        if (barcodesAdded.get(barcode)!= null) {
-                            
+
+                        if (barcodesAdded.get(barcode) != null) {
+
                             if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC()) && catalogObj.getITEM_STATUS_DATE().compareTo(barcodesAdded.get(barcode)) < 0) {
                                 logger.debug("Ignoring in favor of a more recent status date: ");
                                 continue;
-                            }
-                            else if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC()))
-                            {
+                            } else if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC())) {
                                 logger.debug("Have the more recent date. So removing older entry");
                                 barcodesAdded.remove(barcode);
-                                int found = -1 ;
-                                for (int i = 0; i < orbisList.size(); i++)
-                                {
-                                    if (orbisList.get(i).getITEM_BARCODE().equals(barcode))
-                                    {
+                                int found = -1;
+                                for (int i = 0; i < orbisList.size(); i++) {
+                                    if (orbisList.get(i).getITEM_BARCODE().equals(barcode)) {
                                         found = i;
                                         break;
                                     }
                                 }
-                                if (found >= 0)
-                                {
+                                if (found >= 0) {
                                     orbisList.remove(found);
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 logger.debug("Unknown case:" + barcode);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //logger.debug("Date null. So will SKIP");
                             continue;
                         }
                     }
-                    
-                    
-                    if (catalogObj.getITEM_STATUS_DESC() != null && catalogObj.getITEM_STATUS_DATE() != null)
-                    {
-                        barcodesAdded.put(catalogObj.getITEM_BARCODE() , catalogObj.getITEM_STATUS_DATE());
-                    }
-                    else
-                    {
+
+
+                    if (catalogObj.getITEM_STATUS_DESC() != null && catalogObj.getITEM_STATUS_DATE() != null) {
+                        barcodesAdded.put(catalogObj.getITEM_BARCODE(), catalogObj.getITEM_STATUS_DATE());
+                    } else {
                         //logger.debug("Cannot add" + catalogObj.getITEM_BARCODE());
                     }
                     orbisList.add(catalogObj);
@@ -404,58 +347,47 @@ public class ShelvingApplication implements java.io.Serializable
             String status_desc = "";
             java.util.Date status_date = null;
 
-            if (orbisList.size() == 1)
-            {
+            if (orbisList.size() == 1) {
                 logger.debug("Orbis List Size 1");
-                
-                if (orbisList.get(0).getITEM_STATUS_DESC() != null && orbisList.get(0).getITEM_STATUS_DESC().length() > 1)
-                {
+
+                if (orbisList.get(0).getITEM_STATUS_DESC() != null && orbisList.get(0).getITEM_STATUS_DESC().length() > 1) {
                     status_desc = orbisList.get(0).getITEM_STATUS_DESC();
                 }
-                
-                if (orbisList.get(0).getITEM_STATUS_DATE() != null)
-                {
+
+                if (orbisList.get(0).getITEM_STATUS_DATE() != null) {
                     status_date = orbisList.get(0).getITEM_STATUS_DATE();
                 }
-                if ((item.getBarcodeStart().length() == 0) || orbisList.get(0).getDISPLAY_CALL_NO().equalsIgnoreCase(item.getDisplayEnd()))
-                {
+                if ((item.getBarcodeStart().length() == 0) || orbisList.get(0).getDISPLAY_CALL_NO().equalsIgnoreCase(item.getDisplayEnd())) {
                     item.setDisplayEnd(orbisList.get(0).getDISPLAY_CALL_NO());
                     item.setNormalizedEnd(orbisList.get(0).getDISPLAY_CALL_NO());
                     item.setEndItemStatus(status_desc);
                     item.setEndItemStatusDate(status_date);
-                }
-                else
-                {
+                } else {
                     item.setDisplayStart(orbisList.get(0).getDISPLAY_CALL_NO());
                     item.setStartItemStatus(status_desc);
                     item.setStartItemStatusDate(status_date);
                 }
-            }
-
-            else if (orbisList.size() == 2)
-            {
+            } else if (orbisList.size() == 2) {
                 logger.debug("orbis list size 2");
 
-                if (item.getBarcodeStart().equals(orbisList.get(0).getITEM_BARCODE()))
-                {
+                if (item.getBarcodeStart().equals(orbisList.get(0).getITEM_BARCODE())) {
                     item.setDisplayStart(orbisList.get(0).getDISPLAY_CALL_NO());
                     item.setNormalizedStart(orbisList.get(0).getNORMALIZED_CALL_NO());
-                    
+
                     if (orbisList.get(0).getITEM_STATUS_DESC() != null) {
                         item.setStartItemStatus(orbisList.get(0).getITEM_STATUS_DESC());
                     }
-                   
+
                     if (orbisList.get(0).getITEM_STATUS_DATE() != null) {
                         item.setStartItemStatusDate(orbisList.get(0).getITEM_STATUS_DATE());
                     }
                 }
 
-                if (item.getBarcodeEnd().equals(orbisList.get(1).getITEM_BARCODE()))
-                {
+                if (item.getBarcodeEnd().equals(orbisList.get(1).getITEM_BARCODE())) {
 
                     item.setDisplayEnd(orbisList.get(1).getDISPLAY_CALL_NO());
                     item.setNormalizedEnd(orbisList.get(1).getNORMALIZED_CALL_NO());
-                    
+
                     if (orbisList.get(1).getITEM_STATUS_DESC() != null) {
                         item.setEndItemStatus(orbisList.get(1).getITEM_STATUS_DESC());
                     }
@@ -463,26 +395,19 @@ public class ShelvingApplication implements java.io.Serializable
                         item.setEndItemStatusDate(orbisList.get(1).getITEM_STATUS_DATE());
                     }
                 }
-            }
-            else
-            {
+            } else {
                 //System.out.println("ALERT: Wrong orbis size: " + orbisList.size());
             }
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             t.printStackTrace();
         }
 
         //Finally save item!
-        try
-        {
+        try {
             dao.save(item);
             context.addMessage(null, new FacesMessage("Saved Shelving Entry"));
             return "ok";
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.debug(e.getCause().toString());
             logger.debug(e.getMessage());
             context.addMessage(null, new FacesMessage("Error Saving Shelving Entry"));
@@ -490,84 +415,66 @@ public class ShelvingApplication implements java.io.Serializable
         }
     }
 
-    public void setHistoryAsList(List<Shelving> historyAsList)
-    {
+    public void setHistoryAsList(List<Shelving> historyAsList) {
         this.historyAsList = historyAsList;
     }
 
-    public void setItem(Shelving item)
-    {
+    public void setItem(Shelving item) {
         this.item = item;
     }
 
-    public void setLazyModel(LazyDataModel<Shelving> lazyModel)
-    {
+    public void setLazyModel(LazyDataModel<Shelving> lazyModel) {
         this.lazyModel = lazyModel;
     }
 
-    public void setLocationName(String locationName)
-    {
+    public void setLocationName(String locationName) {
         this.locationName = locationName;
     }
 
-    public void setLocationNames(List<String> locationNames)
-    {
+    public void setLocationNames(List<String> locationNames) {
         this.locationNames = locationNames;
     }
 
-    public void setLocationSelectOptions(SelectItem[] locationSelectOptions)
-    {
+    public void setLocationSelectOptions(SelectItem[] locationSelectOptions) {
         this.locationSelectOptions = locationSelectOptions;
     }
 
-    public void setNetidOptions(SelectItem[] netidOptions)
-    {
+    public void setNetidOptions(SelectItem[] netidOptions) {
         this.netidOptions = netidOptions;
     }
 
-    public void setOversizeAsList(List<String> oversizeAsList)
-    {
+    public void setOversizeAsList(List<String> oversizeAsList) {
         this.oversizeAsList = oversizeAsList;
     }
 
-    public void setSelectedHistory(Shelving selectedHistory)
-    {
+    public void setSelectedHistory(Shelving selectedHistory) {
         this.selectedHistory = selectedHistory;
     }
 
-    public void setTeamAsList(List<String> teamAsList)
-    {
+    public void setTeamAsList(List<String> teamAsList) {
         this.teamAsList = teamAsList;
     }
 
-    public void removeAllPaginated()
-    {
+    public void removeAllPaginated() {
         ShelvingDAO dao = new ShelvingHibernateDAO();
-        try
-        {
+        try {
             List<Shelving> historyAsList = dao.findAll(Shelving.class);
             logger.debug("WARNING: Deleting all Shelving History objects");
             dao.delete(historyAsList);
             historyAsList.clear();
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             logger.debug("Exception removing object");
             t.printStackTrace();
         }
     }
 
     // PF backed
-    public void removeElement()
-    {
+    public void removeElement() {
         ShelvingDAO dao = new ShelvingHibernateDAO();
-        try
-        {
+        try {
             dao.delete(selectedHistory);
             historyAsList.remove(selectedHistory);
-        }
-        catch (Throwable t)
-        {
+        } catch (Throwable t) {
             t.printStackTrace();
         }
     }

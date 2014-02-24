@@ -23,8 +23,7 @@ import edu.yale.sml.persistence.HistoryDAO;
 
 @ManagedBean
 @SessionScoped
-public class HistorySearchView implements java.io.Serializable
-{
+public class HistorySearchView implements java.io.Serializable {
 
     final static Logger logger = LoggerFactory.getLogger(HistorySearchView.class);
     private static final long serialVersionUID = 6842600101066936186L;
@@ -41,80 +40,66 @@ public class HistorySearchView implements java.io.Serializable
 
     private InputFile selectedFile;
 
-    public HistorySearchView()
-    {
+    public HistorySearchView() {
         super();
     }
 
-    public String getBarcodeSearchTerm()
-    {
+    public String getBarcodeSearchTerm() {
         return barcodeSearchTerm;
     }
 
-    public List<InputFile> getInputFileAsList()
-    {
+    public List<InputFile> getInputFileAsList() {
         return inputFileAsList;
     }
 
-    public List<InputFile> getInputFileList()
-    {
+    public List<InputFile> getInputFileList() {
         return inputFileAsList;
     }
 
-    public Date getSearchEndDate()
-    {
+    public Date getSearchEndDate() {
         return searchEndDate;
     }
 
-    public Date getSearchRunEndDate()
-    {
+    public Date getSearchRunEndDate() {
         return searchRunEndDate;
     }
 
-    public Date getSearchRunStartDate()
-    {
+    public Date getSearchRunStartDate() {
         return searchRunStartDate;
     }
 
-    public Date getSearchStartDate()
-    {
+    public Date getSearchStartDate() {
         return searchStartDate;
     }
 
-    public String getSearchTerm()
-    {
+    public String getSearchTerm() {
         return barcodeSearchTerm;
     }
 
-    public InputFile getSelectedFile()
-    {
+    public InputFile getSelectedFile() {
         return selectedFile;
     }
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
     }
 
     /**
      * Search
+     *
      * @return JSF ok navigate
      */
-    public String process()
-    {
-       
+    public String process() {
+
         //TODO convert datetime for SQL
 
         inputFileAsList = new ArrayList<InputFile>();
         FileDAO dao = new FileHibernateDAO(); // check
 
-        try
-        {
+        try {
             System.out.println("HistorySearchView. Building index on InputFile");
             dao.doIndex();
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             // TODO Auto-generated catch block
             System.out.println("\n HistorySearchView Error building index!");
             System.out.println(e.getCause() + e.getMessage());
@@ -122,13 +107,10 @@ public class HistorySearchView implements java.io.Serializable
         }
 
         List<InputFile> list = null;
-        try
-        {
+        try {
             System.out.println("Searching for : " + barcodeSearchTerm);
-            list = dao.search(barcodeSearchTerm);            
-        }
-        catch (Throwable e)
-        {
+            list = dao.search(barcodeSearchTerm);
+        } catch (Throwable e) {
             // TODO Auto-generated catch block
             System.out.println("Exception in history search view");
             e.printStackTrace();
@@ -141,13 +123,10 @@ public class HistorySearchView implements java.io.Serializable
         // used because there's unidirectional mapping
         HistoryDAO historyDAO = new HistoryHibernateDAO();
 
-        for (InputFile item : inputFileAsList)
-        {
+        for (InputFile item : inputFileAsList) {
             List<List<Integer>> historyIDs = historyDAO.findByFileId(item.getId());
-            for (List<Integer> historyIdentifiers : historyIDs)
-            {
-                for (Integer i : historyIdentifiers)
-                {
+            for (List<Integer> historyIdentifiers : historyIDs) {
+                for (Integer i : historyIdentifiers) {
                     item.getHistoryList().add(i.toString());
                 }
             }
@@ -156,48 +135,39 @@ public class HistorySearchView implements java.io.Serializable
         return "ok";
     }
 
-    public void setBarcodeSearchTerm(String barcodeSearchTerm)
-    {
+    public void setBarcodeSearchTerm(String barcodeSearchTerm) {
         this.barcodeSearchTerm = barcodeSearchTerm;
     }
 
-    public void setInputFileAsList(List<InputFile> inputFileAsList)
-    {
+    public void setInputFileAsList(List<InputFile> inputFileAsList) {
         this.inputFileAsList = inputFileAsList;
     }
 
-    public void setInputFileList(List<InputFile> inputFileList)
-    {
+    public void setInputFileList(List<InputFile> inputFileList) {
         this.inputFileAsList = inputFileList;
     }
 
-    public void setSearchEndDate(Date searchEndDate)
-    {
+    public void setSearchEndDate(Date searchEndDate) {
         this.searchEndDate = searchEndDate;
     }
 
-    public void setSearchRunEndDate(Date searchRunEndDate)
-    {
+    public void setSearchRunEndDate(Date searchRunEndDate) {
         this.searchRunEndDate = searchRunEndDate;
     }
 
-    public void setSearchRunStartDate(Date searchRunStartDate)
-    {
+    public void setSearchRunStartDate(Date searchRunStartDate) {
         this.searchRunStartDate = searchRunStartDate;
     }
 
-    public void setSearchStartDate(Date searchStartDate)
-    {
+    public void setSearchStartDate(Date searchStartDate) {
         this.searchStartDate = searchStartDate;
     }
 
-    public void setSearchTerm(String searchTerm)
-    {
+    public void setSearchTerm(String searchTerm) {
         this.barcodeSearchTerm = searchTerm;
     }
 
-    public void setSelectedFile(InputFile selectedFile)
-    {
+    public void setSelectedFile(InputFile selectedFile) {
         this.selectedFile = selectedFile;
     }
 }

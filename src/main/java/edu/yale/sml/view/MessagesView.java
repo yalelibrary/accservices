@@ -8,6 +8,7 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -21,22 +22,19 @@ import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
 
 @ManagedBean
 @SessionScoped
-public class MessagesView
-{
+public class MessagesView {
 
     List<Messages> messagesList = new ArrayList<Messages>();
     List<Log> logList = new ArrayList<Log>();
     HashMap hashMap = new HashMap<String, String>();
     Properties props = new Properties(); // use me
 
-    public List findAll()
-    {
+    public List findAll() {
         return messagesList;
     }
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
         MessagesDAO dao = new MessagesHibernateDAO();
 
         GenericDAO genericDAO = new GenericHibernateDAO();
@@ -44,67 +42,54 @@ public class MessagesView
 
         logList = new ArrayList<Log>();
 
-        try
-        {
+        try {
             messagesList = dao.findAll(Messages.class);
 
             logList = genericDAO.findAll(Log.class);
 
-            for (Messages m : messagesList)
-            {
+            for (Messages m : messagesList) {
                 hashMap.put(m.getNAME(), m.getVALUE()); // refer to as #{messagesView.hashMap.get("form.search.insructions"); or whatever jsf shorthand
             }
 
             props.putAll(hashMap); // wtf
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public List<Log> getLogList()
-    {
+    public List<Log> getLogList() {
         return logList;
     }
 
-    public void setLogList(List<Log> logList)
-    {
+    public void setLogList(List<Log> logList) {
         this.logList = logList;
     }
 
-    public Properties getProps()
-    {
+    public Properties getProps() {
         return props;
     }
 
-    public void setProps(Properties props)
-    {
+    public void setProps(Properties props) {
         this.props = props;
     }
 
-    public List<Messages> getMessagesList()
-    {
+    public List<Messages> getMessagesList() {
         return messagesList;
     }
 
-    public void setMessagesList(List<Messages> messagesList)
-    {
+    public void setMessagesList(List<Messages> messagesList) {
         this.messagesList = messagesList;
     }
 
-    public HashMap getHashMap()
-    {
+    public HashMap getHashMap() {
         return hashMap;
     }
 
-    public void setHashMap(HashMap hashMap)
-    {
+    public void setHashMap(HashMap hashMap) {
         this.hashMap = hashMap;
     }
 
-    public String updateAll()
-    {
+    public String updateAll() {
         MessagesDAO dao = new MessagesHibernateDAO();
         dao.updateAll(messagesList);
         hashMap.clear();
@@ -113,29 +98,21 @@ public class MessagesView
     }
 
     // TODO tx handling
-    public void saveAll()
-    {
-        try
-        {
-            try
-            {
+    public void saveAll() {
+        try {
+            try {
                 Session s = HibernateSQLServerUtil.getSessionFactory().openSession();
                 Transaction t = s.beginTransaction();
-                for (Messages m : messagesList)
-                {
+                for (Messages m : messagesList) {
                     s.save(m);
                 }
                 s.flush();
                 t.commit();
                 s.close();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

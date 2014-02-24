@@ -19,18 +19,16 @@ import java.io.IOException;
  */
 @ManagedBean
 @RequestScoped
-public class RemoveReportView
-{
+public class RemoveReportView {
     Logger logger = LoggerFactory.getLogger(RemoveReportView.class);
 
     /**
      * Removes historyView.
      *
-     * @see HistoryView remove methods. Use HistoryView instead.
      * @param history
+     * @see HistoryView remove methods. Use HistoryView instead.
      */
-    public String save(History history)
-    {
+    public String save(History history) {
         logger.debug("Request for deletion for report{}=", history.toString());
 
         //TODO proper auth check
@@ -38,22 +36,19 @@ public class RemoveReportView
             logger.debug("Ignoring delete for this netid");
             return "failed";
         }
-        try
-        {
+        try {
             remove(history);
             logger.debug("Deleted report");
             return "ok";
 
-        } catch (Throwable throwable)
-        {
+        } catch (Throwable throwable) {
             logger.error("Error deleting report", throwable.getMessage());
             throwable.printStackTrace();  //TODO
         }
         return "failed";
     }
 
-    public void remove(History history) throws Throwable
-    {
+    public void remove(History history) throws Throwable {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         historyDAO.delete(history);
     }

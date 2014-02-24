@@ -8,42 +8,37 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
 @FacesValidator("edu.yale.sml.jsf.ValidatorBean")
-public class ValidatorBean implements Validator
-{
+public class ValidatorBean implements Validator {
 
-	public Object getAsObject(FacesContext context, UIComponent component,
-			String value)
-	{
-		return (value.compareTo("true") == 0) ? 1 : 0;		
-	}
+    public Object getAsObject(FacesContext context, UIComponent component,
+                              String value) {
+        return (value.compareTo("true") == 0) ? 1 : 0;
+    }
 
-	/**
-	 * JSF Text converter
-	 * 
-	 * @param context
-	 * @param component
-	 * @param value
-	 * @return Empty String if input value = 0
-	 */
-	@Deprecated
-	public String getAsString(FacesContext context, UIComponent component,
-			Object value)
-	{
-		return "";
-	}
+    /**
+     * JSF Text converter
+     *
+     * @param context
+     * @param component
+     * @param value
+     * @return Empty String if input value = 0
+     */
+    @Deprecated
+    public String getAsString(FacesContext context, UIComponent component,
+                              Object value) {
+        return "";
+    }
 
-	@Deprecated
-	@Override
-	public void validate(FacesContext context, UIComponent component,
-			Object value) throws ValidatorException
-	{
-		String val = (String) value;
-		if (val.equals("null"))
-		{
-			FacesMessage msg = new FacesMessage("validation failed.",
-					"Invalid format.");
-			msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-			throw new ValidatorException(msg);
-		}
-	}
+    @Deprecated
+    @Override
+    public void validate(FacesContext context, UIComponent component,
+                         Object value) throws ValidatorException {
+        String val = (String) value;
+        if (val.equals("null")) {
+            FacesMessage msg = new FacesMessage("validation failed.",
+                    "Invalid format.");
+            msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+            throw new ValidatorException(msg);
+        }
+    }
 }

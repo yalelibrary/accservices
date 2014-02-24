@@ -13,13 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 //TODO should this be made abstract?
-public class LogoutFilter implements Filter
-{
+public class LogoutFilter implements Filter {
 
     final static Logger logger = LoggerFactory.getLogger(LogoutFilter.class);
 
-    public LogoutFilter()
-    {
+    public LogoutFilter() {
         super();
     }
 
@@ -30,33 +28,26 @@ public class LogoutFilter implements Filter
      * 
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
-    {
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        if (request.getSession().getAttribute("netid") != null)
-        {
-            try
-            {
+        if (request.getSession().getAttribute("netid") != null) {
+            try {
                 String user = request.getSession().getAttribute("netid").toString();
                 request.getSession().removeAttribute("netid");
                 request.getSession().setAttribute("loggedout", "true");
                 logger.debug("[LogoutFilter] -- logged out : " + user);
-            }
-            catch (Exception e1)
-            {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
         }
         chain.doFilter(req, res);
     }
 
-    public void init(FilterConfig config) throws ServletException
-    {
+    public void init(FilterConfig config) throws ServletException {
     }
 
     @Override
-    public void destroy()
-    {
+    public void destroy() {
         // TODO Auto-generated method stub
 
     }

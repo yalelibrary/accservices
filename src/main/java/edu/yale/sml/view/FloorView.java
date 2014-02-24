@@ -17,8 +17,7 @@ import edu.yale.sml.persistence.GenericDAO;
 
 @ManagedBean
 @ViewScoped
-public class FloorView implements java.io.Serializable
-{
+public class FloorView implements java.io.Serializable {
 
     private static final long serialVersionUID = 6712445546185842422L;
 
@@ -29,152 +28,120 @@ public class FloorView implements java.io.Serializable
     List<Floor> locationAsList = new ArrayList<Floor>();
 
     Floor locationCatalog; // for primefaces -- not sure if this is
-                              // the best way
+    // the best way
     String name = "";
 
-    public void addInfo(ActionEvent actionEvent)
-    {
+    public void addInfo(ActionEvent actionEvent) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Changes Saved."));
     }
 
     // Used by SearchView
-    public List findAll()
-    {
+    public List findAll() {
         initialize();
         return locationAsList;
     }
 
     // Used by SearchView
 
-    public List<String> findFloorNames()
-    {
+    public List<String> findFloorNames() {
         initialize();
         List<String> locationNameList = new ArrayList<String>();
-        for (Floor l : locationAsList)
-        {
+        for (Floor l : locationAsList) {
             locationNameList.add(l.getName());
         }
         return locationNameList;
     }
 
-    public Date getDate()
-    {
+    public Date getDate() {
         return date;
     }
 
-    public String getEditor()
-    {
+    public String getEditor() {
         return editor;
     }
 
-    public List<Floor> getFloorAsList()
-    {
+    public List<Floor> getFloorAsList() {
         return locationAsList;
     }
 
-    public List<Floor> getLocationAsList()
-    {
+    public List<Floor> getLocationAsList() {
         return locationAsList;
     }
 
-    public void setLocationAsList(List<Floor> locationAsList)
-    {
+    public void setLocationAsList(List<Floor> locationAsList) {
         this.locationAsList = locationAsList;
     }
 
-    public Floor getLocationCatalog()
-    {
+    public Floor getLocationCatalog() {
         return locationCatalog;
     }
 
-    public void setLocationCatalog(Floor locationCatalog)
-    {
+    public void setLocationCatalog(Floor locationCatalog) {
         this.locationCatalog = locationCatalog;
     }
 
-    public Floor getFloorCatalog()
-    {
+    public Floor getFloorCatalog() {
         return locationCatalog;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
         GenericDAO<Floor> dao = new GenericHibernateDAO<Floor>();
-        try
-        {
+        try {
             locationAsList = dao.findAll(Floor.class);
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public void remove(Floor locationCatalog)
-    {
+    public void remove(Floor locationCatalog) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Deleted!"));
         GenericDAO<Floor> dao = new GenericHibernateDAO<Floor>();
-        try
-        {
+        try {
             dao.delete(locationCatalog);
             locationAsList.remove(locationCatalog);
-        }
-       
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
 
-    public void saveAll()
-    {
-        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null)
-        {
+    public void saveAll() {
+        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null) {
             editor = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString();
         }
 
         Floor item = new Floor(name, editor, date);
-        try
-        {
+        try {
             GenericDAO<Floor> dao = new GenericHibernateDAO<Floor>();
-            dao.save(item);            
+            dao.save(item);
             initialize();
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
 
-    public void setDate(Date date)
-    {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public void setEditor(String editor)
-    {
+    public void setEditor(String editor) {
         this.editor = editor;
     }
 
-    public void setFloorAsList(List<Floor> locationAsList)
-    {
+    public void setFloorAsList(List<Floor> locationAsList) {
         this.locationAsList = locationAsList;
     }
 
-    public void setFloorCatalog(Floor locationCatalog)
-    {
+    public void setFloorCatalog(Floor locationCatalog) {
         this.locationCatalog = locationCatalog;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 }

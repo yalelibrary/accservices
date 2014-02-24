@@ -15,75 +15,51 @@ import org.slf4j.LoggerFactory;
 
 @ManagedBean(name = "error")
 @javax.faces.bean.ViewScoped
-public class ErrorBean
-{
+public class ErrorBean {
 
     final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.view.ErrorBean");
 
-    private void fillStackTrace(Throwable t, PrintWriter w)
-    {
-        if (t == null)
-        {
+    private void fillStackTrace(Throwable t, PrintWriter w) {
+        if (t == null) {
             return;
         }
 
-        if (t instanceof ServletException)
-        {
+        if (t instanceof ServletException) {
             Throwable cause = ((ServletException) t).getRootCause();
-            if (cause != null)
-            {
+            if (cause != null) {
                 w.println("Root cause:");
                 fillStackTrace(cause, w);
             }
-        }
-        else if (t instanceof SQLException)
-        {
+        } else if (t instanceof SQLException) {
             Throwable cause = ((SQLException) t).getNextException();
-            if (cause != null)
-            {
+            if (cause != null) {
                 w.println("Next exception:");
                 fillStackTrace(cause, w);
             }
-        }
-        else if (t instanceof NullPointerException)
-        {
+        } else if (t instanceof NullPointerException) {
             Throwable cause = t.getCause();
-        }
-
-        else if (t instanceof org.hibernate.JDBCException)
-        {
+        } else if (t instanceof org.hibernate.JDBCException) {
             w.append(t.getMessage());
             return;
-        }
-
-        else if (t instanceof org.hibernate.HibernateException)
-        {
+        } else if (t instanceof org.hibernate.HibernateException) {
             // logger.debug(t.getMessage());
             if (t.getMessage().contains("org.hibernate.exception.JDBCConnectionException")) // noop
             {
                 w.append("Error reaching Database Server." + t.getMessage());
                 return;
             }
-        }
-
-        else if (t instanceof edu.yale.sml.view.NullFileException)
-        {
+        } else if (t instanceof edu.yale.sml.view.NullFileException) {
             w.append("error");
             return;
         }
 
         // note business logic creep
-        else if (t instanceof java.net.UnknownHostException)
-        {
+        else if (t instanceof java.net.UnknownHostException) {
             w.append(t.getMessage());
             return;
-        }
-
-        else
-        {
+        } else {
             Throwable cause = t.getCause();
-            if (cause != null)
-            {
+            if (cause != null) {
                 w.println("Cause of Exception:");
                 fillStackTrace(cause, w); // recursive
             }
@@ -94,8 +70,7 @@ public class ErrorBean
 
     }
 
-    public ErrorBean()
-    {
+    public ErrorBean() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -103,8 +78,7 @@ public class ErrorBean
     /*
      * For #{error.message} Depends on messages
      */
-    public String getMessage()
-    {
+    public String getMessage() {
         FacesContext context = FacesContext.getCurrentInstance();
         // JSF puts this info in the request map
         Map<String, Object> request = context.getExternalContext().getRequestMap();
@@ -115,33 +89,18 @@ public class ErrorBean
         if (ex.getMessage().contains("Form Validation Error")) // TODO not ideal -- should be e.getcause. == nullfileexception
         {
             sb.append("ShelfScan-E01 You did not specify a file.\n");
-        }
-
-        else if (ex.getMessage().contains("NullFileException")) // TODO not ideal -- should be e.getcause. == nullfileexception
+        } else if (ex.getMessage().contains("NullFileException")) // TODO not ideal -- should be e.getcause. == nullfileexception
         {
             sb.append("ShelfScan-E01 You did not specify a file.\n");
-        }
-
-        else if (ex.getMessage().contains("Hibernate Serialization"))
-        {
+        } else if (ex.getMessage().contains("Hibernate Serialization")) {
             sb.append("ShelfScan-E02 Error saving or serializing values to database.\n");
-        }
-
-        else if (ex.getMessage().contains("CAS"))
-        {
+        } else if (ex.getMessage().contains("CAS")) {
             sb.append("ShelfScan-E03 Error contacting CAS server.\n");
-        }
-
-        else if (ex.getMessage().contains("org.hibernate.exception.JDBCConnectionException"))
-        {
+        } else if (ex.getMessage().contains("org.hibernate.exception.JDBCConnectionException")) {
             sb.append("ShelfScan-E05 Error connecting with Database.\n");
-        }
-        else if (ex.getMessage().contains("org.hibernate.exception.GenericJDBCException"))
-        {
+        } else if (ex.getMessage().contains("org.hibernate.exception.GenericJDBCException")) {
             sb.append("ShelfScan-E04 Error initiating connection with one or more databases.\n");
-        }
-        else
-        {
+        } else {
             sb.append("An exception occured while processing the request. Click on link to notify admin. . .");
         }
         return sb.toString();
@@ -150,8 +109,7 @@ public class ErrorBean
     /*
      * For #{error.stackTrace}
      */
-    public String getStackTrace()
-    {
+    public String getStackTrace() {
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> request = context.getExternalContext().getRequestMap();
         Throwable ex = (Throwable) request.get("javax.servlet.error.exception"); // !!
@@ -162,8 +120,7 @@ public class ErrorBean
     }
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
     }
 
 }

@@ -11,23 +11,19 @@ import org.apache.poi.hssf.util.HSSFColor;
 
 @ManagedBean
 @ApplicationScoped
-public class ExcelProcessor
-{
+public class ExcelProcessor {
 
-    public ExcelProcessor()
-    {
+    public ExcelProcessor() {
     }
 
-    public void postProcessXLS(Object document)
-    {
+    public void postProcessXLS(Object document) {
         HSSFWorkbook wb = (HSSFWorkbook) document;
         HSSFSheet sheet = wb.getSheetAt(0);
         HSSFRow header = sheet.getRow(0);
         HSSFCellStyle cellStyle = wb.createCellStyle();
         cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        for (int i = 0; i < header.getPhysicalNumberOfCells(); i++)
-        {
+        for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
             header.getCell(i).setCellStyle(cellStyle);
         }
         sheet.autoSizeColumn(0);
@@ -35,17 +31,15 @@ public class ExcelProcessor
         sheet.setColumnWidth(0, 600);
         sheet.setColumnWidth(1, 800);
     }
-    
-    public void preProcessXLS(Object document)
-    {
+
+    public void preProcessXLS(Object document) {
         HSSFWorkbook wb = (HSSFWorkbook) document;
         HSSFSheet sheet = wb.getSheetAt(0);
         HSSFRow header = sheet.getRow(0);
         HSSFCellStyle cellStyle = wb.createCellStyle();
         cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
         cellStyle.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
-        for (int i = 0; i < header.getPhysicalNumberOfCells(); i++)
-        {
+        for (int i = 0; i < header.getPhysicalNumberOfCells(); i++) {
             header.getCell(i).setCellStyle(cellStyle);
         }
     }

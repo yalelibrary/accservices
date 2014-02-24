@@ -6,8 +6,7 @@ import com.google.common.collect.Multimap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataLists implements java.io.Serializable
-{
+public class DataLists implements java.io.Serializable {
 
     private static final long serialVersionUID = 2524269432605035990L;
 
@@ -20,7 +19,7 @@ public class DataLists implements java.io.Serializable
     private ShelvingError shelvingError = new ShelvingError();
     private List<OrbisRecord> suppressedList = new ArrayList<OrbisRecord>(); // of Report?
     private List<Report> enumWarnings = new ArrayList<Report>();
-    private Multimap<String,String> barcodesAsMap = ArrayListMultimap.create(); //currently only {barcode:itemstatus}
+    private Multimap<String, String> barcodesAsMap = ArrayListMultimap.create(); //currently only {barcode:itemstatus}
 
 
     public Multimap<String, String> getBarcodesAsMap() {
@@ -31,97 +30,78 @@ public class DataLists implements java.io.Serializable
         this.barcodesAsMap = barcodesAsMap;
     }
 
-    public List<Report> getEnumWarnings()
-    {
+    public List<Report> getEnumWarnings() {
         return enumWarnings;
     }
 
-    public void setEnumWarnings(List<Report> enumWarnings)
-    {
+    public void setEnumWarnings(List<Report> enumWarnings) {
         this.enumWarnings = enumWarnings;
     }
 
-    public DataLists()
-    {
+    public DataLists() {
     }
 
-    public List<OrbisRecord> getCatalogAsList()
-    {
+    public List<OrbisRecord> getCatalogAsList() {
         return catalogAsList;
     }
 
-    public List<OrbisRecord> getCatalogSortedRaw()
-    {
+    public List<OrbisRecord> getCatalogSortedRaw() {
         return catalogSortedRaw;
     }
 
-    public List<Report> getCulpritList()
-    {
+    public List<Report> getCulpritList() {
         return culpritList;
     }
 
-    public List<OrbisRecord> getMarkedCatalogAsList()
-    {
+    public List<OrbisRecord> getMarkedCatalogAsList() {
         return markedCatalogAsList;
     }
 
-    public List<Report> getReportCatalogAsList()
-    {
+    public List<Report> getReportCatalogAsList() {
         return reportCatalogAsList;
     }
 
-    public ShelvingError getShelvingError()
-    {
+    public ShelvingError getShelvingError() {
         return shelvingError;
     }
 
-    public List<OrbisRecord> getSuppressedList()
-    {
+    public List<OrbisRecord> getSuppressedList() {
         return suppressedList;
     }
 
-    public void setCatalogAsList(List<OrbisRecord> catalogAsList)
-    {
+    public void setCatalogAsList(List<OrbisRecord> catalogAsList) {
         this.catalogAsList = catalogAsList;
     }
 
-    public void setCatalogSortedRaw(List<OrbisRecord> catalogSortedRaw)
-    {
+    public void setCatalogSortedRaw(List<OrbisRecord> catalogSortedRaw) {
         this.catalogSortedRaw = catalogSortedRaw;
     }
 
-    public void setCulpritList(List<Report> culpritList)
-    {
+    public void setCulpritList(List<Report> culpritList) {
         this.culpritList = culpritList;
     }
 
-    public void setMarkedCatalogAsList(List<OrbisRecord> markedCatalogAsList)
-    {
+    public void setMarkedCatalogAsList(List<OrbisRecord> markedCatalogAsList) {
         this.markedCatalogAsList = markedCatalogAsList;
     }
 
-    public List<OrbisRecord> getNullResultBarcodes()
-    {
+    public List<OrbisRecord> getNullResultBarcodes() {
         return nullResultBarcodes;
     }
 
-    public void setNullResultBarcodes(List<OrbisRecord> nullResultBarcodes)
-    {
+    public void setNullResultBarcodes(List<OrbisRecord> nullResultBarcodes) {
         this.nullResultBarcodes = nullResultBarcodes;
     }
 
-    public void setReportCatalogAsList(List<Report> reportCatalogAsList)
-    {
+    public void setReportCatalogAsList(List<Report> reportCatalogAsList) {
         this.reportCatalogAsList = reportCatalogAsList;
     }
 
-    public void setShelvingError(ShelvingError shelvingError)
-    {
+    public void setShelvingError(ShelvingError shelvingError) {
         this.shelvingError = shelvingError;
     }
 
-    public void setSuppressedList(List<OrbisRecord> suppressedList)
-    {
+    public void setSuppressedList(List<OrbisRecord> suppressedList) {
         this.suppressedList = suppressedList;
     }
 

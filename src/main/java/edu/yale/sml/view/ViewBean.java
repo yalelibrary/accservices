@@ -25,8 +25,7 @@ import edu.yale.sml.persistence.HistoryDAO;
 
 @ManagedBean
 @ViewScoped
-public class ViewBean implements java.io.Serializable
-{
+public class ViewBean implements java.io.Serializable {
 
     private static final long serialVersionUID = 6223995917417414208L;
 
@@ -37,49 +36,40 @@ public class ViewBean implements java.io.Serializable
     private Integer ID = 0;
 
     @PostConstruct
-    public void initialize()
-    {
+    public void initialize() {
         historyDAO = new HistoryHibernateDAO();
         ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id")); // >
         historyCatalog = new History();
-        try
-        {
+        try {
             historyCatalog = historyDAO.findById(ID).get(0); // TODO WARNING
-                                                             // id
+            // id
             byte[] b = historyCatalog.getSEARCHVIEW();
             ObjectInputStream objectIn = null;
             if (b != null)
                 objectIn = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(b));
             Object deSerializedObject = objectIn.readObject();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public Integer getID()
-    {
+    public Integer getID() {
         return ID;
     }
 
-    public void setID(Integer iD)
-    {
+    public void setID(Integer iD) {
         ID = iD;
     }
 
-    public History getHistoryCatalog()
-    {
+    public History getHistoryCatalog() {
         return historyCatalog;
     }
 
-    public void setHistoryCatalog(History historyCatalog)
-    {
+    public void setHistoryCatalog(History historyCatalog) {
         this.historyCatalog = historyCatalog;
     }
 
-    public String save()
-    {
+    public String save() {
         historyDAO.update(historyCatalog);
         return "ok";
     }

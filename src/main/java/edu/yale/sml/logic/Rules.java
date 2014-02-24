@@ -38,7 +38,7 @@ public class Rules {
                 || desc.startsWith("Lost") || desc.startsWith("Recall Request") || desc.startsWith("Overdue") || desc.startsWith("Withdrawn") || desc.startsWith("Overdue")) {
             return false;
         } else if (desc.equals("Not Charged") || desc.equals("Discharged") || desc.startsWith("Not Charged") || desc.startsWith("Discharged") || desc.startsWith("Circulation Review") || desc.startsWith("Cataloging Review") ||
-        desc.startsWith("Damaged")   ) {
+                desc.startsWith("Damaged")) {
             // System.out.println("Invalid Status:  " + desc);
             return true;
         }
@@ -201,7 +201,7 @@ public class Rules {
 
             if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
                 if (item.getITEM_STATUS_DATE() != null && scanDate.before(item.getITEM_STATUS_DATE())
-                        && (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime()) > 86400000)  {
+                        && (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime()) > 86400000) {
                     foundError = true;
                 }
             } else {

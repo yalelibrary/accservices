@@ -19,23 +19,19 @@ import edu.yale.sml.model.History;
 import edu.yale.sml.persistence.*;
 import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
 
-public final class HistoryHibernateDAO extends GenericHibernateDAO<History> implements java.io.Serializable, HistoryDAO
-{
+public final class HistoryHibernateDAO extends GenericHibernateDAO<History> implements java.io.Serializable, HistoryDAO {
 
     private static final long serialVersionUID = -4044166542029569019L;
 
-    public HistoryHibernateDAO()
-    {
+    public HistoryHibernateDAO() {
         super();
     }
 
     @Override
-    public void update(History history)
-    {
+    public void update(History history) {
         Session s = null;
         Transaction tx = null;
-        try
-        {
+        try {
             s = HibernateSQLServerUtil.getSessionFactory().openSession();
             tx = s.beginTransaction();
             History oldObj = (History) s.load(History.class, history.getID());
@@ -49,26 +45,17 @@ public final class HistoryHibernateDAO extends GenericHibernateDAO<History> impl
             oldObj.setSUPPRESS(history.getSUPPRESS());
             s.flush();
             tx.commit();
-        }
-        catch (HibernateException e)
-        {
+        } catch (HibernateException e) {
             e.printStackTrace();
-            try
-            {
-                if (tx != null)
-                {
+            try {
+                if (tx != null) {
                     tx.rollback();
                 }
-            }
-            catch (Throwable rt)
-            {
+            } catch (Throwable rt) {
                 rt.printStackTrace();
             }
-        }
-        finally
-        {
-            if (s != null)
-            {
+        } finally {
+            if (s != null) {
                 s.close();
             }
         }
@@ -76,230 +63,168 @@ public final class HistoryHibernateDAO extends GenericHibernateDAO<History> impl
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<History> findById(Integer ID)
-    {
+    public List<History> findById(Integer ID) {
         Session session = null;
-        try
-        {
+        try {
             session = HibernateSQLServerUtil.getSessionFactory().openSession();
             Query q = session.createQuery("from History where ID = " + ID);
             return q.list();
-        }
-        catch (HibernateException e)
-        {
+        } catch (HibernateException e) {
             e.printStackTrace();
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
 
     // TODO remove if one-to-many mapping is established between InputFile and History
     @Override
-    public List<List<Integer>> findByFileId(int id)
-    {
+    public List<List<Integer>> findByFileId(int id) {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
         List<ArrayList<Map<String, Object>>> aggregateList = new ArrayList<ArrayList<Map<String, Object>>>();
-        try
-        {
+        try {
             Query q = session.createQuery("select new list (h.ID) from edu.yale.sml.model.History h where File_ID = " + id);
             List<List<Integer>> historyIDs = q.list();
             return historyIDs;
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
 
-    public List<List<Integer>> findByFileIdCrieria(int id, Date scanStartDate, Date scanEndDate, Date runStartDate, Date runEndDate)
-    {
+    public List<List<Integer>> findByFileIdCrieria(int id, Date scanStartDate, Date scanEndDate, Date runStartDate, Date runEndDate) {
 
         logger.debug("Searching by criteria");
 
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
         List<ArrayList<Map<String, Object>>> aggregateList = new ArrayList<ArrayList<Map<String, Object>>>();
-        try
-        {
+        try {
             Criteria criteria = session.createCriteria("select new list (h.ID) from edu.yale.sml.model.History h where File_ID = " + id);
 
-            if (scanStartDate != null)
-            {
+            if (scanStartDate != null) {
                 criteria.add(Expression.ge("SCANDATE", scanStartDate));
             }
 
-            if (scanEndDate != null)
-            {
+            if (scanEndDate != null) {
                 criteria.add(Expression.le("SCANDATE", scanEndDate));
 
             }
 
             List<List<Integer>> historyIDs = criteria.list();
             return historyIDs;
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
 
-    public List<List<Integer>> findByFileId(int id, Date scanStartDate, Date scanEndDate, Date runStartDate, Date runEndDate)
-    {
+    public List<List<Integer>> findByFileId(int id, Date scanStartDate, Date scanEndDate, Date runStartDate, Date runEndDate) {
 
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try
-        {
+        try {
             Query q = session.createQuery("select new list (h.ID) from edu.yale.sml.model.History h where " + "h.SCANDATE between" + scanStartDate + "and" + scanEndDate + " and " + "File_ID = " + id);
             List<List<Integer>> historyIDs = q.list();
             return historyIDs;
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
-    
+
     /* Used for Pagination*/
     @Override
-    public int count()
-    {
+    public int count() {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try
-        {
-            return ((Long)session.createQuery("select count(*) from  edu.yale.sml.model.History h").uniqueResult()).intValue();
-        }
-        catch (Throwable e)
-        {
+        try {
+            return ((Long) session.createQuery("select count(*) from  edu.yale.sml.model.History h").uniqueResult()).intValue();
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
 
-        
+
     @SuppressWarnings("unchecked")
     @Override
-    public List<String> findUniqueNetIds()
-    {
+    public List<String> findUniqueNetIds() {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try
-        {
+        try {
             return ((List<String>) session.createQuery("select distinct h.NETID from edu.yale.sml.model.History h").list());
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
-    
-    
+
+
     @SuppressWarnings("unchecked")
     @Override
-    public List<String> findUniqueLocations()
-    {
+    public List<String> findUniqueLocations() {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try
-        {
+        try {
             return ((List<String>) session.createQuery("select distinct h.SCANLOCATION from edu.yale.sml.model.History h").list());
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
-    public int findUniqueLocationsOccurrence(String location)
-    {
+    public int findUniqueLocationsOccurrence(String location) {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try
-        {
-            Query query =  session.createQuery("select count(h) from  edu.yale.sml.model.History h where h.SCANLOCATION = :param");
+        try {
+            Query query = session.createQuery("select count(h) from  edu.yale.sml.model.History h where h.SCANLOCATION = :param");
             query.setParameter("param", location);
-            return ((Long)query.uniqueResult()).intValue();
-        }
-        catch (Throwable e)
-        {
+            return ((Long) query.uniqueResult()).intValue();
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
 
     @Override
-    public Number findUniqueNetIdOccurrence(String s)
-    {
+    public Number findUniqueNetIdOccurrence(String s) {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try
-        {
-            Query query =  session.createQuery("select count(h) from  edu.yale.sml.model.History h where h.NETID = :param");
+        try {
+            Query query = session.createQuery("select count(h) from  edu.yale.sml.model.History h where h.NETID = :param");
             query.setParameter("param", s);
-            return ((Long)query.uniqueResult()).intValue();
-        }
-        catch (Throwable e)
-        {
+            return ((Long) query.uniqueResult()).intValue();
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }
 
     @Override
-    public Number findMonthlyScanByNetId(String arg0, Date arg1, Date arg2)
-    {
+    public Number findMonthlyScanByNetId(String arg0, Date arg1, Date arg2) {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try
-        {
-            Query query =  session.createQuery("select count(h) from  edu.yale.sml.model.History h where h.NETID = :param and h.SCANDATE between :paramStartDate and :paramEndDate");
+        try {
+            Query query = session.createQuery("select count(h) from  edu.yale.sml.model.History h where h.NETID = :param and h.SCANDATE between :paramStartDate and :paramEndDate");
             query.setParameter("param", arg0);
             query.setParameter("paramStartDate", arg1);
             query.setParameter("paramEndDate", arg2);
-            return ((Long)query.uniqueResult()).intValue();
-        }
-        catch (Throwable e)
-        {
+            return ((Long) query.uniqueResult()).intValue();
+        } catch (Throwable e) {
             logger.debug("Exception in findByfileID" + e.getMessage() + ":" + e.getCause());
             throw new HibernateException(e);
-        }
-        finally
-        {
+        } finally {
             session.close();
         }
     }

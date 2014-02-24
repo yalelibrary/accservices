@@ -23,8 +23,8 @@ public class ShelvingErrorPopulator {
     public static final int MIN_ERROR_DISPLAY = 2;
 
     /**
-    * Get error count.
-    */
+     * Get error count.
+     */
     public ShelvingError populateShelvingError(List<Report> list, String finalLocationName,
                                                Date scanDate, String oversize, int nullBarcodes, int suppressedErrors) {
         logger.debug("Calculating or setting report header summary count.");
@@ -84,19 +84,19 @@ public class ShelvingErrorPopulator {
                     if (item.getITEM_STATUS_DATE() != null) {
                         if (scanDate.before(item.getITEM_STATUS_DATE())) {
                             //TODO not sure if item.getITEM_STATUS_DATE gets time or just date.
-                            if (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime() > 86400000)  {
+                            if (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime() > 86400000) {
                                 status_errors++;
-                             logger.debug("Incremented count for: " + item.getITEM_BARCODE() + ":" +  item.getITEM_STATUS_DESC());
+                                logger.debug("Incremented count for: " + item.getITEM_BARCODE() + ":" + item.getITEM_STATUS_DESC());
                             }
                         }
                     } else {
-                         logger.debug("Item Status Desc valid, but status date Null. Not sure what to do in this case: "
-                         + item.getITEM_BARCODE() + " , with desc:" +
-                         item.getITEM_STATUS_DESC());
+                        logger.debug("Item Status Desc valid, but status date Null. Not sure what to do in this case: "
+                                + item.getITEM_BARCODE() + " , with desc:" +
+                                item.getITEM_STATUS_DESC());
                     }
                 } else // invalid status
                 {
-                    logger.debug("Incremented count for: " + item.getITEM_BARCODE() + ":" +  item.getITEM_STATUS_DESC());
+                    logger.debug("Incremented count for: " + item.getITEM_BARCODE() + ":" + item.getITEM_STATUS_DESC());
                     status_errors++;
                 }
             } else {

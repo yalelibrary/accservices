@@ -7,51 +7,41 @@ import org.hibernate.service.ServiceRegistryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HibernateSQLServerUtil
-{
+public class HibernateSQLServerUtil {
 
-    final static Logger logger = LoggerFactory.getLogger(HibernateSQLServerUtil.class); 
+    final static Logger logger = LoggerFactory.getLogger(HibernateSQLServerUtil.class);
 
-    private static final SessionFactory sessionFactory = buildSessionFactory();	
-    	
-	private static SessionFactory buildSessionFactory()
-	{
-	
-	 	logger.debug("Building Hibernate Session Factory");
+    private static final SessionFactory sessionFactory = buildSessionFactory();
 
-		try
-		{
-			Configuration configuration = new Configuration();
+    private static SessionFactory buildSessionFactory() {
+
+        logger.debug("Building Hibernate Session Factory");
+
+        try {
+            Configuration configuration = new Configuration();
             configuration.configure("shelfscan.sqlserver.hibernate.cfg.xml");
             ServiceRegistryBuilder serviceRegistryBuilder = new ServiceRegistryBuilder().applySettings(configuration
-                            .getProperties());
+                    .getProperties());
             SessionFactory sessionFactory = configuration
-                            .buildSessionFactory(serviceRegistryBuilder.buildServiceRegistry());
+                    .buildSessionFactory(serviceRegistryBuilder.buildServiceRegistry());
             return sessionFactory;
-		}
-		catch (Throwable ex)
-		{
-			logger.error("Exception encountered while building session factory");
+        } catch (Throwable ex) {
+            logger.error("Exception encountered while building session factory");
             ex.printStackTrace();
-			throw new ExceptionInInitializerError(ex); //or ex.
-		}
-	}
+            throw new ExceptionInInitializerError(ex); //or ex.
+        }
+    }
 
-	public static SessionFactory getSessionFactory()
-	{
-		return sessionFactory;
-	}
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
 
-	public static void shutdown()
-	{
-		logger.debug("Shutting down Hibernate Session Factory");
-		try
-		{
-			getSessionFactory().close();
-		}
-		catch (HibernateException he)
-		{
-			throw new HibernateException(he);
-		}
-	}
+    public static void shutdown() {
+        logger.debug("Shutting down Hibernate Session Factory");
+        try {
+            getSessionFactory().close();
+        } catch (HibernateException he) {
+            throw new HibernateException(he);
+        }
+    }
 }
