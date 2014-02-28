@@ -20,11 +20,8 @@ public class EditHistoryView implements java.io.Serializable {
 
     private static final long serialVersionUID = 6223995917417414208L;
     private static final Logger logger = LoggerFactory.getLogger(EditHistoryView.class);
-
     History historyCatalog; // history object
-
     HistoryDAO historyDAO;
-
     private Integer ID = 0;
 
     @PostConstruct

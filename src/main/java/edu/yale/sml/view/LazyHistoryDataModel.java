@@ -18,51 +18,34 @@ import edu.yale.sml.persistence.GenericHibernateDAO;
  * Used for History paginated table view
  */
 public class LazyHistoryDataModel extends LazyDataModel<History> {
+    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LazyHistoryDataModel.class);
 
     private List<History> datasource;
     private int dataSourceSize = 0;
-
-    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LazyHistoryDataModel.class);
-
-    public LazyHistoryDataModel(List<History> datasource) {
-        System.out.println("Constructor, LazyHistoryDataModel");
-        this.datasource = datasource;
-    }
-
-
-    public LazyHistoryDataModel(int historyAsListSize) {
-        this.dataSourceSize = historyAsListSize;
-    }
 
     /*
      * @Override public Object getRowKey(History History) { return History.getModel(); }
      */
     @Override
     public List<History> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
-
         int result_count = dataSourceSize;
-
         List<History> data = new ArrayList<History>();
         boolean filtered = false;
         int filteredCount = 0;
-
         GenericDAO<History> dao = new GenericHibernateDAO<History>();
+
         try {
             if (sortField != null && sortOrder == SortOrder.ASCENDING) {
                 datasource = dao.findPagedResult(History.class, first, first + pageSize, "c." + sortField + " asc");
-
             } else if (sortField != null && sortOrder == SortOrder.DESCENDING) {
                 datasource = dao.findPagedResult(History.class, first, first + pageSize, "c." + sortField + " desc");
             } else {
-
                 if (filters.get("NETID") != null && filters.size() == 1) {
-
                     datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize, "c.RUNDATE desc", filters.get("NETID").toString(), "NETID");
                     // count of all such
                     filteredCount = dao.findByLevelCount(History.class, filters.get("NETID").toString(), "NETID");
                     filtered = true;
                 } else if (filters.get("SCANLOCATION") != null && filters.size() == 1) {
-
                     datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize, "c.RUNDATE desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
                     // count of all such
                     filteredCount = dao.findByLevelCount(History.class, filters.get("SCANLOCATION").toString(), "SCANLOCATION");
@@ -72,11 +55,9 @@ public class LazyHistoryDataModel extends LazyDataModel<History> {
                     // count of all such
                     filteredCount = dao.findByLevelCount(History.class, filters.get("NETID").toString(), "NETID", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
                     filtered = true;
-
                 } else {
                     datasource = (List<History>) dao.findPagedResult(History.class, first, first + pageSize, "c.RUNDATE desc");
                 }
-
             }
         } catch (Throwable e1) {
             e1.printStackTrace();
@@ -85,7 +66,6 @@ public class LazyHistoryDataModel extends LazyDataModel<History> {
         if (sortField != null) {
             Collections.sort(data, new HistoryComparator(sortField, sortOrder));
         }
-
 
         for (History history : datasource) {
             boolean match = true;
@@ -128,5 +108,13 @@ public class LazyHistoryDataModel extends LazyDataModel<History> {
         }
 
         return data;
+    }
+
+    public LazyHistoryDataModel(List<History> datasource) {
+        this.datasource = datasource;
+    }
+
+    public LazyHistoryDataModel(int historyAsListSize) {
+        this.dataSourceSize = historyAsListSize;
     }
 }

@@ -9,8 +9,7 @@ import edu.yale.sml.model.Shelving;
 /**
  * Sorts / Compares just by Normalized Call Number
  */
-public class ShelvingComparator implements Comparator<Shelving> // implements Comparator<Report>
-{
+public class ShelvingComparator implements Comparator<Shelving> {
 
     String sortField = "";
     SortOrder sortOrder;

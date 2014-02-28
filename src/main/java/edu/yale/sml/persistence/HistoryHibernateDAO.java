@@ -1,23 +1,14 @@
 package edu.yale.sml.persistence;
 
+import edu.yale.sml.model.History;
+import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
+import org.hibernate.*;
+import org.hibernate.criterion.Expression;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.Expression;
-import org.hibernate.transform.AliasToEntityMapResultTransformer;
-
-import edu.yale.sml.model.History;
-import edu.yale.sml.persistence.*;
-import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
 
 public final class HistoryHibernateDAO extends GenericHibernateDAO<History> implements java.io.Serializable, HistoryDAO {
 

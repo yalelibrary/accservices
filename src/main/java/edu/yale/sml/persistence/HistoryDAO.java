@@ -2,10 +2,10 @@ package edu.yale.sml.persistence;
 
 import java.util.Date;
 import java.util.List;
+
 import edu.yale.sml.model.History;
 
-public interface HistoryDAO extends GenericDAO<History>
-{
+public interface HistoryDAO extends GenericDAO<History> {
     public abstract void update(History history);
 
     public abstract List<History> findById(Integer ID);

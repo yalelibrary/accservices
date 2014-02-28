@@ -1,5 +1,28 @@
 package edu.yale.sml.view;
 
+import edu.yale.sml.logic.BasicShelfScanEngine;
+import edu.yale.sml.logic.InvalidFormatException;
+import edu.yale.sml.logic.LogicHelper;
+import edu.yale.sml.model.*;
+import edu.yale.sml.persistence.GenericDAO;
+import edu.yale.sml.persistence.GenericHibernateDAO;
+import edu.yale.sml.persistence.HistoryDAO;
+import edu.yale.sml.persistence.HistoryHibernateDAO;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang3.SerializationUtils;
+import org.hibernate.HibernateException;
+import org.hibernate.exception.DataException;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -9,42 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
-import com.google.common.collect.Multimap;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.lang3.SerializationUtils;
-
-import org.hibernate.HibernateException;
-import org.hibernate.exception.DataException;
-
-import edu.yale.sml.logic.BasicShelfScanEngine;
-import edu.yale.sml.logic.InvalidFormatException;
-import edu.yale.sml.logic.LogicHelper;
-import edu.yale.sml.model.DataLists;
-import edu.yale.sml.model.InputFile;
-import edu.yale.sml.model.Log;
-import edu.yale.sml.model.OrbisRecord;
-import edu.yale.sml.model.History;
-import edu.yale.sml.model.Location;
-import edu.yale.sml.model.ShelvingError;
-import edu.yale.sml.persistence.GenericDAO;
-import edu.yale.sml.persistence.GenericHibernateDAO;
-import edu.yale.sml.persistence.HistoryHibernateDAO;
-import edu.yale.sml.persistence.HistoryDAO;
-
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /*
  * Main entry point for report creation.

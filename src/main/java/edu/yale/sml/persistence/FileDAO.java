@@ -5,8 +5,7 @@ import java.util.List;
 import edu.yale.sml.model.InputFile;
 
 @SuppressWarnings("rawtypes")
-public interface FileDAO extends GenericDAO
-{
+public interface FileDAO extends GenericDAO {
     public String findByMD5(String md5);
 
     public void doIndex() throws Throwable;

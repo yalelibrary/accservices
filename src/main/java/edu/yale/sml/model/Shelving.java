@@ -258,7 +258,9 @@ public class Shelving implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "Shelving [id=" + id + ", creationDate=" + creationDate + ", formDate=" + formDate + ", oversize=" + oversize + ", time=" + time + ", numRows=" + numRows + ", floor=" + floor + ", notes=" + notes + ", team=" + team + ", barcodeStart=" + barcodeStart + ", barcodeEnd="
+        return "Shelving [id=" + id + ", creationDate=" + creationDate + ", formDate=" + formDate + ", oversize=" +
+                oversize + ", time=" + time + ", numRows=" + numRows + ", floor=" + floor + ", notes=" + notes + "," +
+                " team=" + team + ", barcodeStart=" + barcodeStart + ", barcodeEnd="
                 + barcodeEnd + ", accuracyErrors=" + accuracyErrors + "]";
     }
 

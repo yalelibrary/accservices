@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-//TODO change fields to lower case; orignially in caps because fields were probably auto-generated
+/**
+ * Notes: fields in uppercae to distinguish from non Orbis related application properties
+ */
 public class History implements java.io.Serializable {
     private static final long serialVersionUID = -8463243297163676698L;
     private short ACCURACY;
@@ -32,7 +34,8 @@ public class History implements java.io.Serializable {
     private short STATUS;
     private short SUPPRESS;
     private short TIMESPENT = 0;
-    private String TRANSCATIONMESSAGES; // CHANGE TO TEXT TYPE OR SQL TPE
+    @Deprecated
+    private String TRANSCATIONMESSAGES;
     private String BARCODE_LAST;
     private String BARCODE_FIRST;
     private String NORM_CALL_LAST = "";
@@ -288,8 +291,11 @@ public class History implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "History [FILENAME=" + FILENAME + ", fileSet=" + fileSet + ", FIRSTCALLNUMBER=" + FIRSTCALLNUMBER + ", ID=" + ID + ", LASTCALLNUMBER=" + LASTCALLNUMBER + ", LOCATION=" + LOCATION + ", LOCATIONERROR=" + LOCATIONERROR + ", MISLABELLED=" + MISLABELLED + ", NETID=" + NETID + ", NOTES="
-                + NOTES + ", NUMBERBARCODE=" + NUMBERBARCODE + ", NUMBERSCANNED=" + NUMBERSCANNED + ", OVERSIZE=" + OVERSIZE + ", RUNDATE=" + RUNDATE + ", SCANDATE=" + SCANDATE + "]";
+        return "History [FILENAME=" + FILENAME + ", fileSet=" + fileSet + ", FIRSTCALLNUMBER=" + FIRSTCALLNUMBER
+                + ", ID=" + ID + ", LASTCALLNUMBER=" + LASTCALLNUMBER + ", LOCATION=" + LOCATION + ", LOCATIONERROR=" +
+                LOCATIONERROR + ", MISLABELLED=" + MISLABELLED + ", NETID=" + NETID + ", NOTES="
+                + NOTES + ", NUMBERBARCODE=" + NUMBERBARCODE + ", NUMBERSCANNED=" + NUMBERSCANNED + ", OVERSIZE=" +
+                OVERSIZE + ", RUNDATE=" + RUNDATE + ", SCANDATE=" + SCANDATE + "]";
     }
 
 }

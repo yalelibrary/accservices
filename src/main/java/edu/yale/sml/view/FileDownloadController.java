@@ -19,7 +19,7 @@ public class FileDownloadController {
     private StreamedContent file;
 
     public FileDownloadController() {
-        String fileName = "";
+        String fileName;
         file = null;
 
         try {

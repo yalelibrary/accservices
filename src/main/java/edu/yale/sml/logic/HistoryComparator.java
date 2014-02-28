@@ -9,8 +9,7 @@ import edu.yale.sml.model.History;
 /**
  * Sorts / Compares just by Normalized Call Number
  */
-public class HistoryComparator implements Comparator<History> // implements Comparator<Report>
-{
+public class HistoryComparator implements Comparator<History> {
     String sortField = "";
     SortOrder sortOrder;
 

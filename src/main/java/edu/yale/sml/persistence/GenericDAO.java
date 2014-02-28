@@ -2,8 +2,7 @@ package edu.yale.sml.persistence;
 
 import java.util.List;
 
-public interface GenericDAO<T>
-{
+public interface GenericDAO<T> {
     public abstract void delete(T object) throws Throwable;
 
     Integer save(T object) throws Throwable;

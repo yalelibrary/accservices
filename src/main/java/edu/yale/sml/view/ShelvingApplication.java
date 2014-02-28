@@ -42,56 +42,34 @@ import edu.yale.sml.persistence.ShelvingHibernateDAO;
 @ManagedBean
 @ViewScoped
 public class ShelvingApplication implements java.io.Serializable {
+    Logger logger = LoggerFactory.getLogger(ShelvingApplication.class);
 
     private static final long serialVersionUID = 716362163607646863L;
     List<Shelving> historyAsList = new ArrayList<Shelving>();
     Shelving item = new Shelving();
-
     private LazyDataModel<Shelving> lazyModel;
     String locationName = "sml";
-
     List<String> locationNames = new ArrayList<String>();
     List<String> floorNames = new ArrayList<String>();
     SelectItem[] locationSelectOptions;
-
-    Logger logger = LoggerFactory.getLogger(ShelvingApplication.class);
-
     SelectItem[] netidOptions;
-
-    public List<String> getFloorNames() {
-        return floorNames;
-    }
-
-    public void setFloorNames(List<String> floorNames) {
-        this.floorNames = floorNames;
-    }
-
     List<String> oversizeAsList = new ArrayList<String>();
-
     private Shelving selectedHistory;
-
     List<String> teamAsList = new ArrayList<String>();
-
-    public String selectElement() {
-        return "edit_shelving.xhtml?faces-redirect=true&id=" + selectedHistory.getId();
-    }
 
     @Deprecated
     public void onCellEdit(CellEditEvent event) {
         logger.debug("Deprecated method onCellEdit called");
-
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
     }
 
     // for netids list
     private SelectItem[] createFilterOptions(List<Shelving> historyAsList2) {
-
         List<String> netids = new ArrayList<String>(historyAsList.size());
         for (Shelving h : historyAsList2) {
             netids.add(h.getNETID());
         }
-
         Set<String> set = new HashSet<String>(netids); // need unique
         SelectItem[] options = new SelectItem[set.size() + 1];
         options[0] = new SelectItem("", "Select");
@@ -104,7 +82,6 @@ public class ShelvingApplication implements java.io.Serializable {
     }
 
     private SelectItem[] createFilterOptionsPaginated() {
-
         List<String> netids = new ArrayList<String>();
         HistoryDAO dao = new HistoryHibernateDAO();
         netids = dao.findUniqueNetIds();
@@ -153,46 +130,6 @@ public class ShelvingApplication implements java.io.Serializable {
         return options;
     }
 
-    public List<Shelving> getHistoryAsList() {
-        return historyAsList;
-    }
-
-    public Shelving getItem() {
-        return item;
-    }
-
-    public LazyDataModel<Shelving> getLazyModel() {
-        return lazyModel;
-    }
-
-    public String getLocationName() {
-        return locationName;
-    }
-
-    public List<String> getLocationNames() {
-        return locationNames;
-    }
-
-    public SelectItem[] getLocationSelectOptions() {
-        return locationSelectOptions;
-    }
-
-    public SelectItem[] getNetidOptions() {
-        return netidOptions;
-    }
-
-    public List<String> getOversizeAsList() {
-        return oversizeAsList;
-    }
-
-    public Shelving getSelectedHistory() {
-        return selectedHistory;
-    }
-
-    public List<String> getTeamAsList() {
-        return teamAsList;
-    }
-
     @PostConstruct
     public void initialize() {
         ShelvingDAO dao = new ShelvingHibernateDAO();
@@ -232,7 +169,6 @@ public class ShelvingApplication implements java.io.Serializable {
 
 
         if (lazyModel == null && paginate) {
-
             lazyModel = new LazyHistoryNewShelvingDataModel(historyAsListSize);
             locationSelectOptions = createLocationFilterOptionsPaginated();
             netidOptions = createFilterOptionsPaginated();
@@ -333,8 +269,6 @@ public class ShelvingApplication implements java.io.Serializable {
                             continue;
                         }
                     }
-
-
                     if (catalogObj.getITEM_STATUS_DESC() != null && catalogObj.getITEM_STATUS_DATE() != null) {
                         barcodesAdded.put(catalogObj.getITEM_BARCODE(), catalogObj.getITEM_STATUS_DATE());
                     } else {
@@ -343,7 +277,6 @@ public class ShelvingApplication implements java.io.Serializable {
                     orbisList.add(catalogObj);
                 }
             }
-
             String status_desc = "";
             java.util.Date status_date = null;
 
@@ -453,6 +386,58 @@ public class ShelvingApplication implements java.io.Serializable {
 
     public void setTeamAsList(List<String> teamAsList) {
         this.teamAsList = teamAsList;
+    }
+
+    public List<String> getFloorNames() {
+        return floorNames;
+    }
+
+    public void setFloorNames(List<String> floorNames) {
+        this.floorNames = floorNames;
+    }
+
+    public String selectElement() {
+        return "edit_shelving.xhtml?faces-redirect=true&id=" + selectedHistory.getId();
+    }
+
+    public List<Shelving> getHistoryAsList() {
+        return historyAsList;
+    }
+
+    public Shelving getItem() {
+        return item;
+    }
+
+    public LazyDataModel<Shelving> getLazyModel() {
+        return lazyModel;
+    }
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public List<String> getLocationNames() {
+        return locationNames;
+    }
+
+    public SelectItem[] getLocationSelectOptions() {
+        return locationSelectOptions;
+    }
+
+    public SelectItem[] getNetidOptions() {
+        return netidOptions;
+    }
+
+    public List<String> getOversizeAsList() {
+        return oversizeAsList;
+    }
+
+    public Shelving getSelectedHistory() {
+        return selectedHistory;
+    }
+
+    public List<String> getTeamAsList() {
+        return teamAsList;
     }
 
     public void removeAllPaginated() {

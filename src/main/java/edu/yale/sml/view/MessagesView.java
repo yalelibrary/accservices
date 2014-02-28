@@ -27,7 +27,7 @@ public class MessagesView {
     List<Messages> messagesList = new ArrayList<Messages>();
     List<Log> logList = new ArrayList<Log>();
     HashMap hashMap = new HashMap<String, String>();
-    Properties props = new Properties(); // use me
+    Properties props = new Properties(); // TODO ?use me
 
     public List findAll() {
         return messagesList;
@@ -48,10 +48,10 @@ public class MessagesView {
             logList = genericDAO.findAll(Log.class);
 
             for (Messages m : messagesList) {
-                hashMap.put(m.getNAME(), m.getVALUE()); // refer to as #{messagesView.hashMap.get("form.search.insructions"); or whatever jsf shorthand
+                hashMap.put(m.getNAME(), m.getVALUE());
             }
 
-            props.putAll(hashMap); // wtf
+            props.putAll(hashMap); // ?
         } catch (Throwable e) {
             e.printStackTrace();
         }

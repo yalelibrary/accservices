@@ -1,6 +1,5 @@
 package edu.yale.sml.view;
 
-// Generated Oct 3, 2012 8:38:46 PM by Hibernate Tools 3.4.0.CR1
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,18 +25,15 @@ import edu.yale.sml.persistence.HistoryDAO;
 public class HistorySearchView implements java.io.Serializable {
 
     final static Logger logger = LoggerFactory.getLogger(HistorySearchView.class);
+
     private static final long serialVersionUID = 6842600101066936186L;
-
     String barcodeSearchTerm = "39002097141650"; // tmp for Hibernate Search
-
     List<InputFile> inputFileAsList;
     SelectItem[] levelOptions;
-
     Date searchEndDate = new Date();
     Date searchRunEndDate = new Date();
     Date searchRunStartDate = new Date();
     Date searchStartDate = new Date();
-
     private InputFile selectedFile;
 
     public HistorySearchView() {

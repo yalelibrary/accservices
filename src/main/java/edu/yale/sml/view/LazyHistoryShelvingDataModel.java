@@ -18,21 +18,10 @@ import edu.yale.sml.persistence.GenericHibernateDAO;
  * Used for History paginated table view
  */
 public class LazyHistoryShelvingDataModel extends LazyDataModel<Shelving> {
+    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LazyHistoryShelvingDataModel.class);
 
     private List<Shelving> datasource;
     private int dataSourceSize = 0;
-
-    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LazyHistoryShelvingDataModel.class);
-
-    public LazyHistoryShelvingDataModel(List<Shelving> datasource) {
-        this.datasource = datasource;
-    }
-
-
-    public LazyHistoryShelvingDataModel(int historyAsListSize) {
-        this.dataSourceSize = historyAsListSize;
-    }
-
 
     @Override
     public List<Shelving> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
@@ -96,4 +85,14 @@ public class LazyHistoryShelvingDataModel extends LazyDataModel<Shelving> {
         this.setRowCount(dataSize);
         return data;
     }
+
+    public LazyHistoryShelvingDataModel(List<Shelving> datasource) {
+        this.datasource = datasource;
+    }
+
+
+    public LazyHistoryShelvingDataModel(int historyAsListSize) {
+        this.dataSourceSize = historyAsListSize;
+    }
+
 }

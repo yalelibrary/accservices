@@ -21,7 +21,6 @@ public class ExcelHistoryView implements Serializable {
     private static final long serialVersionUID = -2165470636629035577L;
     final static Logger logger = LoggerFactory.getLogger(ExcelHistoryView.class);
     List<History> historyAsList = new ArrayList<History>();
-
     private boolean nonColumns = false;
 
     public ExcelHistoryView() {

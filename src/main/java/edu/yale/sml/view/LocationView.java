@@ -20,15 +20,10 @@ import edu.yale.sml.persistence.GenericDAO;
 public class LocationView implements java.io.Serializable {
 
     private static final long serialVersionUID = -1090685442307176628L;
-
     Date date = new Date();
-
     String editor = "";
-
     List<Location> locationAsList = new ArrayList<Location>();
-
-    Location locationCatalog; // for primefaces -- not sure if this is
-    // the best way
+    Location locationCatalog;
     String name = "";
 
     public void addInfo(ActionEvent actionEvent) {

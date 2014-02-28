@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 public class HibernateSQLServerUtil {
 
-    final static Logger logger = LoggerFactory.getLogger(HibernateSQLServerUtil.class);
+    private final static Logger logger = LoggerFactory.getLogger(HibernateSQLServerUtil.class);
 
     private static final SessionFactory sessionFactory = buildSessionFactory();
 

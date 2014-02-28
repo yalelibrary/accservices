@@ -6,7 +6,8 @@ public class ReportHelper {
     public static boolean containsValid(List<Report> reportCatalogList, OrbisRecord o) {
         boolean found = false;
         for (int i = 0; i < reportCatalogList.size(); i++) {
-            if (reportCatalogList.get(i).getITEM_BARCODE().equals(o.getITEM_BARCODE()) && !o.getNORMALIZED_CALL_NO().equals("Bad Barcode")) {
+            if (reportCatalogList.get(i).getITEM_BARCODE().equals(o.getITEM_BARCODE())
+                    && !o.getNORMALIZED_CALL_NO().equals("Bad Barcode")) {
                 found = true;
             }
         }

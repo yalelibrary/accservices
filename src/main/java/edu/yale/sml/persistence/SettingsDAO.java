@@ -4,7 +4,6 @@ import java.util.List;
 
 import edu.yale.sml.view.SettingsView;
 
-public interface SettingsDAO extends GenericDAO<SettingsView.Settings>
-{
+public interface SettingsDAO extends GenericDAO<SettingsView.Settings> {
     public void updateAll(List<SettingsView.Settings> messagesList);
 }

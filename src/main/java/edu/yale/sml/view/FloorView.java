@@ -20,15 +20,10 @@ import edu.yale.sml.persistence.GenericDAO;
 public class FloorView implements java.io.Serializable {
 
     private static final long serialVersionUID = 6712445546185842422L;
-
     Date date = new Date();
-
     String editor = "";
-
     List<Floor> locationAsList = new ArrayList<Floor>();
-
-    Floor locationCatalog; // for primefaces -- not sure if this is
-    // the best way
+    Floor locationCatalog;
     String name = "";
 
     public void addInfo(ActionEvent actionEvent) {

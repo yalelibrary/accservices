@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 //TODO should this be made abstract?
 public class LogoutFilter implements Filter {
 
-    final static Logger logger = LoggerFactory.getLogger(LogoutFilter.class);
+    private final static Logger logger = LoggerFactory.getLogger(LogoutFilter.class);
 
     public LogoutFilter() {
         super();
@@ -48,7 +48,5 @@ public class LogoutFilter implements Filter {
 
     @Override
     public void destroy() {
-        // TODO Auto-generated method stub
-
     }
 }

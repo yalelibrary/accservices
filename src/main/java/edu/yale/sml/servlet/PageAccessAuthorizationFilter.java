@@ -17,11 +17,14 @@ import edu.yale.sml.persistence.AdminDAO;
 import edu.yale.sml.persistence.AdminHibernateDAO;
 
 
-// Talks to AdminDAO to find if the user (netid) is Admin to access secure pages e.g. admin.xhtml; 
-// specify in web.xml
+/**
+ * Talks to AdminDAO to find if the user (netid) is Admin to access secure pages e.g. admin.xhtml;
+ * specify in web.xml
+ */
 public class PageAccessAuthorizationFilter implements Filter {
 
-    static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PageAccessAuthorizationFilter.class);
+    private static final org.slf4j.Logger logger =
+            org.slf4j.LoggerFactory.getLogger(PageAccessAuthorizationFilter.class);
 
     FilterConfig filterConfig;
 

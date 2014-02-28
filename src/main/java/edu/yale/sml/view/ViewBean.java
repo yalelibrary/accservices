@@ -2,25 +2,15 @@
 
 package edu.yale.sml.view;
 
-import java.io.ObjectInputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import edu.yale.sml.model.History;
+import edu.yale.sml.persistence.HistoryDAO;
+import edu.yale.sml.persistence.HistoryHibernateDAO;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
-
-import org.apache.commons.beanutils.BeanUtilsBean;
-
-import edu.yale.sml.model.History;
-import edu.yale.sml.persistence.HistoryHibernateDAO;
-import edu.yale.sml.persistence.HistoryDAO;
+import java.io.ObjectInputStream;
 
 
 @ManagedBean

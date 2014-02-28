@@ -22,7 +22,6 @@ public class FullComparator implements Comparator<OrbisRecord> {
     private static final int FLAG = 5555;
     org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FullComparator.class);
 
-
     public int compare(OrbisRecord o1, OrbisRecord o2) {
 
         boolean bothEnumNull = false;
@@ -138,7 +137,8 @@ public class FullComparator implements Comparator<OrbisRecord> {
 
             if (o1.getCHRON() == null && o2.getCHRON() == null) {
                 year_diff = 0;
-            } else if (o1.getCHRON() != null && notDVD(o1.getCHRON()) && o2.getCHRON() != null && notDVD(o2.getCHRON()) && (bothEnumNull || eitherEnumNull || o1.getITEM_ENUM().equals(o2.getITEM_ENUM()))) {
+            } else if (o1.getCHRON() != null && notDVD(o1.getCHRON()) && o2.getCHRON() != null && notDVD(o2.getCHRON())
+                    && (bothEnumNull || eitherEnumNull || o1.getITEM_ENUM().equals(o2.getITEM_ENUM()))) {
                 year_diff = o1.getCHRON().compareTo(o2.getCHRON()); // tmp disabled
             } else if (o1.getCHRON() != null && o2.getCHRON() == null) {
             } else if (o1.getCHRON() == null && o2.getCHRON() != null) {

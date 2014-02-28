@@ -15,15 +15,16 @@ import javax.faces.context.FacesContext;
 import java.io.IOException;
 
 /**
- * Use HistoryView remove method instead.
+ * TODO Merge with HistoryView remove method (if desirable).
  */
 @ManagedBean
 @RequestScoped
 public class RemoveReportView {
+
     Logger logger = LoggerFactory.getLogger(RemoveReportView.class);
 
     /**
-     * Removes historyView.
+     * Removes individual history report.
      *
      * @param history
      * @see HistoryView remove methods. Use HistoryView instead.
@@ -33,12 +34,12 @@ public class RemoveReportView {
 
         //TODO proper auth check
         if (history.getNETID() == null || history.getNETID().length() < 3) {
-            logger.debug("Ignoring delete for this netid");
+            logger.debug("Ignoring delete for this netid.");
             return "failed";
         }
         try {
             remove(history);
-            logger.debug("Deleted report");
+            logger.debug("Deleted report.");
             return "ok";
 
         } catch (Throwable throwable) {

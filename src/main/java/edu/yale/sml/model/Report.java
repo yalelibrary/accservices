@@ -34,7 +34,6 @@ public class Report implements Serializable {
     private String marker = "";
     private Integer text; // TODO rename..represents acc error
 
-
     public Report() {
     }
 

@@ -18,7 +18,6 @@ import edu.yale.sml.persistence.AdminHibernateDAO;
 public class AdminView {
 
     List<Admin> adminAsList = new ArrayList<Admin>();
-
     Admin adminCatalog; // ?
     String adminCode = "";
     String editor = "";

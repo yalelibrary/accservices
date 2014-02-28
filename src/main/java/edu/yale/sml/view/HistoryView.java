@@ -29,21 +29,13 @@ import edu.yale.sml.persistence.HistoryDAO;
 public class HistoryView implements Serializable {
 
     final static Logger logger = LoggerFactory.getLogger(HistoryView.class);
-
     private static final long serialVersionUID = -8625177943611718289L;
-
-    String currentNotes = "";// ?
-
+    String currentNotes = ""; // TODO remove?
     List<History> historyAsList = new ArrayList<History>();
-
     private LazyDataModel<History> lazyModel;
-
     SelectItem[] locationSelectOptions;
-
     SelectItem[] netidOptions;
-
     String opMsg = ""; // result of operation (not used anywhere anymore?)
-
     String paramView = "edit.xhtml?id=10";
     private History selectedHistory;
 
@@ -57,20 +49,19 @@ public class HistoryView implements Serializable {
         return "transaction.xhtml?faces-redirect=true&id=" + selectedHistory.getID();
     }
 
-    // FOR NET ID FILTERY
-    private SelectItem[] createFilterOptions(List<History> historyAsList2) {
-        List<String> netids = new ArrayList<String>(historyAsList.size());
-
-        for (History h : historyAsList2) {
+    /**
+     * For Netid Filtering
+     * @param historyAsList
+     * @return
+     */
+    private SelectItem[] createFilterOptions(List<History> historyAsList) {
+        List<String> netids = new ArrayList<String>(this.historyAsList.size());
+        for (History h : historyAsList) {
             netids.add(h.getNETID());
         }
-
         Set<String> set = new HashSet<String>(netids); // need unique
-
         SelectItem[] options = new SelectItem[set.size() + 1];
-
         options[0] = new SelectItem("", "Select");
-
         int i = 0;
         for (String h : set) {
             options[i + 1] = new SelectItem(h);
@@ -80,20 +71,12 @@ public class HistoryView implements Serializable {
     }
 
     private SelectItem[] createFilterOptionsPaginated() {
-
-        List<String> netids = new ArrayList<String>();
-
+        List<String> netids = new ArrayList();
         HistoryDAO dao = new HistoryHibernateDAO();
         netids = dao.findUniqueNetIds();
-
-
         Set<String> set = new HashSet<String>(netids); // need unique
-
-
         SelectItem[] options = new SelectItem[set.size() + 1];
-
         options[0] = new SelectItem("", "Select");
-
         int i = 0;
         for (String h : set) {
             options[i + 1] = new SelectItem(h);
@@ -104,21 +87,13 @@ public class HistoryView implements Serializable {
 
     // TODO merge w/ netid filter
     private SelectItem[] createLocationFilterOptions(List<History> historyAsList2) {
-
         List<String> locations = new ArrayList<String>(historyAsList.size());
-
         for (History h : historyAsList2) {
             locations.add(h.getSCANLOCATION());
-
         }
-
         Set<String> set = new HashSet<String>(locations); // need unique
-
-
         SelectItem[] options = new SelectItem[set.size() + 1];
-
         options[0] = new SelectItem("", "...");
-
         int i = 0;
         for (String h : set) {
             options[i + 1] = new SelectItem(h);

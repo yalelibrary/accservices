@@ -29,25 +29,25 @@ import edu.yale.sml.view.NullFileException;
  * TODO (refactoring) see if all reportLists.setXXX methods can be re-factored
  */
 public class BasicShelfScanEngine implements java.io.Serializable {
-    // int nullBarcodes = 0;  //?
 
-    // NOTE: Do not remove/rename fields without running tests first
+    final static Logger logger = LoggerFactory.getLogger(BasicShelfScanEngine.class);
 
+    /**Do not remove/rename fields without running tests first */
     private static final long serialVersionUID = -1871752891918863039L;
 
-    final static Logger logger = LoggerFactory
-            .getLogger(BasicShelfScanEngine.class);
-
-    private DataLists reportLists; // main data structure
-
-    private List<Report> culpritList;      // list of errors
-    private List<Report> enumWarnings;     // list of warnings
-    private List<Report> reportListCopy;   // for ui
-    private ShelvingError shelvingError;   // represents error count breakdown
+    /** Main data structure */
+    private DataLists reportLists;
+    /** List of errors */
+    private List<Report> culpritList;
+    /** Warnings */
+    private List<Report> enumWarnings;
+    /** Used in user interface */
+    private List<Report> reportListCopy;
+    /** Error count breakdown */
+    private ShelvingError shelvingError;
 
     /**
      * Main Function
-     * <p/>
      * 'bad barcodes' (no voyager/orbis results) != 'null barcodes' (0000...)
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -471,16 +471,6 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         e.printStackTrace();
     }
 
-    /*
-    public int getNullBarcodes() {
-        return nullBarcodes;
-    }
-    */
-
-    /*public List<OrbisRecord> getBadBarcodes() {
-        return badBarcodes;
-    }*/
-
     public List<Report> getCulpritList() {
         return culpritList;
     }
@@ -497,19 +487,9 @@ public class BasicShelfScanEngine implements java.io.Serializable {
         return shelvingError;
     }
 
-    /*
-    public void setBadBarcodes(List<OrbisRecord> badBarcodes) {
-        this.badBarcodes = badBarcodes;
-    } */
-
     public void setCulpritList(List<Report> culpritList) {
         this.culpritList = culpritList;
     }
-
-    /*
-    public void setNullBarcodes(int nullBarcodes) {
-        this.nullBarcodes = nullBarcodes;
-    } */
 
     public void setReportListCopy(List<Report> reportListCopy) {
         this.reportListCopy = reportListCopy;
@@ -541,7 +521,6 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     public BasicShelfScanEngine() {
         super();
-        //badBarcodes = new ArrayList<OrbisRecord>();
         culpritList = new ArrayList<Report>();
         enumWarnings = new ArrayList<Report>();
         reportListCopy = new ArrayList<Report>();

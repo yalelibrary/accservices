@@ -16,6 +16,7 @@ import edu.yale.sml.persistence.GenericHibernateDAO;
 @ManagedBean
 @ViewScoped
 public class LogView implements java.io.Serializable {
+
     private static final long serialVersionUID = 1778L;
     private static final int MAX_RESULTS = 100;
     final static Logger logger = LoggerFactory.getLogger(LogView.class);

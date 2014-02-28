@@ -2,10 +2,10 @@ package edu.yale.sml.persistence;
 
 import java.util.Date;
 import java.util.List;
+
 import edu.yale.sml.model.Shelving;
 
-public interface ShelvingDAO extends GenericDAO<Shelving>
-{
+public interface ShelvingDAO extends GenericDAO<Shelving> {
     public abstract void update(Shelving Shelving);
 
     public abstract List<Shelving> findById(Integer ID);
