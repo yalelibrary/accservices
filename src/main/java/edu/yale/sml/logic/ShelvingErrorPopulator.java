@@ -96,14 +96,18 @@ public class ShelvingErrorPopulator {
                         + item.getITEM_BARCODE());
             }
 
-            if (displayCallNumber.contains("+") || displayCallNumber.contains(
-                    "Oversize")
-                    && oversize.equals("N")) {
-                oversize_errors++;
-            } else if ((!displayCallNumber.contains("+") || displayCallNumber
-                    .contains("Oversize")) && oversize.equals("Y")) {
-                oversize_errors++;
+            if (!oversize.equalsIgnoreCase("Intermixed")) {
+
+                if (displayCallNumber.contains("+") || displayCallNumber.contains(
+                        "Oversize")
+                        && oversize.equals("N")) {
+                    oversize_errors++;
+                } else if ((!displayCallNumber.contains("+") || displayCallNumber
+                        .contains("Oversize")) && oversize.equals("Y")) {
+                    oversize_errors++;
+                }
             }
+
 
             if (item.getNORMALIZED_CALL_NO() == null) {
                 total_errors++;
