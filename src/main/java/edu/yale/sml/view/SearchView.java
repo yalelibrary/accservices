@@ -103,6 +103,7 @@ public class SearchView implements Serializable {
                 populateSearchView(historyID);
             } else {
             }
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().remove("initId");
         } catch (InvalidFormatException e) {
             try {
                 JsfExternalContext.redirect(new PropertiesConfiguration("messages.properties")
@@ -232,6 +233,7 @@ public class SearchView implements Serializable {
             persistId = saveHistory(inputFile, reportLists, user,
                     String.valueOf(toFind.size()), finalLocationName);
             // clear PF uploaded file from session
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().put("initId", persistId);
             clearSessionMap();
         } catch (NullFileException e) {
             e.printStackTrace();
