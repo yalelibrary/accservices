@@ -2,6 +2,7 @@ package edu.yale.sml.servlet;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -43,11 +44,19 @@ public class CasNetIdFilter implements Filter {
         String service = URLEncoder.encode(var); // N.B. Must url-encode!!!!
 
         String param = "ticket=" + ticket + "&service=" + service;
+        logger.debug("Param={}", param);
 
         try {
-            final String user;
-            user = LogicHelper.getCASUser(CAS_VALIDATE_URL, new StringBuffer(param)).get(2).trim();
+            //final String user;
+            final List<String> userList = LogicHelper.getCASUser(CAS_VALIDATE_URL, new StringBuffer(param));
+            logger.debug("userList={}", userList);
+            final String user = userList.get(2).trim();
             request.getSession().setAttribute("netid", user);
+
+            final List<String> userList2 = LogicHelper.getCASUser(CAS_VALIDATE_URL, new StringBuffer(param));
+            logger.debug("userList={}", userList2);
+
+            logger.debug("Saved user in session={}", user);
         } catch (java.net.UnknownHostException e) {
             logger.debug("Error finding server or service.");
             throw new java.net.UnknownHostException("Error contacting CAS server.");
