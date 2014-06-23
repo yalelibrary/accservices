@@ -14,7 +14,7 @@ public class Report implements Serializable {
     private String ITEM_BARCODE = "";
     private String ITEM_ENUM = "";
     private String ITEM_ID = "";
-    private Date ITEM_STATUS_DATE = null; // no constructor
+    private Date ITEM_STATUS_DATE = null;
     private String ITEM_STATUS_DESC = "";
     private String LOCATION_NAME = "";
     private String MFHD_ID = "";
@@ -32,7 +32,7 @@ public class Report implements Serializable {
     private String prior = "";
     private String priorPhysical = "";
     private String marker = "";
-    private Integer text; // TODO rename..represents acc error
+    private Integer text; //acc error
 
     public Report() {
     }
@@ -156,7 +156,15 @@ public class Report implements Serializable {
         return CHRON;
     }
 
+    public String getChron() {
+        return CHRON;
+    }
+
     public String getDISPLAY_CALL_NO() {
+        return DISPLAY_CALL_NO;
+    }
+
+    public String getDisplayCallNo() {
         return DISPLAY_CALL_NO;
     }
 
@@ -164,7 +172,15 @@ public class Report implements Serializable {
         return ENCODING_LEVEL;
     }
 
+    public String getEncodingLevel() {
+        return ENCODING_LEVEL;
+    }
+
     public String getITEM_BARCODE() {
+        return ITEM_BARCODE;
+    }
+
+    public String getItemBarcode() {
         return ITEM_BARCODE;
     }
 
@@ -172,7 +188,15 @@ public class Report implements Serializable {
         return ITEM_ENUM;
     }
 
+    public String getItemEnum() {
+        return ITEM_ENUM;
+    }
+
     public String getITEM_ID() {
+        return ITEM_ID;
+    }
+
+    public String getItemId() {
         return ITEM_ID;
     }
 
@@ -180,11 +204,23 @@ public class Report implements Serializable {
         return ITEM_STATUS_DATE;
     }
 
+    public Date getItemStatusDate() {
+        return ITEM_STATUS_DATE;
+    }
+
     public String getITEM_STATUS_DESC() {
         return ITEM_STATUS_DESC;
     }
 
+    public String getItemStatusDesc() {
+        return ITEM_STATUS_DESC;
+    }
+
     public String getLOCATION_NAME() {
+        return LOCATION_NAME;
+    }
+
+    public String getLocationName() {
         return LOCATION_NAME;
     }
 
@@ -200,7 +236,15 @@ public class Report implements Serializable {
         return NORMALIZED_CALL_NO;
     }
 
+    public String getNormalizedCallNo() {
+        return NORMALIZED_CALL_NO;
+    }
+
     public String getOVERSIZE() {
+        return OVERSIZE;
+    }
+
+    public String getOversize() {
         return OVERSIZE;
     }
 
@@ -216,11 +260,19 @@ public class Report implements Serializable {
         return SUPPRESS_IN_OPAC;
     }
 
+    public String getSuppressInOpac() {
+        return SUPPRESS_IN_OPAC;
+    }
+
     public Integer getText() {
         return text;
     }
 
     public String getYEAR() {
+        return YEAR;
+    }
+
+    public String getYear() {
         return YEAR;
     }
 

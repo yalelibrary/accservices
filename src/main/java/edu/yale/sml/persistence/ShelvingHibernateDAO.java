@@ -29,7 +29,6 @@ public final class ShelvingHibernateDAO extends GenericHibernateDAO<Shelving> im
 
     @Override
     public void update(Shelving Shelving) {
-        // System.out.println("Updating Shelving object");
         Session s = null;
         Transaction tx = null;
         try {

@@ -106,12 +106,9 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
 
             //logger.debug("\nReturning list size : " + itemList.size());
         } catch (Throwable t) {
-            // TODO Auto-generated catch block
-            t.printStackTrace();
             logger.debug("Exception in Hibernate Search");
             logger.debug("Message :   " + t.getMessage());
             throw t;
-        } finally {
         }
 
         return itemList;
@@ -120,19 +117,25 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
     @Override
     public void doIndex() throws Throwable {
         logger.debug("FileHIbernateDAO: In build index()");
+
         Session session = null;
         try {
+
             logger.debug("FileHIbernateDAO: Opening session\n");
+
             session = HibernateSQLServerUtil.getSessionFactory().openSession();
+
             logger.debug("FileHIbernateDAO: Getting full text session");
 
             FullTextSession fullTextSession = Search.getFullTextSession(session);
+
             logger.debug("FileHIbernateDAO: Got full text session");
             logger.debug("FileHIbernateDAO: Creating Indexer. . .");
 
-            //NOTE -- ENSURE MIN. NUMBER OF THREADS FOR POOL, OTHERWISE IT HANGS
+            //N.B. -- ENSURE MIN. NUMBER OF THREADS FOR POOL
 
             fullTextSession.createIndexer().startAndWait();
+
             logger.debug("FileHIbernateDAO: Created Index and startandWait()  ... OK");
 
             if (fullTextSession.isOpen()) {
@@ -161,7 +164,7 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
             List<InputFile> inputFile = q.list();
             return inputFile.get(0);
         } catch (Throwable e) {
-            System.out.println("Exception finding inputfile by id");
+            logger.error("Exception finding inputfile by id");
             throw new HibernateException(e);
         } finally {
             if (session != null) {
@@ -179,7 +182,7 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
             List inputFileNameList = q.list();
             return inputFileNameList;
         } catch (Throwable e) {
-            System.out.println("Exception finding inputfile by id");
+            logger.error("Exception finding inputfile by id");
             throw new HibernateException(e);
         } finally {
             if (session != null) {
@@ -218,7 +221,7 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
             List<InputFile> inputFile = q.list();
             return inputFile.get(0);   //get only the first. how to SELECT (1)
         } catch (Throwable e) {
-            System.out.println("Exception finding inputfile by id");
+            logger.debug("Exception finding inputfile by id");
             throw new HibernateException(e);
         } finally {
             if (session != null) {
@@ -238,7 +241,7 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
             return inputFile.get(0);   //get only the first. how to SELECT (1)
 
         } catch (Throwable e) {
-            System.out.println("Exception finding inputfile by id");
+            logger.debug("Exception finding inputfile by id");
             throw new HibernateException(e);
         } finally {
             if (session != null) {

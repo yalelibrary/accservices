@@ -29,14 +29,23 @@ import edu.yale.sml.persistence.HistoryDAO;
 public class HistoryView implements Serializable {
 
     final static Logger logger = LoggerFactory.getLogger(HistoryView.class);
+
     private static final long serialVersionUID = -8625177943611718289L;
-    String currentNotes = ""; // TODO remove?
+
+    String currentNotes = ""; // TODO
+
     List<History> historyAsList = new ArrayList<History>();
+
     private LazyDataModel<History> lazyModel;
+
     SelectItem[] locationSelectOptions;
+
     SelectItem[] netidOptions;
-    String opMsg = ""; // result of operation (not used anywhere anymore?)
+
+    String opMsg = ""; // result of operation (used anywhere?)
+
     String paramView = "edit.xhtml?id=10";
+
     private History selectedHistory;
 
     public HistoryView() {
@@ -45,7 +54,6 @@ public class HistoryView implements Serializable {
 
     @Deprecated
     public String browseTransaction() {
-        //System.out.println("Selecting Transaction & redirecting ............... . .." + selectedHistory.getID().toString());
         return "transaction.xhtml?faces-redirect=true&id=" + selectedHistory.getID();
     }
 
@@ -118,7 +126,6 @@ public class HistoryView implements Serializable {
     }
 
     @Deprecated
-    // not used?
     public String find(String id) {
         for (History h : historyAsList) {
             if (h.getID().equals(id)) {
@@ -198,12 +205,11 @@ public class HistoryView implements Serializable {
             HistoryDAO dao = new HistoryHibernateDAO();
             dao.update(item);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.debug("Exception editing cell", e);
         }
     }
 
 
-    // FOR LOCATION FILTERING ..
     public void remove(History history) {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         FileDAO fileDAO = new FileHibernateDAO();
@@ -213,10 +219,11 @@ public class HistoryView implements Serializable {
             historyDAO.delete(history);
             historyAsList.remove(history);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.debug("Exception removing object", e);
         }
     }
 
+    @Deprecated
     public void removeAll() {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         logger.debug("Warning: Deleting all History objects");
@@ -225,13 +232,14 @@ public class HistoryView implements Serializable {
             historyAsList.clear();
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); // caution, out of cautio0n
         } catch (Throwable t) {
-            t.printStackTrace();
+            logger.debug("Exception removing object", t);
         }
     }
 
     /*
      * Removes all history items. This is used by Paginated view, since paginated has only a few elements, and one has to grab everything from the database. Problem is sync.
      */
+    @Deprecated
     public void removeAllPaginated() {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         try {
@@ -241,34 +249,31 @@ public class HistoryView implements Serializable {
             historyAsList.clear();
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); // caution, out of cautio0n
         } catch (Throwable t) {
-            logger.debug("Exception removing object");
-            t.printStackTrace();
+            logger.debug("Exception removing object", t);
         }
     }
 
-    // PF backed
     public void removeElement() {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
-        logger.debug("Removig history element : " + selectedHistory.getId() + ":" + selectedHistory.getID());
+        logger.debug("Removing history element : " + selectedHistory.getId() + ":" + selectedHistory.getID());
         try {
             historyDAO.delete(selectedHistory);
             historyAsList.remove(selectedHistory);
-            logger.debug("Remvoing history id from session");
+            logger.trace("Remvoing history id from session");
             FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); // caution, out of cautio0n
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error removing element", e);
         }
     }
 
     public void save(History history) {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
-        logger.debug("Saving:" + history.toString());
+        logger.trace("Saving:" + history.toString());
         try {
             historyDAO.save(history);
         } catch (Throwable e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error saving item", e);
         }
     }
 
@@ -277,7 +282,6 @@ public class HistoryView implements Serializable {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
     }
 
-    // TODO note no exception thrown when redirecrt page not found
     public String selectElement() {
         return "edit.xhtml?faces-redirect=true&id=" + selectedHistory.getID();
     }

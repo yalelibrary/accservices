@@ -9,15 +9,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-/**
- * HOLD
- * <p/>
- * Created with IntelliJ IDEA.
- * User: odin
- * Date: 11/10/13
- * Time: 6:30 PM
- * To change this template use File | Settings | File Templates.
- */
 public class ReportListFilter {
 
     final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.logic.ReportListFilter");
@@ -50,12 +41,8 @@ public class ReportListFilter {
         for (Report item : itemList) {
             foundError = false;
             try {
-                //TODO anyNull()
-                if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
-                        || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null
-                        || item.getSUPPRESS_IN_OPAC() == null) {
-                    logger.debug("at least one field null for: " + item.getITEM_BARCODE());
-                }
+
+                Rules.anyRelevantFieldNull(item);
 
                 if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode")) {
                     continue;

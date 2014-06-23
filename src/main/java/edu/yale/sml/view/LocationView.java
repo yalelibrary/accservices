@@ -37,7 +37,6 @@ public class LocationView implements java.io.Serializable {
     }
 
     // Used by SearchView
-
     public List<String> findLocationNames() {
         initialize();
         List<String> locationNameList = new ArrayList<String>();
@@ -88,13 +87,13 @@ public class LocationView implements java.io.Serializable {
         }
     }
 
-    // TODO uses direct access
     public void saveAll() {
         if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null) {
             editor = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString();
         }
 
         Location item = new Location(name, editor, date);
+
         try {
             GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
             dao.save(item);

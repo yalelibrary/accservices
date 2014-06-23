@@ -17,9 +17,12 @@ import edu.yale.sml.persistence.GenericHibernateDAO;
 @ViewScoped
 public class LogView implements java.io.Serializable {
 
-    private static final long serialVersionUID = 1778L;
-    private static final int MAX_RESULTS = 100;
     final static Logger logger = LoggerFactory.getLogger(LogView.class);
+
+    private static final long serialVersionUID = 1778L;
+
+    private static final int MAX_RESULTS = 100;
+
     List<Log> logList = new ArrayList<Log>();
 
     @PostConstruct
@@ -44,7 +47,7 @@ public class LogView implements java.io.Serializable {
             //TODO change to interface call
             return new GenericHibernateDAO().findAllSorted(Log.class, "timestamp", MAX_RESULTS);
         } catch (Throwable e) {
-            e.printStackTrace(); // ok to ignore here
+            logger.error("error getting logs={}", e);
         }
         return null;
     }

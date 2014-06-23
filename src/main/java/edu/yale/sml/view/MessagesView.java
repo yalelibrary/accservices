@@ -1,24 +1,19 @@
 package edu.yale.sml.view;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import edu.yale.sml.model.Log;
 import edu.yale.sml.model.Messages;
 import edu.yale.sml.persistence.GenericDAO;
 import edu.yale.sml.persistence.GenericHibernateDAO;
-import edu.yale.sml.persistence.MessagesHibernateDAO;
 import edu.yale.sml.persistence.MessagesDAO;
-import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
+import edu.yale.sml.persistence.MessagesHibernateDAO;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 
 @ManagedBean
 @SessionScoped
@@ -27,7 +22,7 @@ public class MessagesView {
     List<Messages> messagesList = new ArrayList<Messages>();
     List<Log> logList = new ArrayList<Log>();
     HashMap hashMap = new HashMap<String, String>();
-    Properties props = new Properties(); // TODO ?use me
+    Properties props = new Properties();
 
     public List findAll() {
         return messagesList;
@@ -97,7 +92,7 @@ public class MessagesView {
         return "ok";
     }
 
-    // TODO tx handling
+    /*
     public void saveAll() {
         try {
             try {
@@ -116,4 +111,5 @@ public class MessagesView {
             e.printStackTrace();
         }
     }
+    */
 }

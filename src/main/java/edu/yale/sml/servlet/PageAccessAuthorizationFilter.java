@@ -15,6 +15,9 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 import edu.yale.sml.persistence.AdminDAO;
 import edu.yale.sml.persistence.AdminHibernateDAO;
+import org.slf4j.Logger;
+
+import static  org.slf4j.LoggerFactory.getLogger;
 
 
 /**
@@ -23,8 +26,7 @@ import edu.yale.sml.persistence.AdminHibernateDAO;
  */
 public class PageAccessAuthorizationFilter implements Filter {
 
-    private static final org.slf4j.Logger logger =
-            org.slf4j.LoggerFactory.getLogger(PageAccessAuthorizationFilter.class);
+    private static final Logger logger = getLogger(PageAccessAuthorizationFilter.class);
 
     FilterConfig filterConfig;
 
@@ -35,9 +37,8 @@ public class PageAccessAuthorizationFilter implements Filter {
     public void destroy() {
     }
 
-    public void doFilter(ServletRequest req, ServletResponse res,
-                         FilterChain chain) throws IOException, ServletException {
-
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+            throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         String netid = "";
         if (request.getSession().getAttribute("netid") != null) {
@@ -54,13 +55,11 @@ public class PageAccessAuthorizationFilter implements Filter {
             } catch (ConfigurationException e) {
                 e.printStackTrace();
                 httpResponse.sendRedirect("/powershelf/pages/permissions.xhtml");
-                ;
             } catch (java.lang.IllegalStateException f) {
-                f.printStackTrace();
+                logger.error("Error={}", f);
             }
-
         } else if (adminCode.equals("Admin")) {
-            logger.debug("Authorized. Continuing down the filter chain.");
+            logger.trace("Authorized. Continuing down the filter chain.");
             chain.doFilter(req, res);
         }
     }

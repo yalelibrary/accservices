@@ -14,8 +14,6 @@ public class ShelvingComparator implements Comparator<Shelving> {
     String sortField = "";
     SortOrder sortOrder;
 
-    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ShelvingComparator.class);
-
     public ShelvingComparator(String sortField, SortOrder sortOrder) {
         super();
         this.sortField = sortField;

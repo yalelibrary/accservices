@@ -84,6 +84,7 @@ public class SearchView implements Serializable {
 
         if (sessionMap.get("netid") == null) {
             //TODO
+            //ignore
         } else {
             setUser(sessionMap.get("netid").toString());
         }
@@ -117,7 +118,7 @@ public class SearchView implements Serializable {
     }
 
     public void populateSearchView(Integer ID) throws InvalidFormatException, IOException {
-        History historyCatalog = new History();
+        History historyCatalog;
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 
@@ -140,7 +141,7 @@ public class SearchView implements Serializable {
                 return;
             }
 
-            SearchView savedSearchViewObject = null;
+            SearchView savedSearchViewObject;
 
             try {
                 savedSearchViewObject = (SearchView) SerializationUtils.deserialize(historyCatalog
@@ -196,7 +197,7 @@ public class SearchView implements Serializable {
      */
     public String process() throws IllegalAccessException, InvocationTargetException, IOException,
             HibernateException, NullFileException {
-        List<String> toFind = new ArrayList<String>();
+        List<String> toFind;
         Integer persistId = 0;
         Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 
@@ -260,10 +261,6 @@ public class SearchView implements Serializable {
         OrbisRecord last = catalogList.get(catalogList.size() - 1);
         int listSize = catalogList.size();
 
-        logger.debug("first:" + first.getDISPLAY_CALL_NO());
-        logger.debug("last:" + last.getDISPLAY_CALL_NO());
-        logger.debug("listsize:" + listSize);
-
         History history = new History();
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         Integer savedID = 0;
@@ -293,7 +290,7 @@ public class SearchView implements Serializable {
         history.setNETID(netid); // TODO check if no netid can still save to history
         history.setTIMESPENT((short) timeSpent);
         history.setNOTES(notes);
-        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        //DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         history.setSCANDATE(scanDate);
         history.setRUNDATE(new Date());
         history.setNUMBERSCANNED(new Short(numScanned));
@@ -322,8 +319,6 @@ public class SearchView implements Serializable {
     }
 
     private void clearSessionMap() {
-        // PF_FILE_PREFIX = "PrimeFacesUploadedFile";
-
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
                 .remove(PF_FILE_PREFIX);
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
@@ -333,7 +328,7 @@ public class SearchView implements Serializable {
 
     private void logFileProcessing() {
         if (getFileName() != null) {
-            logger.debug("Logging file : " + getFileName() + "processing for user:" + user);
+            logger.trace("Logging file : " + getFileName() + "processing for user:" + user);
             GenericDAO genericDAO = new GenericHibernateDAO();
             Log log = new Log();
             log.setNet_id(user);
@@ -344,9 +339,8 @@ public class SearchView implements Serializable {
             try {
                 genericDAO.save(log);
             } catch (Throwable t) {
-                logger.debug("Error logging file processing for user:" + user + " , file name:"
-                        + getFileName());
-                t.printStackTrace();
+                logger.error("Error log file processing", t);
+
             }
         }
     }
@@ -355,7 +349,6 @@ public class SearchView implements Serializable {
         Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         uploadedFile = event.getFile();
         uploadedFileName = uploadedFile.getFileName();
-        // TODO Don't have to place whole PF object in session (not used)
         sessionMap.put("PrimeFacesUploadedFile", uploadedFile);
         sessionMap.put("PrimeFacesUploadedFileName", uploadedFile.getFileName());
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File uploaded, etc."));

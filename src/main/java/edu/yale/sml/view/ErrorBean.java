@@ -42,7 +42,6 @@ public class ErrorBean {
             w.append(t.getMessage());
             return;
         } else if (t instanceof org.hibernate.HibernateException) {
-            // logger.debug(t.getMessage());
             if (t.getMessage().contains("org.hibernate.exception.JDBCConnectionException")) // noop
             {
                 w.append("Error reaching Database Server." + t.getMessage());
@@ -53,7 +52,6 @@ public class ErrorBean {
             return;
         }
 
-        // note business logic creep
         else if (t instanceof java.net.UnknownHostException) {
             w.append(t.getMessage());
             return;

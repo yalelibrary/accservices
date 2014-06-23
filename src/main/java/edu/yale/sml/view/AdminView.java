@@ -59,7 +59,6 @@ public class AdminView {
 
     @PostConstruct
     public void initialize() {
-
         permissionTypes.add("Admin");
         permissionTypes.add("Student");
 
@@ -85,7 +84,6 @@ public class AdminView {
     }
 
     public void saveAll() {
-
         if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null) {
             editor = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString();
         }

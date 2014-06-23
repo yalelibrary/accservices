@@ -32,7 +32,6 @@ public class LogicHelper {
     private final static int MIN_BARCODE_LEN = 1;    //should be 14, but not needed right now
     public static final int MAX_QUERY_COUNT = 1500;
 
-
     /**
      * @param fileUploadController PrimeFaces component
      * @return Contents of barcode file as List<String>
@@ -40,7 +39,6 @@ public class LogicHelper {
      */
 
     public static List<String> readFile(final UploadedFile fileUploadController) throws IOException {
-
         InputStream is = null;
         List<String> toFind = new ArrayList<String>();
         int count = 0;
@@ -93,7 +91,6 @@ public class LogicHelper {
      */
     public static String readFileAsString(final UploadedFile fileUploadController)
             throws IOException {
-
         StringBuilder sb = new StringBuilder();
         InputStream is = null;
         List<String> toFind = new ArrayList<String>();
@@ -145,9 +142,6 @@ public class LogicHelper {
     /**
      * Saves contents from PrimeFaces component to database using DAO
      *
-     * @param fileUploadController
-     * @param author
-     * @param date
      * @return persistentId of the file saved .. used in history
      * @throws IOException
      */
@@ -190,9 +184,6 @@ public class LogicHelper {
      * Called from SearchView. Saves contents from PrimeFaces component to database using DAO
      * TODO currently instanties an instance of FileDAO
      *
-     * @param fileUploadController
-     * @param author
-     * @param date
      * @return persistentId of the file saved .. used in history
      * @throws IOException
      */
@@ -351,10 +342,6 @@ public class LogicHelper {
 
     /**
      * Compare Orbis item and Report item
-     *
-     * @param item
-     * @param orbisItem
-     * @return
      */
 
     public static boolean evaluateFullMatch(final Report item, final OrbisRecord orbisItem) {
@@ -390,14 +377,10 @@ public class LogicHelper {
 
     /**
      * Find first item in a List<Report> that matches
-     *
-     * @param reportItems
-     * @param orbisItem
-     * @return
      */
     public static Report findFirstItemIndex(final List<Report> reportItems, final OrbisRecord orbisItem) {
         for (int i = 0; i < reportItems.size(); i++) {
-            // logicHelper method to compre orbis item to report item is used here
+            // logicHelper method to compare orbis item to report item is used here
             if (LogicHelper.evaluateFullMatch(reportItems.get(i), orbisItem)) {
                 return reportItems.get(i);
             }

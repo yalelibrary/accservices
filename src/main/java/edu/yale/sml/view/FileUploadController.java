@@ -21,7 +21,7 @@ public class FileUploadController implements java.io.Serializable {
     }
 
     public void handleFileUpload(FileUploadEvent event) {
-        System.out.println("FileUploadController : fileName : " + event.getFile().getFileName());
+        //logger.debug("FileUploadController : fileName : " + event.getFile().getFileName());
         FacesMessage msg = new FacesMessage("File uploaded.");
         setFile(event.getFile());
         FacesContext.getCurrentInstance().addMessage(null, msg);

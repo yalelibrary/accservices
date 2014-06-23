@@ -17,6 +17,6 @@ public class ItemStatusDescConverter implements Converter {
 
     public String getAsString(FacesContext context, UIComponent component,
                               Object value) {
-        return ((String) value).equals(Rules.NOT_CHARGED_STRING) ? "1" : "";
+        return value.equals(Rules.NOT_CHARGED_STRING) ? "1" : "";
     }
 }

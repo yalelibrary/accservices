@@ -11,7 +11,6 @@ import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
 /**
  * Init Central place for Hibernate MySql set up, e.g.
  *
- * @author od26
  */
 public class AppContextListener implements ServletContextListener {
 
@@ -20,7 +19,6 @@ public class AppContextListener implements ServletContextListener {
 
     /*   Checking SessionFactory ensures that all database errors are caught and handled before the landing page is displayed.
      *   Only build and test factory for MySql. Oracle/Voyager is not hit until the user actually runs the report. 
-	 *
      */
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -34,9 +32,6 @@ public class AppContextListener implements ServletContextListener {
         }
     }
 
-    /* (non-Javadoc)
-     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
-     */
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         try {

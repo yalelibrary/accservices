@@ -11,10 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SessionNetIdFilter implements Filter {
 
-    FilterConfig filterConfig; // noop
+    Logger logger = LoggerFactory.getLogger(SessionNetIdFilter.class);
+
+    FilterConfig filterConfig;
 
     public SessionNetIdFilter() {
         super();
@@ -24,7 +28,6 @@ public class SessionNetIdFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest request = (HttpServletRequest) req;
         String netid = "";
         if (request.getSession().getAttribute("netid") != null) {
@@ -42,12 +45,13 @@ public class SessionNetIdFilter implements Filter {
             try {
                 httpResponse.sendRedirect(new PropertiesConfiguration("messages.properties").getString("index_url"));
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Net id empty", e.getMessage());
             }
             chain.doFilter(req, res);
             return;
         } else {
             if (request.getSession().getAttribute("netid").equals("ghost")) {
+                //ignore
             } else {
                 chain.doFilter(req, res); // note the position of chain.doFilter
             }

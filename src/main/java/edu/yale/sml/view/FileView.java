@@ -11,10 +11,15 @@ import edu.yale.sml.persistence.FileDAO;
 import edu.yale.sml.persistence.FileHibernateDAO;
 import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.GenericDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ManagedBean
 @RequestScoped
 public class FileView {
+
+    private Logger logger = LoggerFactory.getLogger(FileView.class);
+
     List<InputFile> inputFileAsList;
     private InputFile selectedFile;
 
@@ -30,13 +35,14 @@ public class FileView {
             try {
                 inputFileAsList = fileDAO.findAll(InputFile.class);
             } catch (Throwable e) {
-                e.printStackTrace();
+                logger.debug("Error init bean", e);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Deprecated
     public List<String> getInputFilesByName() {
 
         FileDAO fileDAO = new FileHibernateDAO();
@@ -45,7 +51,7 @@ public class FileView {
         try {
             fileNames = fileDAO.findByName();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error getting file by name", e);
         }
 
         return fileNames;
@@ -74,7 +80,7 @@ public class FileView {
             inputFileAsList.clear();
 
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.debug("Error removing all", e);
         }
     }
 

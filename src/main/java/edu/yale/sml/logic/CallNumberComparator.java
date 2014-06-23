@@ -14,7 +14,6 @@ public class CallNumberComparator implements Comparator<Report> {
         }
         String item1 = o1.getDISPLAY_CALL_NO();
         String item2 = o2.getDISPLAY_CALL_NO();
-        // TODO replace with filter
         item1 = item1.replace(Rules.LC_STRING_1, " ");
         item2 = item2.replace(Rules.LC_STRING_1, " ");
         return item1.compareTo(item2);

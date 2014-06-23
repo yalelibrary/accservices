@@ -42,7 +42,7 @@ import edu.yale.sml.persistence.ShelvingHibernateDAO;
 @ManagedBean
 @ViewScoped
 public class ShelvingApplication implements java.io.Serializable {
-    Logger logger = LoggerFactory.getLogger(ShelvingApplication.class);
+    private Logger logger = LoggerFactory.getLogger(ShelvingApplication.class);
 
     private static final long serialVersionUID = 716362163607646863L;
     List<Shelving> historyAsList = new ArrayList<Shelving>();
@@ -59,7 +59,6 @@ public class ShelvingApplication implements java.io.Serializable {
 
     @Deprecated
     public void onCellEdit(CellEditEvent event) {
-        logger.debug("Deprecated method onCellEdit called");
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
     }
@@ -98,17 +97,16 @@ public class ShelvingApplication implements java.io.Serializable {
 
     private SelectItem[] createLocationFilterOptions(List<Shelving> historyAsList2) {
         List<String> locations = new ArrayList<String>(historyAsList.size());
+
         for (Shelving h : historyAsList2) {
             locations.add(h.getSCANLOCATION());
         }
 
         Set<String> set = new HashSet<String>(locations); // need unique
-
         SelectItem[] options = new SelectItem[set.size() + 1];
-
         options[0] = new SelectItem("", "...");
-
         int i = 0;
+
         for (String h : set) {
             options[i + 1] = new SelectItem(h);
             i++;
@@ -123,6 +121,7 @@ public class ShelvingApplication implements java.io.Serializable {
         SelectItem[] options = new SelectItem[set.size() + 1];
         options[0] = new SelectItem("", "Select");
         int i = 0;
+
         for (String h : set) {
             options[i + 1] = new SelectItem(h);
             i++;
@@ -173,7 +172,6 @@ public class ShelvingApplication implements java.io.Serializable {
             locationSelectOptions = createLocationFilterOptionsPaginated();
             netidOptions = createFilterOptionsPaginated();
         }
-
     }
 
     public void save(ActionEvent actionEvent) {
@@ -233,7 +231,6 @@ public class ShelvingApplication implements java.io.Serializable {
                     ConvertUtils.register(dc, java.sql.Date.class);
                     BeanUtils.populate(catalogObj, m);
 
-
                     // we want only one entry per barcode... 
 
                     String barcode = catalogObj.getITEM_BARCODE();
@@ -265,7 +262,6 @@ public class ShelvingApplication implements java.io.Serializable {
                                 logger.debug("Unknown case:" + barcode);
                             }
                         } else {
-                            //logger.debug("Date null. So will SKIP");
                             continue;
                         }
                     }
@@ -281,7 +277,7 @@ public class ShelvingApplication implements java.io.Serializable {
             java.util.Date status_date = null;
 
             if (orbisList.size() == 1) {
-                logger.debug("Orbis List Size 1");
+                logger.trace("Orbis List Size 1");
 
                 if (orbisList.get(0).getITEM_STATUS_DESC() != null && orbisList.get(0).getITEM_STATUS_DESC().length() > 1) {
                     status_desc = orbisList.get(0).getITEM_STATUS_DESC();
@@ -301,7 +297,7 @@ public class ShelvingApplication implements java.io.Serializable {
                     item.setStartItemStatusDate(status_date);
                 }
             } else if (orbisList.size() == 2) {
-                logger.debug("orbis list size 2");
+                logger.trace("orbis list size 2");
 
                 if (item.getBarcodeStart().equals(orbisList.get(0).getITEM_BARCODE())) {
                     item.setDisplayStart(orbisList.get(0).getDISPLAY_CALL_NO());
@@ -329,20 +325,19 @@ public class ShelvingApplication implements java.io.Serializable {
                     }
                 }
             } else {
-                //System.out.println("ALERT: Wrong orbis size: " + orbisList.size());
+                //logger.tradce("ALERT: Wrong orbis size: " + orbisList.size());
             }
         } catch (Throwable t) {
             t.printStackTrace();
         }
 
-        //Finally save item!
+        //Finally save the item!
         try {
             dao.save(item);
             context.addMessage(null, new FacesMessage("Saved Shelving Entry"));
             return "ok";
         } catch (Throwable e) {
-            logger.debug(e.getCause().toString());
-            logger.debug(e.getMessage());
+            logger.error("Error processing", e);
             context.addMessage(null, new FacesMessage("Error Saving Shelving Entry"));
             return "failed";
         }
@@ -453,7 +448,6 @@ public class ShelvingApplication implements java.io.Serializable {
         }
     }
 
-    // PF backed
     public void removeElement() {
         ShelvingDAO dao = new ShelvingHibernateDAO();
         try {

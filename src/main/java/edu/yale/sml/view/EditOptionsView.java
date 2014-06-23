@@ -8,9 +8,6 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
 
-/**
- *
- */
 @ManagedBean
 @RequestScoped
 public class EditOptionsView {

@@ -16,8 +16,10 @@ import edu.yale.sml.persistence.ShelvingHibernateDAO;
 @ViewScoped
 public class EditHistoryShelvingView implements java.io.Serializable {
 
-    private static final long serialVersionUID = 6223995917417414208L;
     private static final Logger logger = LoggerFactory.getLogger(EditHistoryShelvingView.class);
+
+    private static final long serialVersionUID = 6223995917417414208L;
+
     Shelving historyCatalog; // history object
     ShelvingDAO historyDAO;
     private Integer ID = 0;
@@ -25,12 +27,12 @@ public class EditHistoryShelvingView implements java.io.Serializable {
     @PostConstruct
     public void initialize() {
         historyDAO = new ShelvingHibernateDAO();
-        ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id")); // >
+        ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
         historyCatalog = new Shelving();
         try {
-            historyCatalog = historyDAO.findById(ID).get(0); // TODO id
+            historyCatalog = historyDAO.findById(ID).get(0);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 

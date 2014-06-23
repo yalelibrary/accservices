@@ -53,7 +53,15 @@ public class OrbisRecord implements Serializable {
         return CALL_NO_TYPE;
     }
 
+    public String getCallNoType() {
+        return CALL_NO_TYPE;
+    }
+
     public String getCHRON() {
+        return CHRON;
+    }
+
+    public String getChron() {
         return CHRON;
     }
 
@@ -61,7 +69,15 @@ public class OrbisRecord implements Serializable {
         return DISPLAY_CALL_NO;
     }
 
+    public String getDisplayCallNo() {
+        return DISPLAY_CALL_NO;
+    }
+
     public String getENCODING_LEVEL() {
+        return ENCODING_LEVEL;
+    }
+
+    public String getEncodingLevel() {
         return ENCODING_LEVEL;
     }
 
@@ -69,7 +85,15 @@ public class OrbisRecord implements Serializable {
         return ITEM_BARCODE;
     }
 
+    public String getItemBarcode() {
+        return ITEM_BARCODE;
+    }
+
     public String getITEM_ENUM() {
+        return ITEM_ENUM;
+    }
+
+    public String getItemEnum() {
         return ITEM_ENUM;
     }
 
@@ -77,7 +101,15 @@ public class OrbisRecord implements Serializable {
         return ITEM_ID;
     }
 
+    public String getItemID() {
+        return ITEM_ID;
+    }
+
+
     public Date getITEM_STATUS_DATE() {
+        return ITEM_STATUS_DATE;
+    }
+    public Date getItemStatusDate() {
         return ITEM_STATUS_DATE;
     }
 
@@ -85,7 +117,15 @@ public class OrbisRecord implements Serializable {
         return ITEM_STATUS_DESC;
     }
 
+    public String getItemStatusDesc() {
+        return ITEM_STATUS_DESC;
+    }
+
     public String getLOCATION_NAME() {
+        return LOCATION_NAME;
+    }
+
+    public String getLocationName() {
         return LOCATION_NAME;
     }
 
@@ -93,11 +133,23 @@ public class OrbisRecord implements Serializable {
         return MFHD_ID;
     }
 
+    public String getMfhd() {
+        return MFHD_ID;
+    }
+
     public String getNORMALIZED_CALL_NO() {
         return NORMALIZED_CALL_NO;
     }
 
+    public String getNormalizedCallNo() {
+        return NORMALIZED_CALL_NO;
+    }
+
     public String getPERM_LOCATION() {
+        return PERM_LOCATION;
+    }
+
+    public String getPermLocation() {
         return PERM_LOCATION;
     }
 
@@ -109,7 +161,15 @@ public class OrbisRecord implements Serializable {
         return SUPPRESS_IN_OPAC;
     }
 
+    public String getSuppressInOpac() {
+        return SUPPRESS_IN_OPAC;
+    }
+
     public String getYEAR() {
+        return YEAR;
+    }
+
+    public String getYear() {
         return YEAR;
     }
 

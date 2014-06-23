@@ -23,9 +23,6 @@ public class LazyHistoryDataModel extends LazyDataModel<History> {
     private List<History> datasource;
     private int dataSourceSize = 0;
 
-    /*
-     * @Override public Object getRowKey(History History) { return History.getModel(); }
-     */
     @Override
     public List<History> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
         int result_count = dataSourceSize;
@@ -41,19 +38,23 @@ public class LazyHistoryDataModel extends LazyDataModel<History> {
                 datasource = dao.findPagedResult(History.class, first, first + pageSize, "c." + sortField + " desc");
             } else {
                 if (filters.get("NETID") != null && filters.size() == 1) {
-                    datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize, "c.RUNDATE desc", filters.get("NETID").toString(), "NETID");
+                    datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize, "c.RUNDATE desc",
+                            filters.get("NETID").toString(), "NETID");
                     // count of all such
                     filteredCount = dao.findByLevelCount(History.class, filters.get("NETID").toString(), "NETID");
                     filtered = true;
                 } else if (filters.get("SCANLOCATION") != null && filters.size() == 1) {
-                    datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize, "c.RUNDATE desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
+                    datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize,
+                            "c.RUNDATE desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
                     // count of all such
                     filteredCount = dao.findByLevelCount(History.class, filters.get("SCANLOCATION").toString(), "SCANLOCATION");
                     filtered = true;
                 } else if (filters.get("SCANLOCATION") != null && filters.get("NETID") != null && filters.size() == 2) {
-                    datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize, "c.RUNDATE desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION", filters.get("NETID"), "NETID");
+                    datasource = (List<History>) dao.findPagedResultByType(History.class, first, first + pageSize,
+                            "c.RUNDATE desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION", filters.get("NETID"), "NETID");
                     // count of all such
-                    filteredCount = dao.findByLevelCount(History.class, filters.get("NETID").toString(), "NETID", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
+                    filteredCount = dao.findByLevelCount(History.class, filters.get("NETID").toString(),
+                            "NETID", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
                     filtered = true;
                 } else {
                     datasource = (List<History>) dao.findPagedResult(History.class, first, first + pageSize, "c.RUNDATE desc");

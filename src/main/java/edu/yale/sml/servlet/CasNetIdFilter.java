@@ -26,37 +26,30 @@ public class CasNetIdFilter implements Filter {
         super();
     }
 
-    // determines if a ticket has been returned from net id .. if so, moves to next
-
-
-    // Gets NetId and puts it in Session
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest request = (HttpServletRequest) req;
         String var = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/pages/index.xhtml";
         String ticket = req.getParameter("ticket").toString();
 
-        if (ticket == null || ticket.isEmpty()) // ? todo check this
-        {
+        if (ticket == null || ticket.isEmpty()) {
             throw new ServletException("Failure to log in");
         }
 
         String service = URLEncoder.encode(var); // N.B. Must url-encode!!!!
 
         String param = "ticket=" + ticket + "&service=" + service;
-        logger.debug("Param={}", param);
+        logger.trace("Param={}", param);
 
         try {
-            //final String user;
             final List<String> userList = LogicHelper.getCASUser(CAS_VALIDATE_URL, new StringBuffer(param));
-            logger.debug("userList={}", userList);
+            logger.trace("userList={}", userList);
             final String user = userList.get(2).trim();
             request.getSession().setAttribute("netid", user);
 
             final List<String> userList2 = LogicHelper.getCASUser(CAS_VALIDATE_URL, new StringBuffer(param));
-            logger.debug("userList={}", userList2);
+            logger.trace("userList={}", userList2);
 
-            logger.debug("Saved user in session={}", user);
+            logger.trace("Saved user in session={}", user);
         } catch (java.net.UnknownHostException e) {
             logger.debug("Error finding server or service.");
             throw new java.net.UnknownHostException("Error contacting CAS server.");

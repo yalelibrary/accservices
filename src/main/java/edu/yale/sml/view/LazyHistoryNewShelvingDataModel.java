@@ -23,9 +23,6 @@ public class LazyHistoryNewShelvingDataModel extends LazyDataModel<Shelving> {
     private List<Shelving> datasource;
     private int dataSourceSize = 0;
 
-    /*
-     * @Override public Object getRowKey(History History) { return History.getModel(); }
-     */
     @Override
     public List<Shelving> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, String> filters) {
 
@@ -46,19 +43,23 @@ public class LazyHistoryNewShelvingDataModel extends LazyDataModel<Shelving> {
                 if (filters.get("NETID") != null && filters.size() == 1) {
 
 
-                    datasource = (List<Shelving>) dao.findPagedResultByType(Shelving.class, first, first + pageSize, "c.creationDate desc", filters.get("NETID").toString(), "NETID");
+                    datasource = (List<Shelving>) dao.findPagedResultByType(Shelving.class, first, first + pageSize,
+                            "c.creationDate desc", filters.get("NETID").toString(), "NETID");
                     filteredCount = dao.findByLevelCount(Shelving.class, filters.get("NETID").toString(), "NETID");
                     filtered = true;
                 } else if (filters.get("SCANLOCATION") != null && filters.size() == 1) {
 
-                    datasource = (List<Shelving>) dao.findPagedResultByType(Shelving.class, first, first + pageSize, "c.creationDate desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
+                    datasource = (List<Shelving>) dao.findPagedResultByType(Shelving.class, first, first + pageSize,
+                            "c.creationDate desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
 
                     filteredCount = dao.findByLevelCount(Shelving.class, filters.get("SCANLOCATION").toString(), "SCANLOCATION");
 
                     filtered = true;
                 } else if (filters.get("SCANLOCATION") != null && filters.get("NETID") != null && filters.size() == 2) {
-                    datasource = (List<Shelving>) dao.findPagedResultByType(Shelving.class, first, first + pageSize, "c.creationDate desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION", filters.get("NETID"), "NETID");
-                    filteredCount = dao.findByLevelCount(Shelving.class, filters.get("NETID").toString(), "NETID", filters.get("SCANLOCATION").toString(), "SCANLOCATION");
+                    datasource = (List<Shelving>) dao.findPagedResultByType(Shelving.class, first, first + pageSize,
+                            "c.creationDate desc", filters.get("SCANLOCATION").toString(), "SCANLOCATION", filters.get("NETID"), "NETID");
+                    filteredCount = dao.findByLevelCount(Shelving.class, filters.get("NETID").toString(), "NETID",
+                            filters.get("SCANLOCATION").toString(), "SCANLOCATION");
                     filtered = true;
 
                 } else {

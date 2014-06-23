@@ -9,27 +9,29 @@ import java.util.List;
 import edu.yale.sml.model.OrbisRecord;
 import edu.yale.sml.model.Report;
 import edu.yale.sml.model.ReportHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Compares/sorts on enum and chron.
- *
- * @see edu.yale.sml.logic.comparator.CallNumberComparator
  */
 public class FullComparator implements Comparator<OrbisRecord> {
 
+    private final Logger logger = LoggerFactory.getLogger(FullComparator.class);
+
+    /* Used by results.xhtml for controlling rendering */
+    private static final int FLAG = 5555;
+
     List<OrbisRecord> culprits = new java.util.ArrayList<OrbisRecord>();
     List<Report> culpritList = new java.util.ArrayList<Report>();
-    private static final int FLAG = 5555;
-    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(FullComparator.class);
 
-    public int compare(OrbisRecord o1, OrbisRecord o2) {
-
+    public int compare(final OrbisRecord o1, final OrbisRecord o2) {
         boolean bothEnumNull = false;
         boolean eitherEnumNull = false;
-        boolean enum_found = false; // TODO CLEAN UP REMOVE
+        boolean enum_found = false;
 
         if (o1 == null || o2 == null) {
-            // logger.debug("Null record");
+            // logger.trace("Null record");
         }
 
         if (o1.getNORMALIZED_CALL_NO() == null || o2.getNORMALIZED_CALL_NO() == null) {
@@ -37,9 +39,7 @@ public class FullComparator implements Comparator<OrbisRecord> {
             return 0;
         }
 
-        /*
-         * logger.debug("Comparing :" + o1.getNORMALIZED_CALL_NO() + ":" + o2.getNORMALIZED_CALL_NO());
-         */
+        //logger.trace("Comparing :" + o1.getNORMALIZED_CALL_NO() + ":" + o2.getNORMALIZED_CALL_NO());
 
         String item1 = o1.getNORMALIZED_CALL_NO();
         String item2 = o2.getNORMALIZED_CALL_NO();
@@ -47,29 +47,23 @@ public class FullComparator implements Comparator<OrbisRecord> {
         item1 = item1.replace("( LC )", " ").trim(); // TODO replace w/ filter
         item2 = item2.replace("( LC )", " ").trim();
 
-        int diff = 0, enum_diff = 0, year_diff = 0;
+        int diff, enumDiff = 0, yearDiff = 0;
 
 
         diff = item1.compareTo(item2);
 
         // for same call numbers, but different enums and years
         if (diff == 0) {
-            // logger.debug("[ComparatorImpl] Call Num. same, but sorting on enum/year for : " + o1.getITEM_BARCODE() + " w/ " + o2.getITEM_BARCODE());
-
-            if (item1.length() != item2.length()) {
-                // logger.debug("Length not equal for :" + item1 + "and" + item2);
-            }
 
             if (o1.getITEM_ENUM() == null && o2.getITEM_ENUM() == null) {
-                // check for chron?
-                enum_diff = 0;
+                enumDiff = 0;
                 bothEnumNull = true;
             }
 
             if (o1.getITEM_ENUM() == null || o2.getITEM_ENUM() == null) {
-                // check for chron?
                 eitherEnumNull = true;
             } else if (o1.getITEM_ENUM() != null && o2.getITEM_ENUM() != null) {
+
                 if (o1.getITEM_ENUM().length() > 0 && o2.getITEM_ENUM().length() > 0) {
                     enum_found = true;
                 }
@@ -103,61 +97,57 @@ public class FullComparator implements Comparator<OrbisRecord> {
                     s2 = s2 + ":0";
                 }
 
-                // enum_diff = s1.compareTo(s2);
                 String[] s1contents = s1.split(":");
                 String[] s2contents = s2.split(":");
 
                 try {
                     if (Integer.parseInt(s1contents[0]) > Integer.parseInt(s2contents[0])) {
-                        enum_diff = 1;
+                        enumDiff = 1;
                     } else if (Integer.parseInt(s1contents[0]) < Integer.parseInt(s2contents[0])) {
-                        enum_diff = -1;
+                        enumDiff = -1;
                     } else if (Integer.parseInt(s1contents[0]) == Integer.parseInt(s2contents[0])) {
 
                         if (Integer.parseInt(s1contents[1]) > Integer.parseInt(s1contents[1])) {
-                            enum_diff = 1;
+                            enumDiff = 1;
                         } else if (Integer.parseInt(s1contents[1]) < Integer.parseInt(s1contents[1])) {
-                            enum_diff = -1;
-                        } else {
-                            // logger.debug("Unk sort. Preceeding colon OK, but error.");
+                            enumDiff = -1;
                         }
-                    } else {
-                        // logger.debug("Sort Unknown condition.");
                     }
-
                 } catch (NumberFormatException n) {
                     logger.debug("Number Format Exception" + n.getCause() + n.getMessage());
-                    enum_diff = 0;
+                    enumDiff = 0;
                 }
             } else if (o1.getITEM_ENUM() != null && o2.getITEM_ENUM() == null) {
+                //ignore
             } else if (o1.getITEM_ENUM() == null && o2.getITEM_ENUM() != null) {
+                //ignore
             }
 
             // compare for chron / year:
-
             if (o1.getCHRON() == null && o2.getCHRON() == null) {
-                year_diff = 0;
+                yearDiff = 0;
             } else if (o1.getCHRON() != null && notDVD(o1.getCHRON()) && o2.getCHRON() != null && notDVD(o2.getCHRON())
                     && (bothEnumNull || eitherEnumNull || o1.getITEM_ENUM().equals(o2.getITEM_ENUM()))) {
-                year_diff = o1.getCHRON().compareTo(o2.getCHRON()); // tmp disabled
+                yearDiff = o1.getCHRON().compareTo(o2.getCHRON()); // tmp disabled
             } else if (o1.getCHRON() != null && o2.getCHRON() == null) {
+                //ignore
             } else if (o1.getCHRON() == null && o2.getCHRON() != null) {
+                //ignore
             } else {
+                //ignore
             }
         }
-        int aggregate = diff + enum_diff + year_diff;
+        int aggregate = diff + enumDiff + yearDiff;
         if (enum_found && aggregate > 0) {
             culprits.add(o1); // redundant
 
             //if added already, skip all - -this is to prevent an enum from appearing multiple times
 
-            if (true && !alreadyAdded(o1, culpritList)) {
+            if (!alreadyAdded(o1, culpritList)) {
                 culpritList.add(Report.populateReport(o1, FLAG, "N/A", "N/A", o2, null));
-            } else {
             }
-
         }
-        return diff + enum_diff + year_diff;
+        return diff + enumDiff + yearDiff;
     }
 
 
@@ -181,7 +171,7 @@ public class FullComparator implements Comparator<OrbisRecord> {
         this.culprits = culprits;
     }
 
-    public boolean notDVD(String chron) // TODO replace with non number regex
+    public boolean notDVD(String chron)
     {
         return (chron.contains("CD") || chron.contains("DVD")) ? false : true;
     }

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//TODO should this be made abstract?
 public class LogoutFilter implements Filter {
 
     private final static Logger logger = LoggerFactory.getLogger(LogoutFilter.class);
@@ -22,11 +21,7 @@ public class LogoutFilter implements Filter {
     }
 
     /*
-     * Removes NetId attribute from Session. Note it does not invalidate the session completely (TODO check why)
-     * 
-     * (non-Javadoc)
-     * 
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+     * Removes NetId attribute from Session. Note it does not invalidate the session completely
      */
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;

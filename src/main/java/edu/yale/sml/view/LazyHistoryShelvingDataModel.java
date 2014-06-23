@@ -41,11 +41,10 @@ public class LazyHistoryShelvingDataModel extends LazyDataModel<Shelving> {
                 datasource = dao.findPagedResult(Shelving.class, first, first + pageSize, "c.creationDate desc");
             }
         } catch (Throwable e1) {
-            e1.printStackTrace();
+            logger.debug("Error lazy loading", e1);
         }
 
         if (sortField != null) {
-            //TODO merge with HistoryComparator
             Collections.sort(data, new ShelvingComparator(sortField, sortOrder));
         }
 

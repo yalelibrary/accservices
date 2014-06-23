@@ -15,15 +15,6 @@ public class ValidatorBean implements Validator {
         return (value.compareTo("true") == 0) ? 1 : 0;
     }
 
-    /**
-     * JSF Text converter
-     *
-     * @param context
-     * @param component
-     * @param value
-     * @return Empty String if input value = 0
-     */
-    @Deprecated
     public String getAsString(FacesContext context, UIComponent component,
                               Object value) {
         return "";

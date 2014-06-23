@@ -14,14 +14,11 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
 
-/**
- * TODO Merge with HistoryView remove method (if desirable).
- */
 @ManagedBean
 @RequestScoped
 public class RemoveReportView {
 
-    Logger logger = LoggerFactory.getLogger(RemoveReportView.class);
+    private final Logger logger = LoggerFactory.getLogger(RemoveReportView.class);
 
     /**
      * Removes individual history report.
@@ -39,12 +36,11 @@ public class RemoveReportView {
         }
         try {
             remove(history);
-            logger.debug("Deleted report.");
+            logger.trace("Deleted report.");
             return "ok";
 
-        } catch (Throwable throwable) {
-            logger.error("Error deleting report", throwable.getMessage());
-            throwable.printStackTrace();  //TODO
+        } catch (Throwable t) {
+            logger.error("Error deleting report", t);
         }
         return "failed";
     }

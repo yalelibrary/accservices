@@ -86,38 +86,29 @@ public class HistorySearchView implements java.io.Serializable {
      * @return JSF ok navigate
      */
     public String process() {
-
-        //TODO convert datetime for SQL
-
         inputFileAsList = new ArrayList<InputFile>();
-        FileDAO dao = new FileHibernateDAO(); // check
+        FileDAO dao = new FileHibernateDAO();
 
         try {
-            System.out.println("HistorySearchView. Building index on InputFile");
+            logger.trace("HistorySearchView. Building index on InputFile");
             dao.doIndex();
         } catch (Throwable e) {
             // TODO Auto-generated catch block
-            System.out.println("\n HistorySearchView Error building index!");
-            System.out.println(e.getCause() + e.getMessage());
-            e.printStackTrace();
+            logger.error("\n HistorySearchView Error building index!", e);
         }
 
         List<InputFile> list = null;
         try {
-            System.out.println("Searching for : " + barcodeSearchTerm);
+            logger.trace("Searching for : " + barcodeSearchTerm);
             list = dao.search(barcodeSearchTerm);
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            System.out.println("Exception in history search view");
-            e.printStackTrace();
+            logger.error("general exception", e);
         }
 
         HashSet<InputFile> hs = new HashSet<InputFile>();
         hs.addAll(list);
         inputFileAsList.addAll(hs);
-
-        // used because there's unidirectional mapping
-        HistoryDAO historyDAO = new HistoryHibernateDAO();
+        HistoryDAO historyDAO = new HistoryHibernateDAO();         // used because there's unidirectional mapping
 
         for (InputFile item : inputFileAsList) {
             List<List<Integer>> historyIDs = historyDAO.findByFileId(item.getId());

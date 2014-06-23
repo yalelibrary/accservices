@@ -19,7 +19,7 @@ public class FileDownloadController {
     private StreamedContent file;
 
     public FileDownloadController() {
-        String fileName;
+        final String fileName;
         file = null;
 
         try {
@@ -31,7 +31,7 @@ public class FileDownloadController {
             FileDAO dao = new FileHibernateDAO();
             String contents = dao.findContentsByFileName(fileName);
             InputStream stream = new ByteArrayInputStream(contents.getBytes("UTF-8"));
-            file = new DefaultStreamedContent(stream, "text/plain", fileName); //TODO conflicts with p:commandButton (old values is retained)
+            file = new DefaultStreamedContent(stream, "text/plain", fileName);
         } catch (Throwable e) {
             e.printStackTrace();
         }

@@ -14,12 +14,17 @@ import javax.faces.event.ActionEvent;
 import edu.yale.sml.model.Floor;
 import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.GenericDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ManagedBean
 @ViewScoped
 public class FloorView implements java.io.Serializable {
 
     private static final long serialVersionUID = 6712445546185842422L;
+
+    private static Logger logger = LoggerFactory.getLogger(FloorView.class);
+
     Date date = new Date();
     String editor = "";
     List<Floor> locationAsList = new ArrayList<Floor>();
@@ -89,7 +94,7 @@ public class FloorView implements java.io.Serializable {
         try {
             locationAsList = dao.findAll(Floor.class);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Error init bean", e);
         }
     }
 
@@ -100,8 +105,7 @@ public class FloorView implements java.io.Serializable {
             dao.delete(locationCatalog);
             locationAsList.remove(locationCatalog);
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error removing", e);
         }
     }
 
@@ -116,7 +120,7 @@ public class FloorView implements java.io.Serializable {
             dao.save(item);
             initialize();
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Error saving", e);
         }
     }
 

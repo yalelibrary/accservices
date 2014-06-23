@@ -15,7 +15,6 @@ import edu.yale.sml.model.Report;
 /**
  * Helper logic static class
  *
- * @author od26
  */
 @ManagedBean
 @RequestScoped
@@ -30,34 +29,25 @@ public class Rules {
     public static final String NULL_BARCODE_STRING = "00000000";
 
     /**
-     * @param desc item status
+     * @param s item status
      * @return whether status is valid or invalid (missing, lost, charged, or not charged)
      */
-    public static boolean isValidItemStatus(String desc) {
-        if (desc.equals("Missing") || desc.equals("Lost") || desc.equals("Charged") || desc.startsWith("Renewed") ||
-                desc.startsWith("In Transit") || desc.startsWith("Missing") || desc.startsWith("On Hold") ||
-                desc.startsWith("Withdrawn") || desc.startsWith("Claims Returned")
-                || desc.startsWith("Lost") || desc.startsWith("Recall Request") || desc.startsWith("Overdue")
-                || desc.startsWith("Withdrawn") || desc.startsWith("Overdue")) {
+    public static boolean isValidItemStatus(final String s) {
+        if (s.equals("Missing") || s.equals("Lost") || s.equals("Charged") || s.startsWith("Renewed")
+                || s.startsWith("In Transit") || s.startsWith("Missing") || s.startsWith("On Hold")
+                || s.startsWith("Withdrawn") || s.startsWith("Claims Returned") || s.startsWith("Lost")
+                || s.startsWith("Recall Request") || s.startsWith("Overdue") || s.startsWith("Withdrawn")
+                || s.startsWith("Overdue")) {
             return false;
-        } else if (desc.equals("Not Charged") || desc.equals("Discharged") || desc.startsWith("Not Charged")
-                || desc.startsWith("Discharged") || desc.startsWith("Circulation Review")
-                || desc.startsWith("Cataloging Review") ||
-                desc.startsWith("Damaged")) {
-            // System.out.println("Invalid Status:  " + desc);
+        } else if (s.equals("Not Charged") || s.equals("Discharged") || s.startsWith("Not Charged")
+                || s.startsWith("Discharged") || s.startsWith("Circulation Review")
+                || s.startsWith("Cataloging Review") || s.startsWith("Damaged")) {
             return true;
         }
-        return false; //TODO: return unknown //bug
+        return false;
     }
 
-    /**
-     * TODO move to LogicHelper
-     * Omits last call number if the barcode is 00000
-     *
-     * @param list
-     * @return
-     */
-    public static String getLastValidDisplayCallNum(List<OrbisRecord> list) {
+    public static String getLastValidDisplayCallNum(final List<OrbisRecord> list) {
         int lastValid = 0;
 
         for (int i = 0; i < list.size(); i++) {
@@ -73,17 +63,11 @@ public class Rules {
         }
     }
 
-    /**
-     * TODO move to logic helper
-     *
-     * @param list
-     * @return
-     */
-    public static String getFirstValidDisplayCallNum(List<OrbisRecord> list) {
+    public static String getFirstValidDisplayCallNum(final List<OrbisRecord> list) {
         int firstValid = 0;
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getITEM_BARCODE().contains(NULL_BARCODE_STRING)) {
-                continue;
+                //ignore
             } else {
                 firstValid = i;
                 break;
@@ -92,139 +76,72 @@ public class Rules {
         return list.get(firstValid).getDISPLAY_CALL_NO();
     }
 
-    // TODO fix return value -- should return on one first error found
-    // TODO separate business logic class?
-    public static boolean isItemError(final Report item, final String finalLocationName, final Date scanDate,
-                                      final String oversize) {
-        logger.debug("Filtering out barcodes that do not have any errors");
-        boolean foundError = false;
-
-        try {
-            if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
-                    || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null
-                    || item.getSUPPRESS_IN_OPAC() == null) {
-                logger.debug("at least one field null for: " + item.getITEM_BARCODE());
-            }
-
-            if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode")) {
-                // ?
-            }
-
-            boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+") || item
-                    .getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
-
-            if (oversize.equalsIgnoreCase("N")) {
-                if (oversizeCallNumber) {
-                    item.setOVERSIZE("Y"); // used?
-                    foundError = true;
-                }
-            } else if (oversize.equalsIgnoreCase("Y")) {
-                if (oversizeCallNumber) {
-                    item.setOVERSIZE("Y"); // NOT AN ERROR
-                } else {
-                    item.setOVERSIZE("N");
-                    foundError = true;
-                }
-            }
-
-            if (item.getText() != 0) {
-                foundError = true;
-            }
-
-            if (!item.getLOCATION_NAME().equals(finalLocationName)) {
-                foundError = true;
-            }
-
-            if (item.getITEM_STATUS_DESC().equals("Not Charged")
-                    || item.getITEM_STATUS_DESC().equals("Discharged")) {
-                if (item.getITEM_STATUS_DATE() != null
-                        && scanDate.before(item.getITEM_STATUS_DATE())) {
-                    foundError = true;
-                }
-            } else {
-                // System.out.print("Suspicious:" + r.getITEM_BARCODE());
-                foundError = true;
-            }
-
-            if (item.getSUPPRESS_IN_OPAC().equalsIgnoreCase("Y")) {
-                foundError = true;
-            }
-        } catch (Exception e) {
-            logger.debug("Exception figuring out any error with barcode : "
-                    + item.getITEM_BARCODE());
-            e.printStackTrace();
-        }
-        //logger.debug("founderror:" + foundError);
-        return foundError;
-    }
-    
-
     /*
      * same as above but returns only voyager errors .. i.e. not concerned with whether an item is a misshelf
      */
 
     public static boolean isVoyagerError(final Report item, final String finalLocationName, final Date scanDate,
                                          final String oversize) {
-        boolean foundError = false;
+        boolean error = false;
 
         try {
-            if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
-                    || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null
-                    || item.getSUPPRESS_IN_OPAC() == null) {
-                logger.debug("at least one field null for: " + item.getITEM_BARCODE());
-            }
+            anyRelevantFieldNull(item); //print debug
 
             if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode")) {
-                // ?
+                // ignore //?
             }
 
-            boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+") || item
-                    .getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
+            boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+")
+                    || item.getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
 
             if (oversize.equalsIgnoreCase("N")) {
                 if (oversizeCallNumber) {
                     item.setOVERSIZE("Y"); // used?
-                    foundError = true;
+                    error = true;
                 }
             } else if (oversize.equalsIgnoreCase("Y")) {
                 if (oversizeCallNumber) {
                     item.setOVERSIZE("Y"); // NOT AN ERROR
                 } else {
                     item.setOVERSIZE("N");
-                    foundError = true;
+                    error = true;
                 }
             }
 
-           /* if (item.getText() != 0)
-            {
-                foundError = true;
-            }*/
-
             if (!item.getLOCATION_NAME().equals(finalLocationName)) {
-                foundError = true;
+                error = true;
             }
 
             if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
                 if (item.getITEM_STATUS_DATE() != null && scanDate.before(item.getITEM_STATUS_DATE())
                         && (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime()) > 86400000) {
-                    foundError = true;
+                    error = true;
                 }
             } else {
-                // System.out.print("Suspicious:" + r.getITEM_BARCODE());
-                foundError = true;
+                error = true;
             }
 
             if (item.getSUPPRESS_IN_OPAC().equalsIgnoreCase("Y")) {
-                foundError = true;
+                error = true;
             }
         } catch (Exception e) {
-            logger.debug("Exception figuring out any error with barcode : "
-                    + item.getITEM_BARCODE());
-            e.printStackTrace();
+            logger.error("Exception figuring out any error with barcode :r={}", e);
         }
-        //logger.debug("founderror:" + foundError);
-        logger.debug(item.getITEM_BARCODE() + " isVoyagerError? " + foundError);
-        return foundError;
+        logger.trace(item.getITEM_BARCODE() + " isVoyagerError? " + error);
+        return error;
+    }
+
+    public static void anyRelevantFieldNull(final Report item) {
+        try {
+            if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
+                    || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null
+                    || item.getSUPPRESS_IN_OPAC() == null) {
+                logger.debug("At least one field null for: " + item.getITEM_BARCODE());
+            }
+        } catch (Exception e) {
+            //ignore
+        }
+
     }
 
 }

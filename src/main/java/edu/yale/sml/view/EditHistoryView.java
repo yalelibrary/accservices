@@ -18,21 +18,26 @@ import edu.yale.sml.persistence.HistoryDAO;
 @ViewScoped
 public class EditHistoryView implements java.io.Serializable {
 
-    private static final long serialVersionUID = 6223995917417414208L;
     private static final Logger logger = LoggerFactory.getLogger(EditHistoryView.class);
-    History historyCatalog; // history object
+
+    private static final long serialVersionUID = 6223995917417414208L;
+
+    /** history **/
+    History historyCatalog;
+
     HistoryDAO historyDAO;
+
     private Integer ID = 0;
 
     @PostConstruct
     public void initialize() {
 
         historyDAO = new HistoryHibernateDAO();
-        ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id")); // >
+        ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
         historyCatalog = new History();
 
         try {
-            historyCatalog = historyDAO.findById(ID).get(0); // TODO id
+            historyCatalog = historyDAO.findById(ID).get(0);
             byte[] b = historyCatalog.getSEARCHVIEW();
             ObjectInputStream objectIn = null;
             if (b != null) {
@@ -40,7 +45,7 @@ public class EditHistoryView implements java.io.Serializable {
             }
             Object deSerializedObject = objectIn.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
         }
     }
 
