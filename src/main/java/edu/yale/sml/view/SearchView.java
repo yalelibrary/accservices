@@ -33,7 +33,6 @@ import java.util.Map;
 
 /*
  * Main entry point for report creation.
- *
  * Important methods: initialize, populateSearchView (loads history), saveHistory, process
  */
 @ManagedBean
@@ -48,21 +47,22 @@ public class SearchView implements Serializable {
     final static String PF_FILE_NAME = "PrimeFacesUploadedFileName";
     private final static String APP = "ShelfScan";
 
+    /** Identifier for session */
+    transient static final String SESSION_HISTORY_ID = "HISTORYID";
+
+    /** Identifier for session netid */
+    transient static final String SESSION_NETID = "netid";
+
     BasicShelfScanEngine engine;
     String fileName = "";
     String finalLocationName = "";
     String firstCallNumber = "", lastCallNumber = "";
-    List<Location> locationAsList = new LocationView().findAll();
-    Location locationCatalog;
-    String locationCode = "";
     String locationName = "sml";
     List<String> locationNames = new ArrayList<String>();
-    int nullBarcodes = 0;
     String oversize = "N";
     List<String> oversizeAsList = new ArrayList<String>();
     DataLists reportLists = new DataLists();
     Date scanDate = new Date();
-    String selectBoxFileName = "";
     int timeSpent = 30;
     UploadedFile uploadedFile;
     List<OrbisRecord> badBarcodes;
@@ -74,16 +74,19 @@ public class SearchView implements Serializable {
     public SearchView() {
     }
 
+    /**
+     * Init bean
+     */
     @PostConstruct
     public void initialize() {
         ExternalContext JsfExternalContext = FacesContext.getCurrentInstance().getExternalContext();
         Map sessionMap = JsfExternalContext.getSessionMap();
         Map<String, String> requestMap = JsfExternalContext.getRequestParameterMap();
 
-        if (sessionMap.get("netid") == null) {
+        if (sessionMap.get(SESSION_NETID) == null) {
             //ignore
         } else {
-            setUser(sessionMap.get("netid").toString());
+            setUser(sessionMap.get(SESSION_NETID).toString());
         }
 
         oversizeAsList.add("Y");
@@ -91,20 +94,21 @@ public class SearchView implements Serializable {
         oversizeAsList.add("N");
         locationNames = new LocationView().findLocationNames();
         Integer historyId;
+
         try {
-            if (requestMap.get("id") != null) // check in param
-            {
+            if (requestMap.get("id") != null)  {
                 historyId = Integer.parseInt(requestMap.get("id"));
                 populateSearchView(historyId);
-            } else if (sessionMap.get("HISTORYID") != null) {
-                historyId = (Integer) sessionMap.get("HISTORYID");
+            } else if (sessionMap.get(SESSION_HISTORY_ID) != null) {
+                historyId = (Integer) sessionMap.get(SESSION_HISTORY_ID);
                 populateSearchView(historyId);
             }
+
             FacesContext.getCurrentInstance().getExternalContext().getFlash().remove("initId");
         } catch (InvalidFormatException e) {
+
             try {
-                JsfExternalContext.redirect(new PropertiesConfiguration("messages.properties")
-                        .getString("generic_error_redirect"));
+                JsfExternalContext.redirect(new PropertiesConfiguration("messages.properties").getString("generic_error_redirect"));
             } catch (Exception ce) {
                 logger.error("Error init bean={}", ce);
             }
@@ -113,6 +117,12 @@ public class SearchView implements Serializable {
         }
     }
 
+    /**
+     * De-serializes old objects.
+     * @param ID id of the report
+     * @throws InvalidFormatException
+     * @throws IOException
+     */
     public void populateSearchView(Integer ID) throws InvalidFormatException, IOException {
         History historyCatalog;
         HistoryDAO historyDAO = new HistoryHibernateDAO();
@@ -129,18 +139,18 @@ public class SearchView implements Serializable {
                 historyCatalog = historyList.get(0);
             } catch (Exception e) {
                 logger.debug("Failed to get report # " + ID + " Redirecting . . .");
-                sessionMap.remove("HISTORYID"); // out of caution
+                sessionMap.remove(SESSION_HISTORY_ID); // out of caution
                 clearSessionMap();
                 FacesContext.getCurrentInstance().getExternalContext().redirect("/shelfscan/pages/error/oops.xhtml");
                 return;
             }
 
-            SearchView deserializedObj;
+            final SearchView deserializedObj;
 
             try {
                 deserializedObj = (SearchView) SerializationUtils.deserialize(historyCatalog.getSEARCHVIEW());
             } catch (RuntimeException re) {
-                logger.error("Error deserializing object={}", ID);
+                logger.error("Error de-serializing object={}", ID);
                 throw new InvalidFormatException("Serialization format exception.");
             }
 
@@ -163,15 +173,14 @@ public class SearchView implements Serializable {
             scanDate = deserializedObj.getScanDate();
 
         } catch (NullPointerException e) {
-            sessionMap.remove("HISTORYID");
+            sessionMap.remove(SESSION_HISTORY_ID);
             clearSessionMap();
             throw new NullPointerException(e.getMessage());
         }
     }
 
     /**
-     * Main method that gets invoked when form is sumbitted. Called directly
-     * from xhtml JSF view
+     * Main method that gets invoked when form is submitted. Called directly from xhtml JSF view
      *
      * @return "ok" if file is processed ok
      * @throws IllegalAccessException
@@ -180,8 +189,7 @@ public class SearchView implements Serializable {
      * @throws HibernateException
      * @throws NullFileException
      */
-    public String process() throws IllegalAccessException, InvocationTargetException, IOException,
-            HibernateException, NullFileException {
+    public String process() throws IllegalAccessException, InvocationTargetException, IOException, HibernateException, NullFileException {
         final List<String> toFind;
         Integer persistId = 0;
         Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
@@ -203,7 +211,7 @@ public class SearchView implements Serializable {
 
             reportLists = engine.process(toFind, finalLocationName, scanDate, oversize);
 
-            logger.debug("Finished processing barcodes list.");
+            logger.debug("Done processing barcodes list.");
 
             List<OrbisRecord> catalogList = reportLists.getCatalogAsList();
 
@@ -211,7 +219,7 @@ public class SearchView implements Serializable {
             lastCallNumber = catalogList.get(catalogList.size() - 1).getDISPLAY_CALL_NO();
 
             InputFile inputFile;
-            inputFile = LogicHelper.getInputFile((UploadedFile) sessionMap.get(PF_FILE_PREFIX), "netid", "date");
+            inputFile = LogicHelper.getInputFile((UploadedFile) sessionMap.get(PF_FILE_PREFIX), SESSION_NETID, "date");
 
             logger.trace("Saving to history table");
 
@@ -228,12 +236,20 @@ public class SearchView implements Serializable {
             logger.error("Error={}", ge);
         }
 
-        sessionMap.put("HISTORYID", persistId);
+        sessionMap.put(SESSION_HISTORY_ID, persistId);
         return "ok";
     }
 
-
-    // TODO: perhaps move to HistoryDAO
+    /**
+     * History is saved using reportLists.
+     * @param inputFile
+     * @param reportLists
+     * @param netid
+     * @param numScanned
+     * @param loc
+     * @return
+     * @throws HibernateException
+     */
     private Integer saveHistory(InputFile inputFile, DataLists reportLists, String netid, String numScanned, String loc)
             throws HibernateException {
         logger.debug("Saving shelfscan results for file={} for specified user={}", inputFile.getName(), netid);
@@ -292,11 +308,17 @@ public class SearchView implements Serializable {
         return savedID;
     }
 
+    /**
+     * Clears session map variables related to file upload
+     */
     private void clearSessionMap() {
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(PF_FILE_PREFIX);
         FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove(PF_FILE_NAME);
     }
 
+    /**
+     * Sort of a helper to enable UI logging. See logs.xhtml
+     */
     private void logFileProcessing() {
         if (getFileName() != null) {
             logger.trace("Logging file : " + getFileName() + "processing for user:" + user);
@@ -315,6 +337,10 @@ public class SearchView implements Serializable {
         }
     }
 
+    /**
+     * Used by PF to handle file upload. Puts some file related variables in session.
+     * @param event
+     */
     public void handleFileUpload(FileUploadEvent event) {
         Map sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         uploadedFile = event.getFile();
@@ -324,20 +350,17 @@ public class SearchView implements Serializable {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File uploaded, etc."));
     }
 
-    /** used by results.xhtml */
-    public static String getReferenceLink(String rowIndex) {
-        return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
-    }
-
     /** To jump to a particular history report */
     public void jump() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("/shelfscan/pages/results.xhtml?id=" + redirect_id);
     }
 
-    /* //Used to navigate links
-    public static String getReferenceLink2(String rowIndex) {
+    /** used by results.xhtml */
+    public static String getReferenceLink(String rowIndex) {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
-    }*/
+    }
+
+    //getters and setters --------------------------------------------------------------------------------------------
 
     public String getNotes() {
         return notes;
@@ -446,12 +469,17 @@ public class SearchView implements Serializable {
         return scanDate;
     }
 
-    public synchronized int getTimeSpent() {
+    public int getTimeSpent() {
         return timeSpent;
     }
 
     public String getUser() {
         return user;
     }
+
+    /* //Was Used to navigate links
+    public static String getReferenceLink2(String rowIndex) {
+        return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
+    }*/
 
 }
