@@ -31,22 +31,19 @@ public class MessagesView {
     @PostConstruct
     public void initialize() {
         MessagesDAO dao = new MessagesHibernateDAO();
-
         GenericDAO genericDAO = new GenericHibernateDAO();
         messagesList = new ArrayList<Messages>();
-
         logList = new ArrayList<Log>();
 
         try {
             messagesList = dao.findAll(Messages.class);
-
             logList = genericDAO.findAll(Log.class);
 
             for (Messages m : messagesList) {
                 hashMap.put(m.getNAME(), m.getVALUE());
             }
 
-            props.putAll(hashMap); // ?
+            props.putAll(hashMap);
         } catch (Throwable e) {
             e.printStackTrace();
         }

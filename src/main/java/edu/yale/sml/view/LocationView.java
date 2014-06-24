@@ -14,29 +14,38 @@ import javax.faces.event.ActionEvent;
 import edu.yale.sml.model.Location;
 import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.GenericDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ManagedBean
 @ViewScoped
 public class LocationView implements java.io.Serializable {
 
+    private final Logger logger = LoggerFactory.getLogger(LocationView.class);
+
     private static final long serialVersionUID = -1090685442307176628L;
-    Date date = new Date();
-    String editor = "";
-    List<Location> locationAsList = new ArrayList<Location>();
-    Location locationCatalog;
-    String name = "";
 
-    public void addInfo(ActionEvent actionEvent) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Changes Saved."));
-    }
+    private List<Location> locationAsList = new ArrayList<Location>();
 
-    // Used by SearchView
+    /** session identifier */
+    public static final String NETID = "netid";
+
+    //UI bound objects:
+    private Date date = new Date();
+    private String editor = "";
+    private String name = "";
+
+    /**
+     * @see SearchView
+     */
     public List findAll() {
         initialize();
         return locationAsList;
     }
 
-    // Used by SearchView
+    /**
+     * @see SearchView
+     */
     public List<String> findLocationNames() {
         initialize();
         List<String> locationNameList = new ArrayList<String>();
@@ -46,6 +55,54 @@ public class LocationView implements java.io.Serializable {
         return locationNameList;
     }
 
+    @PostConstruct
+    public void initialize() {
+        GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
+        try {
+            locationAsList = dao.findAll(Location.class);
+        } catch (Throwable e) {
+            logger.error("Error init bean", e);
+        }
+    }
+
+    public void remove(Location locationCatalog) {
+        FacesContext.getCurrentInstance().addMessage(null, getSuccessFacesMessage("Deleted!"));
+        GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
+        try {
+            dao.delete(locationCatalog);
+            locationAsList.remove(locationCatalog);
+        } catch (Throwable e) {
+            logger.error("Error removing object", e);
+        }
+    }
+
+    public void saveAll() {
+        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(NETID) != null) {
+            editor = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get(NETID).toString();
+        }
+
+        final Location item = new Location(name, editor, date);
+
+        try {
+            GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
+            dao.save(item);
+
+            initialize();
+        } catch (Throwable e) {
+            logger.error("Error saving object", e);
+        }
+    }
+
+    /** used by locations.xhtml */
+    public void addInfo(ActionEvent actionEvent) {
+        FacesContext.getCurrentInstance().addMessage(null, getSuccessFacesMessage("Changes Saved."));
+    }
+
+    public FacesMessage getSuccessFacesMessage(String message) {
+        return  new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", message);
+    }
+
+    // getters and setters -----------------------------------------------------------------
     public Date getDate() {
         return date;
     }
@@ -58,50 +115,8 @@ public class LocationView implements java.io.Serializable {
         return locationAsList;
     }
 
-    public Location getLocationCatalog() {
-        return locationCatalog;
-    }
-
     public String getName() {
         return name;
-    }
-
-    @PostConstruct
-    public void initialize() {
-        GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
-        try {
-            locationAsList = dao.findAll(Location.class);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void remove(Location locationCatalog) {
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Deleted!"));
-        GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
-        try {
-            dao.delete(locationCatalog);
-            locationAsList.remove(locationCatalog);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveAll() {
-        if (FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid") != null) {
-            editor = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString();
-        }
-
-        Location item = new Location(name, editor, date);
-
-        try {
-            GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
-            dao.save(item);
-
-            initialize();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
     }
 
     public void setDate(Date date) {
@@ -116,11 +131,8 @@ public class LocationView implements java.io.Serializable {
         this.locationAsList = locationAsList;
     }
 
-    public void setLocationCatalog(Location locationCatalog) {
-        this.locationCatalog = locationCatalog;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
+
 }

@@ -21,6 +21,7 @@ public class LogView implements java.io.Serializable {
 
     private static final long serialVersionUID = 1778L;
 
+    /** limit of messages to display */
     private static final int MAX_RESULTS = 100;
 
     List<Log> logList = new ArrayList<Log>();
@@ -44,7 +45,6 @@ public class LogView implements java.io.Serializable {
 
     public List<Log> getLogs() {
         try {
-            //TODO change to interface call
             return new GenericHibernateDAO().findAllSorted(Log.class, "timestamp", MAX_RESULTS);
         } catch (Throwable e) {
             logger.error("error getting logs={}", e);
