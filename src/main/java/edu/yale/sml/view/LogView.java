@@ -31,7 +31,7 @@ public class LogView implements java.io.Serializable {
         try {
             logList = getLogs();
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Error init bean", e);
         }
     }
 
