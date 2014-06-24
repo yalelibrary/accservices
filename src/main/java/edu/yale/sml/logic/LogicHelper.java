@@ -286,7 +286,7 @@ public class LogicHelper {
             while (s.hasNext()) {
                 String a = s.next().trim();
                 if (a.length() < MIN_BARCODE_LEN) {
-                    logger.debug("Skipping string:" + a);
+                    logger.trace("Skipping string:" + a);
                     continue;
 
                 }

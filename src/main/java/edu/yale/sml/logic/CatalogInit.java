@@ -97,7 +97,7 @@ public class CatalogInit {
                 }
                 // e.g. for barcode with Status 'Hold Status'
                 else {                 // if not valid item status
-                    logger.trace("Considering invalid status item :" + o.getITEM_BARCODE() + " ? ");
+                    logger.trace("Considering invalid status item={}", o.getITEM_BARCODE());
                     printStatuses(o);
 
                     if (barocodesAdded.contains(o.getITEM_BARCODE()) == false) {
@@ -208,7 +208,7 @@ public class CatalogInit {
         } else {
             sb.append(" ,status_date : " + item.getITEM_STATUS_DATE());
         }
-        logger.debug(sb.toString());
+        logger.trace(sb.toString());
     }
 
     private static OrbisRecord getBadBarcodeOrbisRecord(final String id) {

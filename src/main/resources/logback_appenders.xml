@@ -1,23 +1,19 @@
 <!-- Logback appenders -->
 
-
 <included>
-	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
-			by default -->
-		<encoder>
-			<pattern>%-5date %logger{35} - %msg %n
-			</pattern>
-		</encoder>
-	</appender>
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<File>shelfscan.log</File>
-		<Append>true</Append>
-		<encoder>
-			<pattern>%-4relative  %-5level %logger{35} - %msg %n
-			</pattern>
-		</encoder>
-	</appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d | %p | %logger{15} | %M - %m%n
+            </pattern>
+        </encoder>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <File>shelfscan.log</File>
+        <Append>true</Append>
+        <encoder>
+            <pattern>%d | %p | %logger{15} | %M - %m%n
+            </pattern>
+        </encoder>
+    </appender>
 </included>
-	
 
