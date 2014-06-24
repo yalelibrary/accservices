@@ -31,7 +31,6 @@ public class EditHistoryView implements java.io.Serializable {
 
     @PostConstruct
     public void initialize() {
-
         historyDAO = new HistoryHibernateDAO();
         ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
         historyCatalog = new History();
@@ -43,9 +42,9 @@ public class EditHistoryView implements java.io.Serializable {
             if (b != null) {
                 objectIn = new java.io.ObjectInputStream(new java.io.ByteArrayInputStream(b));
             }
-            Object deSerializedObject = objectIn.readObject();
+            objectIn.readObject();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Error init bean", e);
         }
     }
 
