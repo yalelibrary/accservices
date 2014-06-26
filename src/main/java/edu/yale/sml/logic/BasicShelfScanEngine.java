@@ -27,7 +27,9 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     private final static Logger logger = LoggerFactory.getLogger(BasicShelfScanEngine.class);
 
-    /**Do not remove/rename fields without running tests first */
+    /**Do not remove/rename fields without running tests first
+     * @see SerializationCheckIT
+     */
     private static final long serialVersionUID = -1871752891918863039L;
 
     /** Main data structure */

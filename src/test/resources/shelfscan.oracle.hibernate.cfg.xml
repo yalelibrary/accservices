@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
-		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
-	<session-factory>
+    <session-factory>
         <property name="hibernate.connection.url">${connection}</property>
         <property name="hibernate.connection.username">${name}</property>
         <property name="hibernate.connection.password">${pwd}</property>
-        <property name="hibernate.default_catalog"> YALEDB </property>
-		<property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
-		<property name="show_sql">false</property>
-	</session-factory>
+        <property name="hibernate.default_catalog">YALEDB</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+        <property name="show_sql">false</property>
+    </session-factory>
 </hibernate-configuration>

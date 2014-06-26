@@ -41,6 +41,9 @@ public class SearchView implements Serializable {
 
     final static Logger logger = LoggerFactory.getLogger(SearchView.class);
 
+    /**Do not remove/rename fields without running tests first
+     * @see SerializationCheckIT
+     */
     private static final long serialVersionUID = 8064034317364105517L;
 
     final static String PF_FILE_PREFIX = "PrimeFacesUploadedFile";

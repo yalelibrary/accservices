@@ -4,10 +4,7 @@
 
     <include resource="logback_appenders.xml"/>
     <!-- Hibernate -->
-    <logger name="org.hibernate" level="INFO" additivity="false">
-        <appender-ref ref="FILE"/>
-    </logger>
-    <logger name="org.hibernate" level="DEBUG" additivity="false">
+    <logger name="org.hibernate" level="ERROR" additivity="false">
         <appender-ref ref="FILE"/>
     </logger>
 

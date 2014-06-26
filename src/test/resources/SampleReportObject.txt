@@ -1,3 +1,7 @@
+//////////////////////////////////////
+Report.toString() looks something this
+///////////////////////////////////////
+
 Report {
 CHRON='null',
 DISPLAY_CALL_NO='*Suppressed In Process',
@@ -19,14 +23,11 @@ priorEnum='null',
 priorChron='null',
 priorPhysicalEnum='null',
 priorPhysicalChron='null',
-
 physicalPrior=OrbisRecord
   [CHRON=null, DISPLAY_CALL_NO=PR6003.U13 Z593 2013, ENCODING_LEVEL=1, ITEM_BARCODE=39002123263148,
   ITEM_ENUM=null, ITEM_ID=10683291, ITEM_STATUS_DATE=2013-11-12, ITEM_STATUS_DESC=Not Charged,
   LOCATION_NAME=sml, MFHD_ID=11858101, NORMALIZED_CALL_NO=PR 6003            U 13   Z 593   2013,
   PERM_LOCATION=353, prior=N/A, SUPPRESS_IN_OPAC=N, YEAR=null, CALL_NO_TYPE=0],
-
 prior='PR6003.U13 Z593 2013',
 priorPhysical='PR6003.U13 Z593 2013', marker='', text=4
-
 }
