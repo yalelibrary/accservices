@@ -46,9 +46,9 @@ public class SearchView implements Serializable {
      */
     private static final long serialVersionUID = 8064034317364105517L;
 
-    final static String PF_FILE_PREFIX = "PrimeFacesUploadedFile";
-    final static String PF_FILE_NAME = "PrimeFacesUploadedFileName";
-    private final static String APP = "ShelfScan";
+    private static final String PF_FILE_PREFIX = "PrimeFacesUploadedFile";
+    private static final String PF_FILE_NAME = "PrimeFacesUploadedFileName";
+    private static final String APP = "ShelfScan";
 
     /** Identifier for session */
     transient static final String SESSION_HISTORY_ID = "HISTORYID";
@@ -56,26 +56,23 @@ public class SearchView implements Serializable {
     /** Identifier for session netid */
     transient static final String SESSION_NETID = "netid";
 
-    BasicShelfScanEngine engine;
-    String fileName = "";
-    String finalLocationName = "";
-    String firstCallNumber = "", lastCallNumber = "";
-    String locationName = "sml";
-    List<String> locationNames = new ArrayList<String>();
-    String oversize = "N";
-    List<String> oversizeAsList = new ArrayList<String>();
-    DataLists reportLists = new DataLists();
-    Date scanDate = new Date();
-    int timeSpent = 30;
-    UploadedFile uploadedFile;
-    List<OrbisRecord> badBarcodes;
-    String uploadedFileName = "";
-    String user = "";
-    String notes = "";
-    String redirect_id = "";
-
-    public SearchView() {
-    }
+    private BasicShelfScanEngine engine;
+    private String fileName = "";
+    private String finalLocationName = "";
+    private String firstCallNumber = "", lastCallNumber = "";
+    private String locationName = "sml";
+    private List<String> locationNames = new ArrayList<String>();
+    private String oversize = "N";
+    private List<String> oversizeAsList = new ArrayList<String>();
+    private DataLists reportLists = new DataLists();
+    private Date scanDate = new Date();
+    private int timeSpent = 30;
+    private UploadedFile uploadedFile;
+    private List<OrbisRecord> badBarcodes;
+    private String uploadedFileName = "";
+    private String user = "";
+    private String notes = "";
+    private String redirect_id = "";
 
     /**
      * Init bean
@@ -109,7 +106,6 @@ public class SearchView implements Serializable {
 
             FacesContext.getCurrentInstance().getExternalContext().getFlash().remove("initId");
         } catch (InvalidFormatException e) {
-
             try {
                 JsfExternalContext.redirect(new PropertiesConfiguration("messages.properties").getString("generic_error_redirect"));
             } catch (Exception ce) {
@@ -478,6 +474,10 @@ public class SearchView implements Serializable {
 
     public String getUser() {
         return user;
+    }
+
+    public void setBadBarcodes(List<OrbisRecord> badBarcodes) {
+        this.badBarcodes = badBarcodes;
     }
 
     /* //Was Used to navigate links
