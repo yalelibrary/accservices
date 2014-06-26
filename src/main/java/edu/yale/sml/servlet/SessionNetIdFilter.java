@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class SessionNetIdFilter implements Filter {
 
-    Logger logger = LoggerFactory.getLogger(SessionNetIdFilter.class);
+    private final Logger logger = LoggerFactory.getLogger(SessionNetIdFilter.class);
 
     FilterConfig filterConfig;
 
@@ -29,31 +29,30 @@ public class SessionNetIdFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        String netid = "";
-        if (request.getSession().getAttribute("netid") != null) {
-            netid = request.getSession().getAttribute("netid").toString();
+        String netId = "";
+        if (request.getSession().getAttribute(Constants.NETID) != null) {
+            netId = request.getSession().getAttribute(Constants.NETID).toString();
         }
 
-        if (netid.isEmpty() && request.getSession().getAttribute("loggedout") != null) {
-            request.getSession().setAttribute("loggedout", null);
-            HttpServletResponse httpResponse1 = (HttpServletResponse) res;
-            request.getSession().setAttribute("netid", "ghost");
+        if (netId.isEmpty() && request.getSession().getAttribute(Constants.LOGGED_OUT) != null) {
+            request.getSession().setAttribute(Constants.LOGGED_OUT, null);
+            request.getSession().setAttribute(Constants.NETID, Constants.NULL_NETID);
         }
 
-        if (netid.isEmpty()) {
+        if (netId.isEmpty()) {
             HttpServletResponse httpResponse = (HttpServletResponse) res;
             try {
                 httpResponse.sendRedirect(new PropertiesConfiguration("messages.properties").getString("index_url"));
             } catch (Exception e) {
-                logger.error("Net id empty", e.getMessage());
+                logger.error("Net Id null.", e.getMessage());
             }
             chain.doFilter(req, res);
             return;
         } else {
-            if (request.getSession().getAttribute("netid").equals("ghost")) {
+            if (request.getSession().getAttribute(Constants.NETID).equals(Constants.NULL_NETID)) {
                 //ignore
             } else {
-                chain.doFilter(req, res); // note the position of chain.doFilter
+                chain.doFilter(req, res);
             }
         }
     }

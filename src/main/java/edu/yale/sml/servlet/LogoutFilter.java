@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 public class LogoutFilter implements Filter {
 
-    private final static Logger logger = LoggerFactory.getLogger(LogoutFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogoutFilter.class);
 
     public LogoutFilter() {
         super();
@@ -25,14 +25,14 @@ public class LogoutFilter implements Filter {
      */
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        if (request.getSession().getAttribute("netid") != null) {
+        if (request.getSession().getAttribute(Constants.NETID) != null) {
             try {
-                String user = request.getSession().getAttribute("netid").toString();
-                request.getSession().removeAttribute("netid");
-                request.getSession().setAttribute("loggedout", "true");
-                logger.debug("[LogoutFilter] -- logged out : " + user);
-            } catch (Exception e1) {
-                e1.printStackTrace();
+                String user = request.getSession().getAttribute(Constants.NETID).toString();
+                request.getSession().removeAttribute(Constants.NETID);
+                request.getSession().setAttribute(Constants.LOGGED_OUT, "true");
+                logger.debug("Logged out={}", user);
+            } catch (Exception e) {
+                logger.error("Error filter", e);
             }
         }
         chain.doFilter(req, res);

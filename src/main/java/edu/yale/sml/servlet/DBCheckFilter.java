@@ -18,8 +18,9 @@ import edu.yale.sml.persistence.AdminHibernateDAO;
 
 public class DBCheckFilter implements Filter {
 
-    FilterConfig filterConfig; // noop
-    final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.servlet.DBCheckFilter");
+    private static final Logger logger = LoggerFactory.getLogger(DBCheckFilter.class);
+
+    FilterConfig filterConfig;
 
     public DBCheckFilter() {
         super();
@@ -29,20 +30,21 @@ public class DBCheckFilter implements Filter {
     }
 
     /**
-     * Used to check access connection to database. ideally this should be part of application startup? since it will be hit everytime there's a request for page.
+     * Used to check access connection to database.
+     * ideally this should be part of application startup? since it will be hit every time there's a request for page.
      */
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        String netid = "";
-        if (request.getSession().getAttribute("netid") != null) {
-            netid = request.getSession().getAttribute("netid").toString();
+        String netId = "";
+        if (request.getSession().getAttribute(Constants.NETID) != null) {
+            netId = request.getSession().getAttribute(Constants.NETID).toString();
         }
-        // just hit the database to see if the connection to mysql database is alive; o/wise throw exceptiion.
+        // just hit the database to see if the connection to database is alive; o/wise throw exception.
         AdminDAO adminDAO = new AdminHibernateDAO();
         try {
-            adminDAO.findByNetId(netid);
+            adminDAO.findByNetId(netId);
         } catch (HibernateException t) {
-            logger.debug("Error validating connection to SQL Database");
+            logger.error("Error validating connection to database", t);
             throw t;
         }
         chain.doFilter(req, res); // not called if exception is thrown

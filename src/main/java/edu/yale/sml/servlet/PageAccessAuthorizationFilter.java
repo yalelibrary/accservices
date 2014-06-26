@@ -40,25 +40,25 @@ public class PageAccessAuthorizationFilter implements Filter {
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
-        String netid = "";
-        if (request.getSession().getAttribute("netid") != null) {
-            netid = request.getSession().getAttribute("netid").toString();
+        String netId = "";
+        if (request.getSession().getAttribute(Constants.NETID) != null) {
+            netId = request.getSession().getAttribute(Constants.NETID).toString();
         }
         AdminDAO adminDAO = new AdminHibernateDAO();
-        String adminCode = adminDAO.findByNetId(netid);
+        String adminCode = adminDAO.findByNetId(netId);
 
-        if (adminCode == null || !adminCode.equals("Admin")) {
-            logger.debug("AdminFilter. No permission to proceed. has the session expired?");
-            HttpServletResponse httpResponse = (HttpServletResponse) res;
+        if (adminCode == null || !adminCode.equals(Constants.ADMIN_CODE)) {
+            logger.info("No permission to proceed. Has the session expired?");
+            HttpServletResponse response = (HttpServletResponse) res;
             try {
-                httpResponse.sendRedirect(new PropertiesConfiguration("messages.properties").getString("admin_filter_redirect"));
+                response.sendRedirect(new PropertiesConfiguration("messages.properties").getString("admin_filter_redirect"));
             } catch (ConfigurationException e) {
-                e.printStackTrace();
-                httpResponse.sendRedirect("/powershelf/pages/permissions.xhtml");
-            } catch (java.lang.IllegalStateException f) {
-                logger.error("Error={}", f);
+                logger.error("Error configuring", e);
+                response.sendRedirect(Constants.PERMISSIOSN_PAGE);
+            } catch (IllegalStateException f) {
+                logger.error("Error", f);
             }
-        } else if (adminCode.equals("Admin")) {
+        } else if (adminCode.equals(Constants.ADMIN_CODE)) {
             logger.trace("Authorized. Continuing down the filter chain.");
             chain.doFilter(req, res);
         }
