@@ -6,6 +6,8 @@ import edu.yale.sml.model.Report;
 import edu.yale.sml.persistence.config.HibernateOracleUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +31,22 @@ public class SearchViewIT {
     private static final String TEST_FIRST_CALL = "PR6005 O58 B5";
     private static final int TEST_ORBIS_LIST_SIZE = 225;
     public static final int TEST_CULPRIT_LIST_SIZE = 51;
-    private static DataLists dataLists;
+    private static DataLists dataLists = null;
 
     /**
-     * Get data from Voyager once
+     * Get data from Voyager once, and if unable ignore the test
      */
-    static {
-        BasicShelfScanEngine engine = new BasicShelfScanEngine();
+    @Before
+    public void init() {
+        Assume.assumeNotNull(dataLists);
+
         try {
-            dataLists = engine.process(barcodeList(), "sml", new Date(), "N");
+            if (dataLists != null) { //get once
+                BasicShelfScanEngine engine = new BasicShelfScanEngine();
+                dataLists = engine.process(barcodeList(), "sml", new Date(), "N");
+            }
         } catch (Exception e) {
-            logger.error("Error init", e);
+            logger.error("Error init", e.getMessage());
         }
     }
 
