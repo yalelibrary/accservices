@@ -19,5 +19,4 @@
         </property>
     </class> 
     
-   <!--  <mapping class="edu.yale.sml.model.Admin"/> -->
 </hibernate-mapping>

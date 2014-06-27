@@ -1,72 +1,69 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated Jul 8, 2013 12:04:47 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
     <class name="edu.yale.sml.model.Shelving" table="shelving" schema="dbo" catalog="">
         <id name="id" type="java.lang.Integer">
-			<column name="id" />
-			<generator class="identity" />
-		</id>
-        
+            <column name="id"/>
+            <generator class="identity"/>
+        </id>
+
         <property name="creationDate" type="timestamp">
-            <column name="creation_date" length="19" />
+            <column name="creation_date" length="19"/>
         </property>
-        <property name="NETID" column="NETID" />
-        
+        <property name="NETID" column="NETID"/>
+
         <property name="formDate" type="timestamp">
-            <column name="form_date" length="19" />
+            <column name="form_date" length="19"/>
         </property>
         <property name="oversize" type="string">
-            <column name="oversize" length="10" />
+            <column name="oversize" length="10"/>
         </property>
         <property name="time" type="string">
-            <column name="time" length="10" />
+            <column name="time" length="10"/>
         </property>
         <property name="numRows" type="string">
-            <column name="num_rows" length="10" />
+            <column name="num_rows" length="10"/>
         </property>
         <property name="floor" type="string">
-            <column name="floor" length="10" />
+            <column name="floor" length="10"/>
         </property>
         <property name="notes" type="string">
-            <column name="notes" />
+            <column name="notes"/>
         </property>
         <property name="team" type="string">
-            <column name="team" length="10" />
+            <column name="team" length="10"/>
         </property>
         <property name="barcodeStart" type="string">
-            <column name="barcode_start" length="45" />
+            <column name="barcode_start" length="45"/>
         </property>
         <property name="barcodeEnd" type="string">
-            <column name="barcode_end" length="45" />
+            <column name="barcode_end" length="45"/>
         </property>
         <property name="accuracyErrors" type="java.lang.Integer">
-            <column name="accuracy_errors" />
+            <column name="accuracy_errors"/>
         </property>
-         <property name="SCANLOCATION" type="string">
-            <column name="SCANLOCATION" />
+        <property name="SCANLOCATION" type="string">
+            <column name="SCANLOCATION"/>
         </property>
-          <property name="displayStart" type="string">
-            <column name="display_call_no_start" length="45" />
+        <property name="displayStart" type="string">
+            <column name="display_call_no_start" length="45"/>
         </property>
         <property name="displayEnd" type="string">
-            <column name="display_call_no_end" length="45" />
+            <column name="display_call_no_end" length="45"/>
         </property>
-          <property name="normalizedStart" type="string">
-            <column name="normalized_call_no_start" length="45" />
+        <property name="normalizedStart" type="string">
+            <column name="normalized_call_no_start" length="45"/>
         </property>
         <property name="normalizedEnd" type="string">
-            <column name="normalized_call_no_end" length="45" />
+            <column name="normalized_call_no_end" length="45"/>
         </property>
-      	<property name="teamSize" column="num_team" />
-      	
-      	<property name="startItemStatus" column="item_status_start" />
-      	<property name="endItemStatus" column="item_status_end" />
-      	<property name="startItemStatusDate" column="item_status_start_date" />
-      	<property name="endItemStatusDate" column="item_status_end_date" />
-      	
-      	
-        
+        <property name="teamSize" column="num_team"/>
+
+        <property name="startItemStatus" column="item_status_start"/>
+        <property name="endItemStatus" column="item_status_end"/>
+        <property name="startItemStatusDate" column="item_status_start_date"/>
+        <property name="endItemStatusDate" column="item_status_end_date"/>
     </class>
 </hibernate-mapping>

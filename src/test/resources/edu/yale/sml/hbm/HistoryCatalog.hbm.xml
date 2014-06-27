@@ -1,46 +1,46 @@
 <?xml version="1.0"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <!-- Generated Jun 18, 2012 4:12:05 PM by Hibernate Tools 3.4.0.CR1 -->
 <hibernate-mapping>
-	<class name="edu.yale.sml.model.History" table="history" lazy="false" schema="dbo" catalog="">
+    <class name="edu.yale.sml.model.History" table="history" lazy="false" schema="dbo" catalog="">
 
-		<id name="ID" type="java.lang.Integer">
-			<column name="ID" />
-			<generator class="identity" />
-		</id>
+        <id name="ID" type="java.lang.Integer">
+            <column name="ID"/>
+            <generator class="identity"/>
+        </id>
 
-		<property name="FIRSTCALLNUMBER" column="FIRSTCALLNUMBER" />
-		<property name="LASTCALLNUMBER" column="LASTCALLNUMBER" />
-		<property name="SCANLOCATION" column="SCANLOCATION" />
-		<property name="NUMBERSCANNED" column="NUMBERSCANNED" />
-		<property name="NUMBERBARCODE" column="NUMBERBARCODE" />
-		<property name="OVERSIZE" column="OVERSIZE" />
-		<property name="ACCURACY" column="ACCURACY" />
-		<property name="SUPPRESS" column="SUPPRESS" />
-		<property name="STATUS" column="STATUS" />
-		<property name="LOCATION" column="LOCATION" />
-		<property name="NETID" column="NETID" />
-		<property name="TIMESPENT" column="TIMESPENT" />
-		<property name="SCANDATE" column="SCANDATE" />
-		<property name="RUNDATE" column="RUNDATE" />
-		<property name="LOCATIONERROR" column="LOCATIONERROR" />
-		<property name="NULLBARCODE" column="NULLBARCODE" />
-		<property name="NOTES" column="NOTES" />
-		<property name="FILENAME" column="FILENAME" />
-		<property name="SEARCHVIEW" column="SEARCHVIEW" />
-		<property name="MISLABELLED" column="MISLABELLED" />
-		<property name="NORM_CALL_FIRST" column="NORM_CALL_FIRST" />
-		<property name="NORM_CALL_LAST" column="NORM_CALL_LAST" />
-		<property name="BARCODE_FIRST" column="BARCODE_FIRST" />
-		<property name="BARCODE_LAST" column="BARCODE_LAST" />
+        <property name="FIRSTCALLNUMBER" column="FIRSTCALLNUMBER"/>
+        <property name="LASTCALLNUMBER" column="LASTCALLNUMBER"/>
+        <property name="SCANLOCATION" column="SCANLOCATION"/>
+        <property name="NUMBERSCANNED" column="NUMBERSCANNED"/>
+        <property name="NUMBERBARCODE" column="NUMBERBARCODE"/>
+        <property name="OVERSIZE" column="OVERSIZE"/>
+        <property name="ACCURACY" column="ACCURACY"/>
+        <property name="SUPPRESS" column="SUPPRESS"/>
+        <property name="STATUS" column="STATUS"/>
+        <property name="LOCATION" column="LOCATION"/>
+        <property name="NETID" column="NETID"/>
+        <property name="TIMESPENT" column="TIMESPENT"/>
+        <property name="SCANDATE" column="SCANDATE"/>
+        <property name="RUNDATE" column="RUNDATE"/>
+        <property name="LOCATIONERROR" column="LOCATIONERROR"/>
+        <property name="NULLBARCODE" column="NULLBARCODE"/>
+        <property name="NOTES" column="NOTES"/>
+        <property name="FILENAME" column="FILENAME"/>
+        <property name="SEARCHVIEW" column="SEARCHVIEW"/>
+        <property name="MISLABELLED" column="MISLABELLED"/>
+        <property name="NORM_CALL_FIRST" column="NORM_CALL_FIRST"/>
+        <property name="NORM_CALL_LAST" column="NORM_CALL_LAST"/>
+        <property name="BARCODE_FIRST" column="BARCODE_FIRST"/>
+        <property name="BARCODE_LAST" column="BARCODE_LAST"/>
 
-		<!--  Revisit many-to-one mapping if necessary -->
-		<!-- Remvoing cascade results in : -->
-		<!-- O - Not-null property references a transient value - transient instance must be saved before current operation: edu.yale.sml.model.History.inputFile -> edu.yale.sml.model.InputFile 
-		 -->
-		<many-to-one name="inputFile" class="edu.yale.sml.model.InputFile" fetch="select" cascade="save-update">
-            <column name="FILE_ID" not-null="true" />
+        <!--  Revisit many-to-one mapping if necessary -->
+        <!-- Remvoing cascade results in : -->
+        <!-- O - Not-null property references a transient value - transient instance must be saved before current operation: edu.yale.sml.model.History.inputFile -> edu.yale.sml.model.InputFile
+         -->
+        <many-to-one name="inputFile" class="edu.yale.sml.model.InputFile" fetch="select" cascade="save-update">
+            <column name="FILE_ID" not-null="true"/>
         </many-to-one>
-	</class>
+    </class>
 </hibernate-mapping>
