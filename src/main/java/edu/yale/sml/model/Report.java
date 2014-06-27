@@ -113,7 +113,9 @@ public class Report implements Serializable {
     }
 
     // this is used by report only
-    public Report(Integer text, String iTEM_BARCODE, String dISPLAY_CALL_NO, String iTEM_ENUM, String o, String year, String chron, String location_name, String item_status_desc, Date item_status_date, String item_suppress, String call_no_type) {
+    public Report(Integer text, String iTEM_BARCODE, String dISPLAY_CALL_NO, String iTEM_ENUM, String o, String year,
+                  String chron, String location_name, String item_status_desc, Date item_status_date,
+                  String item_suppress, String call_no_type) {
         super();
         if (text >= 0)
             this.text = text;

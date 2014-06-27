@@ -13,22 +13,38 @@ public class ReportTest {
 
     @Test
     public void testGetPhysicalPrior() throws Exception {
-
+        Report r = new Report();
+        OrbisRecord o = new OrbisRecord();
+        o.setDISPLAY_CALL_NO("PRIOR PHYSICAL");
+        r.setPhysicalPrior(o);
+        assert (r.getPhysicalPrior().equals(o));
     }
 
     @Test
     public void testSetPhysicalPrior() throws Exception {
-
+        Report r = new Report();
+        OrbisRecord o = new OrbisRecord();
+        o.setDISPLAY_CALL_NO("PRIOR PHYSICAL");
+        r.setPhysicalPrior(o);
+        assert (r.getPhysicalPrior().equals(o));
     }
 
     @Test
     public void testGetPriorEnum() throws Exception {
-
+        Report r = new Report();
+        OrbisRecord o = new OrbisRecord();
+        o.setITEM_ENUM("i");
+        r.setPhysicalPrior(o);
+        assert (r.getPriorEnum().equals(""));
     }
 
     @Test
     public void testSetPriorEnum() throws Exception {
-
+        Report r = new Report();
+        OrbisRecord o = new OrbisRecord();
+        o.setITEM_ENUM("i");
+        r.setPhysicalPrior(o);
+        assert (r.getPriorEnum().equals(""));
     }
 
     @Test
