@@ -1,7 +1,13 @@
 package edu.yale.sml.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.Date;
 
+@Getter @Setter
+@ToString(callSuper=true, includeFieldNames=true)
 public class Floor implements java.io.Serializable {
 
     private static final long serialVersionUID = 5667310452313292689L;
@@ -29,42 +35,7 @@ public class Floor implements java.io.Serializable {
         this.name = name;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public String getEditor() {
-        return editor;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setEditor(String editor) {
-        this.editor = editor;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Location [date=" + date + ", editor=" + editor + ", id=" + id + ", name=" + name + "]";
-    }
-
-
 }

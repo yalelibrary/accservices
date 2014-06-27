@@ -1,7 +1,10 @@
 package edu.yale.sml.model;
 
+import lombok.ToString;
+
 import java.util.Date;
 
+@ToString(callSuper=true, includeFieldNames=true)
 public class Log implements java.io.Serializable {
 
     private static final long serialVersionUID = 1777878878L;
@@ -60,7 +63,6 @@ public class Log implements java.io.Serializable {
 
     public Log() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     public void setUser_env(String user_env) {
@@ -69,11 +71,6 @@ public class Log implements java.io.Serializable {
 
     public String getStacktrace() {
         return stacktrace;
-    }
-
-    @Override
-    public String toString() {
-        return "Log [id=" + id + ", net_id=" + net_id + ", operation=" + operation + ", input_file=" + input_file + ", application_env=" + application_env + ", user_env=" + user_env + ", stacktrace=" + stacktrace + "]";
     }
 
     public Date getTimestamp() {

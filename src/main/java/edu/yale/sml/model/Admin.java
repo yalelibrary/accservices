@@ -1,5 +1,11 @@
 package edu.yale.sml.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter @Setter
+@ToString(callSuper=true, includeFieldNames=true)
 public class Admin implements java.io.Serializable {
 
     private String adminCode;
@@ -14,43 +20,10 @@ public class Admin implements java.io.Serializable {
         return adminCode;
     }
 
-    @Override
-    public String toString() {
-        return "Admin [adminCode=" + adminCode + ", editor=" + editor + ", id=" + id + ", netid=" + netid + "]";
-    }
-
     public Admin(String netid, String editor, String adminCode) {
         super();
         this.netid = netid;
         this.editor = editor;
         this.adminCode = adminCode;
-    }
-
-    public String getEditor() {
-        return this.editor;
-    }
-
-    public Integer getId() {
-        return this.id;
-    }
-
-    public String getNetid() {
-        return this.netid;
-    }
-
-    public void setAdminCode(String adminCode) {
-        this.adminCode = adminCode;
-    }
-
-    public void setEditor(String editor) {
-        this.editor = editor;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setNetid(String netid) {
-        this.netid = netid;
     }
 }

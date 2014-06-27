@@ -18,7 +18,6 @@ public class InputFile implements java.io.Serializable {
     private String author;
     private String contents;
     private Date date;
-    //for JSF, used in HistorySearchView
     private List<String> historyList = new ArrayList<String>();
     private int id;
     private String md5;

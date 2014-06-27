@@ -4,9 +4,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Notes: fields in uppercae to distinguish from non Orbis related application properties
- */
 public class History implements java.io.Serializable {
     private static final long serialVersionUID = -8463243297163676698L;
     private short ACCURACY;

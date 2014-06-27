@@ -1,5 +1,8 @@
 package edu.yale.sml.model;
 
+import lombok.ToString;
+
+@ToString(callSuper=true, includeFieldNames=true)
 public class Messages {
 
     private Integer ID;
@@ -32,11 +35,6 @@ public class Messages {
 
     public void setTOOLTIP(String tOOLTIP) {
         TOOLTIP = tOOLTIP;
-    }
-
-    @Override
-    public String toString() {
-        return "Messages [ID=" + ID + ", NAME=" + NAME + ", VALUE=" + VALUE + ", TOOLTIP=" + TOOLTIP + "]";
     }
 
     public String getNAME() {

@@ -21,7 +21,6 @@ public class DataLists implements java.io.Serializable {
     private List<Report> enumWarnings = new ArrayList<Report>();
     private Multimap<String, String> barcodesAsMap = ArrayListMultimap.create(); //currently only {barcode:itemstatus}
 
-
     public Multimap<String, String> getBarcodesAsMap() {
         return barcodesAsMap;
     }
@@ -104,7 +103,6 @@ public class DataLists implements java.io.Serializable {
     public void setSuppressedList(List<OrbisRecord> suppressedList) {
         this.suppressedList = suppressedList;
     }
-
 
     @Override
     public String toString() {

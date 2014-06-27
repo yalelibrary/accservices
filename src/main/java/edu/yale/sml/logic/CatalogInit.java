@@ -59,7 +59,7 @@ public class CatalogInit {
                 BeanUtils.populate(o, m);
 
                 if (o.getITEM_STATUS_DESC() != null) {
-                    barcodeStatuses.put(searchResult.getId(), o.ITEM_STATUS_DESC());
+                    barcodeStatuses.put(searchResult.getId(), o.getITEM_STATUS_DESC());
                 }
 
                 if (o.getCallNoType() == null) {
@@ -69,7 +69,7 @@ public class CatalogInit {
                 if (o.getITEM_STATUS_DESC() == null && o.getITEM_STATUS_DATE() == null
                         && (o.getNORMALIZED_CALL_NO() == null)
                         || o.getDISPLAY_CALL_NO() == null) {
-                    logger.debug("Ignoring completely null record" + o.BARCODE());
+                    logger.debug("Ignoring completely null record" + o.getITEM_BARCODE());
                     continue;
                 }
 
