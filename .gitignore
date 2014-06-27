@@ -12,5 +12,9 @@
 .DS_Store
 
 # Maven
-log/
 target/
+
+#misc
+log/
+shelfscan.log
+edu.yale.sml.model.InputFile
