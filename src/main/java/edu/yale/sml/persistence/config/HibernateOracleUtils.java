@@ -4,8 +4,13 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class HibernateOracleUtils {
+
+    private static final Logger logger = getLogger(HibernateOracleUtils.class);
 
     private static SessionFactory sessionFactory = null;
 
@@ -14,7 +19,7 @@ public class HibernateOracleUtils {
             return new Configuration().configure("shelfscan.oracle.hibernate.cfg.xml")
                     .buildSessionFactory();
         } catch (Throwable ex) {
-            ex.printStackTrace();
+            logger.error("Error", ex);
             throw new ExceptionInInitializerError(ex);
         }
     }

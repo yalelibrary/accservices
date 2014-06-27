@@ -14,21 +14,17 @@ public class HibernateSQLServerUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
     private static SessionFactory buildSessionFactory() {
-
         logger.debug("Building Hibernate Session Factory");
 
         try {
-            Configuration configuration = new Configuration();
-            configuration.configure("shelfscan.sqlserver.hibernate.cfg.xml");
-            ServiceRegistryBuilder serviceRegistryBuilder = new ServiceRegistryBuilder().applySettings(configuration
-                    .getProperties());
-            SessionFactory sessionFactory = configuration
-                    .buildSessionFactory(serviceRegistryBuilder.buildServiceRegistry());
+            final Configuration config = new Configuration();
+            config.configure("shelfscan.sqlserver.hibernate.cfg.xml");
+            ServiceRegistryBuilder serviceRegistryBuilder = new ServiceRegistryBuilder().applySettings(config.getProperties());
+            SessionFactory sessionFactory = config.buildSessionFactory(serviceRegistryBuilder.buildServiceRegistry());
             return sessionFactory;
-        } catch (Throwable ex) {
-            logger.error("Exception encountered while building session factory");
-            ex.printStackTrace();
-            throw new ExceptionInInitializerError(ex); //or ex.
+        } catch (Throwable t) {
+            logger.error("Exception encountered while building session factory", t);
+            throw new ExceptionInInitializerError(t);
         }
     }
 

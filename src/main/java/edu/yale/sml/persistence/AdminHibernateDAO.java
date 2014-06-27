@@ -12,9 +12,13 @@ import edu.yale.sml.model.Admin;
 //import edu.yale.sml.persistence.config.HibernateMySqlUtil;
 import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 public class AdminHibernateDAO extends GenericHibernateDAO<Admin> implements java.io.Serializable, AdminDAO {
 
     private static final long serialVersionUID = -481304207357582739L;
+
+    private Logger logger = getLogger(this.getClass());
 
     public AdminHibernateDAO() {
         super();

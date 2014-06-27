@@ -11,17 +11,18 @@ import org.slf4j.LoggerFactory;
 
 import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * Generic DAO for all entities, except Voyager
  *
  * @param <T>
- * @author od26
  */
 
 //TODO delete(List<T>) needs tx handling if necessary. also remove tx from save()
 public class GenericHibernateDAO<T> implements GenericDAO<T> {
 
-    final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.persistence.GenericHibernateDAO");
+    private Logger logger = getLogger(this.getClass());
 
     Class<T> persistentClass;
 
@@ -60,9 +61,7 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
             s.flush();
             t.commit();
         } catch (Throwable t) {
-            logger.debug("Exception deleting entity:");
-            logger.debug(t.getMessage());
-            t.printStackTrace();
+            logger.error("Error", t);
             throw t;
         } finally {
             if (s != null) {
@@ -147,26 +146,6 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<T> findPagedResult(Class classz, int first, int last) throws Throwable {
-        Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-        try {
-            Query q = session.createQuery("from " + classz.getName());
-            q.setFirstResult(first);
-            q.setMaxResults(last);
-            List<T> list = q.list();
-            return list;
-        } catch (Throwable t) {
-            logger.error("Exception finding paged result");
-            throw t;
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
     public List<T> findPagedResult(Class classz, int first, int last, String orderClause) throws Throwable {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
         try {
@@ -184,7 +163,6 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
         }
     }
 
-    // Used for select filtering
     @SuppressWarnings("unchecked")
     public List findPagedResultByType(Class classz, int first, int last, String orderClause, String type, String field) throws Throwable {
         Session session = null;
@@ -196,7 +174,7 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
             q.setMaxResults(last);
             return q.list();
         } catch (Throwable t) {
-            t.printStackTrace();
+            logger.error("Error", t);
             throw t;
         } finally {
             if (session != null) {
@@ -206,7 +184,6 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
     }
 
     @SuppressWarnings("unchecked")
-    // used with fetch and lazy/true enables all rereteival
     public List findPagedResultByType(Class classz, int first, int last, String orderClause, String type, String field, String type2, String field2) throws Throwable {
         Session session = null;
         try {
@@ -218,7 +195,7 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
             q.setMaxResults(last);
             return q.list();
         } catch (Throwable t) {
-            t.printStackTrace();
+            logger.error("Error", t);
             throw t;
         } finally {
             if (session != null) {
@@ -245,7 +222,7 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
                     tx.rollback();
                 }
             } catch (Throwable rt) {
-                rt.printStackTrace();
+                logger.error("Error", rt);
             }
         } finally {
             if (s != null) {

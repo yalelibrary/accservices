@@ -6,7 +6,6 @@ import edu.yale.sml.model.InputFile;
 
 @SuppressWarnings("rawtypes")
 public interface FileDAO extends GenericDAO {
-    public String findByMD5(String md5);
 
     public void doIndex() throws Throwable;
 
@@ -19,6 +18,4 @@ public interface FileDAO extends GenericDAO {
     public List<String> findByName();
 
     public String findContentsByFileName(String fileName);
-
-    public InputFile findInputFileByName(String fileName);
 }

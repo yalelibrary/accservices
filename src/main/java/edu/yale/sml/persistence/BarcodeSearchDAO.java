@@ -1,7 +1,6 @@
 package edu.yale.sml.persistence;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,28 +11,27 @@ import org.hibernate.transform.AliasToEntityMapResultTransformer;
 
 import edu.yale.sml.model.SearchResult;
 import edu.yale.sml.persistence.config.HibernateOracleUtils;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 public final class BarcodeSearchDAO implements java.io.Serializable {
 
     private static final long serialVersionUID = -4044166542029569019L;
 
-    public BarcodeSearchDAO() {
-    }
+    private Logger logger = getLogger(this.getClass());
 
-    public SearchResult findById(String id) throws HibernateException {
-        List<String> itemList = new ArrayList<String>();
-        //TODO regex check
-        itemList.add(id);
-        return findAllById(itemList).get(0);
+    public BarcodeSearchDAO() {
     }
 
     public List<SearchResult> findAllById(List<String> id) {
         List<SearchResult> aggregateList = new ArrayList<SearchResult>();
-        Session session = null;
+        Session session;
         try {
-            session = HibernateOracleUtils.getSessionFactory().openSession(); // no exception?
+            session = HibernateOracleUtils.getSessionFactory().openSession();
         } catch (HibernateException e) {
-            e.printStackTrace(); //TODO
+            logger.error("Error", e);
+            throw e;
         }
 
         try {
@@ -63,7 +61,7 @@ public final class BarcodeSearchDAO implements java.io.Serializable {
                 try {
                     session.close();
                 } catch (HibernateException e) {
-                    throw new HibernateException(e);
+                    logger.error("Error closing session", e);
                 }
             }
         } catch (HibernateException e) {

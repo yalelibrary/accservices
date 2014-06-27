@@ -11,8 +11,6 @@ public interface GenericDAO<T> {
 
     List<T> findAll(Class classz) throws Throwable;
 
-    List<T> findPagedResult(Class classz, int first, int last) throws Throwable;
-
     List<T> findPagedResult(Class classz, int first, int last, String orderClause) throws Throwable;
 
     List<T> findPagedResultByType(Class classz, int first, int last, String orderClause, String type, String field) throws Throwable;
