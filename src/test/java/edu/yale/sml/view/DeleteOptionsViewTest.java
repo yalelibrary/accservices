@@ -12,12 +12,9 @@ public class DeleteOptionsViewTest {
     }
 
     @Test
-    public void testGetRedirect_id() throws Exception {
-
-    }
-
-    @Test
     public void testSetRedirect_id() throws Exception {
-
+        DeleteOptionsView deleteOptionsView = new DeleteOptionsView();
+        deleteOptionsView.setRedirect_id("/pages/index.xhtml");
+        assert (deleteOptionsView.getRedirect_id().equals("/pages/index.xhtml"));
     }
 }
