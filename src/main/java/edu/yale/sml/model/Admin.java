@@ -26,4 +26,9 @@ public class Admin implements java.io.Serializable {
         this.editor = editor;
         this.adminCode = adminCode;
     }
+
+    public String getNetid() {
+        return netid;
+    }
+
 }
