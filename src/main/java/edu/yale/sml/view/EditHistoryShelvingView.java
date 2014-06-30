@@ -48,14 +48,6 @@ public class EditHistoryShelvingView implements java.io.Serializable {
         this.historyCatalog = historyCatalog;
     }
 
-    public ShelvingDAO getHistoryDAO() {
-        return historyDAO;
-    }
-
-    public void setHistoryDAO(ShelvingDAO historyDAO) {
-        this.historyDAO = historyDAO;
-    }
-
     public void setID(Integer iD) {
         ID = iD;
     }
