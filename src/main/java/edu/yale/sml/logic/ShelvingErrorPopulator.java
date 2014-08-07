@@ -61,11 +61,11 @@ public class ShelvingErrorPopulator {
                 totalErrors++;
             }
 
-            if (!item.getLOCATION_NAME().equals(finalLocationName)) {
+            if (Rules.isLocationError(item.getLocationName().trim(), finalLocationName.trim())) {
                 totalErrors++;
             }
 
-            if (!item.getLOCATION_NAME().trim().equals(finalLocationName.trim()) && item.getITEM_BARCODE().length() == 14) {
+            if (item.getITEM_BARCODE().length() == 14 && Rules.isLocationError(item.getLocationName(), finalLocationName)) {
                 locError++;
                 accErrors++;
             }
@@ -129,9 +129,9 @@ public class ShelvingErrorPopulator {
         shelvingError.setMisshelf_threshold_errors(misshelfThresholdErrors);
         shelvingError.setSuppress_errors(suppressedErrors);
 
-        logger.trace("Location error count:" + locError);
-        logger.trace("Accuracy error count:" + accErrors);
-        logger.trace("Status error count:" + statusError);
+        logger.debug("Location error count:" + locError);
+        logger.debug("Accuracy error count:" + accErrors);
+        logger.debug("Status error count:" + statusError);
 
         return shelvingError;
     }

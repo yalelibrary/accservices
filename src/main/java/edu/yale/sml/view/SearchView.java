@@ -3,6 +3,7 @@ package edu.yale.sml.view;
 import edu.yale.sml.logic.BasicShelfScanEngine;
 import edu.yale.sml.logic.InvalidFormatException;
 import edu.yale.sml.logic.LogicHelper;
+import edu.yale.sml.logic.Rules;
 import edu.yale.sml.model.*;
 import edu.yale.sml.persistence.GenericDAO;
 import edu.yale.sml.persistence.GenericHibernateDAO;
@@ -357,6 +358,10 @@ public class SearchView implements Serializable {
     /** used by results.xhtml */
     public static String getReferenceLink(String rowIndex) {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
+    }
+
+    public static boolean isLocationError(final String locationName, final String finalLocationName) {
+        return Rules.isLocationError(locationName.trim(), finalLocationName.trim());
     }
 
     //getters and setters --------------------------------------------------------------------------------------------

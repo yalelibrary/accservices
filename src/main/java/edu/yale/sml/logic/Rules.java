@@ -14,7 +14,6 @@ import edu.yale.sml.model.Report;
 
 /**
  * Helper logic static class
- *
  */
 @ManagedBean
 @RequestScoped
@@ -108,9 +107,7 @@ public class Rules {
                 }
             }
 
-            if (!item.getLOCATION_NAME().equals(finalLocationName)) {
-                error = true;
-            }
+            error = isLocationError(item.getLOCATION_NAME(), finalLocationName);
 
             if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
                 if (item.getITEM_STATUS_DATE() != null && scanDate.before(item.getITEM_STATUS_DATE())
@@ -127,7 +124,7 @@ public class Rules {
         } catch (Exception e) {
             logger.error("Exception figuring out any error with barcode :r={}", e);
         }
-        logger.trace(item.getITEM_BARCODE() + " isVoyagerError? " + error);
+        logger.debug(item.getITEM_BARCODE() + " isVoyagerError? " + error);
         return error;
     }
 
@@ -142,6 +139,29 @@ public class Rules {
             //ignore
         }
 
+    }
+
+    public static boolean isLocationError(String locationName, String finalLocationName) {
+        //logger.debug("Checking for locationName={} and finalLocationName={}", locationName, finalLocationName);
+
+        //hardcoded check:
+        if (finalLocationName.equalsIgnoreCase("art") && (locationName.equalsIgnoreCase("artref") || locationName.equalsIgnoreCase("artrefl") || locationName.equalsIgnoreCase("dra"))) {
+            return false;
+        }
+
+        if (finalLocationName.equalsIgnoreCase("med") && (locationName.equalsIgnoreCase("medwk1"))) {
+            return false;
+        }
+
+        if (finalLocationName.equalsIgnoreCase("medref") && (locationName.equalsIgnoreCase("medwk1") || (locationName.equalsIgnoreCase("med")))) {
+            return false;
+        }
+
+        if (!locationName.equalsIgnoreCase(finalLocationName)) {
+            return true;
+        }
+
+        return false;
     }
 
 }
