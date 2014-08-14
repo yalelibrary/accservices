@@ -49,7 +49,8 @@ public class ReportListFilter {
                 }
 
                 boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+") || item
-                        .getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
+                        .getDISPLAY_CALL_NO().toLowerCase().contains("oversize")) ? true : false;
+
 
                 if (oversize.equalsIgnoreCase("N")) {
                     if (oversizeCallNumber) {
@@ -61,6 +62,9 @@ public class ReportListFilter {
                         foundError = true;
                     }
                 }
+
+                logger.debug("Considering={} Is oversized={}", item.getITEM_BARCODE(), oversizeCallNumber);
+                logger.debug("Found error={}", foundError);
 
                 if (item.getText() != 0) {
                     foundError = true;
@@ -77,7 +81,6 @@ public class ReportListFilter {
                         foundError = true;
                     }
                 } else {
-                    // System.out.print("Suspicious:" + r.getITEM_BARCODE());
                     foundError = true;
                 }
 

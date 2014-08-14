@@ -28,7 +28,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     private final static Logger logger = LoggerFactory.getLogger(BasicShelfScanEngine.class);
 
     /**Do not remove/rename fields without running tests first
-     * @see SerializationCheckIT
+     * see SerializationCheckIT
      */
     private static final long serialVersionUID = -1871752891918863039L;
 
@@ -344,6 +344,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
                 }
 
                 boolean isOversize = isOversizeCallNumber(item);
+                logger.debug("Is barcode={} oversize={}", item.getITEM_BARCODE(), isOversize);
 
                 if (oversize.equalsIgnoreCase("N")) {
                     if (isOversize) {
@@ -364,7 +365,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     }
 
     public static boolean isOversizeCallNumber(Report item) {
-        return (item.getDISPLAY_CALL_NO().contains("+")|| item.getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
+        logger.debug("Considering call number={}", item.getDISPLAY_CALL_NO());
+        return (item.getDISPLAY_CALL_NO().contains("+") || item.getDISPLAY_CALL_NO().toLowerCase().contains("oversize")) ? true : false;
     }
 
     public void addRemainingToMisshelfCulpritList(List<Report> culpritList,

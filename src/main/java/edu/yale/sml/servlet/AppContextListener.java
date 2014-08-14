@@ -34,7 +34,7 @@ public class AppContextListener implements ServletContextListener {
     public void contextDestroyed(ServletContextEvent sce) {
         try {
             HibernateSQLServerUtil.shutdown();
-            logger.info("Closed Hibernate Session Factory. Time Usage={} ms " + (System.currentTimeMillis() - start));
+            logger.info("Closed Hibernate Session Factory. Time Usage={} ms ", (System.currentTimeMillis() - start));
 
         } catch (Throwable t) {
             logger.error("Error in context shutdown", t);

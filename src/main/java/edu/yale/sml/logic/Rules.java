@@ -79,6 +79,7 @@ public class Rules {
      * same as above but returns only voyager errors .. i.e. not concerned with whether an item is a misshelf
      */
 
+    //BUGGY
     public static boolean isVoyagerError(final Report item, final String finalLocationName, final Date scanDate,
                                          final String oversize) {
         boolean error = false;
@@ -91,35 +92,38 @@ public class Rules {
             }
 
             boolean oversizeCallNumber = (item.getDISPLAY_CALL_NO().contains("+")
-                    || item.getDISPLAY_CALL_NO().contains("Oversize")) ? true : false;
+                    || item.getDISPLAY_CALL_NO().toLowerCase().contains("oversize")) ? true : false;
 
             if (oversize.equalsIgnoreCase("N")) {
                 if (oversizeCallNumber) {
                     item.setOVERSIZE("Y"); // used?
-                    error = true;
+                    return true;
                 }
             } else if (oversize.equalsIgnoreCase("Y")) {
                 if (oversizeCallNumber) {
                     item.setOVERSIZE("Y"); // NOT AN ERROR
                 } else {
                     item.setOVERSIZE("N");
-                    error = true;
+                    return true;
                 }
             }
 
-            error = isLocationError(item.getLOCATION_NAME(), finalLocationName);
+            if (isLocationError(item.getLOCATION_NAME(), finalLocationName))
+                return true;
 
             if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
                 if (item.getITEM_STATUS_DATE() != null && scanDate.before(item.getITEM_STATUS_DATE())
                         && (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime()) > 86400000) {
-                    error = true;
+                    return true;
+                }
+                else {
                 }
             } else {
-                error = true;
+                return true;
             }
 
             if (item.getSUPPRESS_IN_OPAC().equalsIgnoreCase("Y")) {
-                error = true;
+                return true;
             }
         } catch (Exception e) {
             logger.error("Exception figuring out any error with barcode :r={}", e);

@@ -10,8 +10,11 @@ import java.util.List;
 
 public class ShelvingErrorPopulator {
 
-    public static final String NULL_BARCODE_STRING = "00000000";
     final static Logger logger = LoggerFactory.getLogger(ShelvingErrorPopulator.class);
+
+    public static final String NULL_BARCODE_STRING = "00000000";
+
+    @Deprecated
     public static final int MIN_ERROR_DISPLAY = 2;
 
     /**
@@ -28,15 +31,15 @@ public class ShelvingErrorPopulator {
         int enumWarn = 0;
         int locError = 0;
         int statusError = 0;
-        int misshelfError = 0;
-        int misshelfThresholdErrors = 0;
+        int misshelfError = 0; //ignored?
+        int misshelfThresholdErrors = 0; //ignored?
 
         for (Report item : list) {
-            String displayCallNumber = item.getDISPLAY_CALL_NO();
-            logger.trace("considering bar:" + item.getITEM_BARCODE());
+            String dispCallNo = item.getDISPLAY_CALL_NO();
+            logger.debug("Considering bar:" + item.getITEM_BARCODE());
 
-            if (displayCallNumber == null) {
-                logger.trace("Display call number null for : " + item.getITEM_BARCODE());
+            if (dispCallNo == null) {
+                logger.trace("Display call number null for {}", item.getITEM_BARCODE());
             }
 
             // if there's no reason to have in the list remove the object
@@ -48,16 +51,13 @@ public class ShelvingErrorPopulator {
             }
 
             if (item.getText() != null && item.getText() != 0) {
-                if (item.getITEM_ENUM() == null || item.getITEM_ENUM().isEmpty()) {
-                    accErrors++;
-                    misshelfError++;
-                    //for report misshelf > 2
-                    if (item.getText() > MIN_ERROR_DISPLAY) {
-                        misshelfThresholdErrors++;
-                    }
-                } else if (item.getITEM_ENUM() != null) {
-                    // ignore
+
+                accErrors++;
+                misshelfError++;
+                if (item.getText() > MIN_ERROR_DISPLAY) { //for report misshelf > 2
+                    misshelfThresholdErrors++;
                 }
+
                 totalErrors++;
             }
 
@@ -65,13 +65,12 @@ public class ShelvingErrorPopulator {
                 totalErrors++;
             }
 
-            if (item.getITEM_BARCODE().length() == 14 && Rules.isLocationError(item.getLocationName(), finalLocationName)) {
+            if (Rules.isLocationError(item.getLocationName(), finalLocationName)) {
                 locError++;
-                accErrors++;
+                //accErrors++;
             }
 
             if (item.getITEM_STATUS_DESC() != null) {
-
                 if (Rules.isValidItemStatus(item.getITEM_STATUS_DESC())) {
                     if (item.getITEM_STATUS_DATE() != null) {
                         if (scanDate.before(item.getITEM_STATUS_DATE())) {
@@ -86,54 +85,53 @@ public class ShelvingErrorPopulator {
                                 + item.getITEM_BARCODE() + " , with desc:" +
                                 item.getITEM_STATUS_DESC());
                     }
-                } else // invalid status
-                {
+                } else { //invalid status
                     logger.trace("Incremented count for: " + item.getITEM_BARCODE() + ":" + item.getITEM_STATUS_DESC());
                     statusError++;
                 }
             } else {
-                logger.trace("Item status desc null. Not sure what to do: "
-                        + item.getITEM_BARCODE());
+                logger.trace("Item status desc null. Not sure what to do: " + item.getITEM_BARCODE());
             }
 
+            //Oversize Errors
             if (!oversize.equalsIgnoreCase("Intermixed")) {
-
-                if (displayCallNumber.contains("+") || displayCallNumber.contains(
-                        "Oversize")
-                        && oversize.equals("N")) {
+                if ((dispCallNo.contains("+") || dispCallNo.toLowerCase().contains("oversize")) && oversize.equals("N")) {
+                    logger.debug("Oversize barcode={}", item.getITEM_BARCODE());
                     oversizeErrors++;
-                } else if ((!displayCallNumber.contains("+") || displayCallNumber
-                        .contains("Oversize")) && oversize.equals("Y")) {
+                } else if ((!dispCallNo.contains("+") && !dispCallNo.toLowerCase().contains("oversize")) && oversize.equals("Y")) {
                     oversizeErrors++;
+                } else {
+                    logger.debug("Not oversized={}", item.getITEM_BARCODE());
                 }
             }
-
 
             if (item.getNORMALIZED_CALL_NO() == null) {
                 totalErrors++;
             }
 
-            if ((displayCallNumber.contains("+") || displayCallNumber.contains("Oversize"))) {
+            if ((dispCallNo.contains("+") || dispCallNo.toLowerCase().contains("oversize"))) {
                 item.setOVERSIZE("Y");
             }
         }
-        shelvingError.setAccuracy_errors(accErrors);
+        shelvingError.setAccuracy_errors(accErrors); //misshelf
         shelvingError.setEnum_warnings(enumWarn);
         shelvingError.setNull_barcodes(nullBarcodes);
         shelvingError.setNull_result_barcodes(nullResultBars);
         shelvingError.setOversize_errors(oversizeErrors);
-        shelvingError.setTotal_errors(totalErrors);
+        shelvingError.setTotal_errors(totalErrors); //used?
         shelvingError.setLocation_errors(locError);
         shelvingError.setStatus_errors(statusError);
-        shelvingError.setMisshelf_errors(misshelfError);
+        shelvingError.setMisshelf_errors(misshelfError); //ignored
         shelvingError.setMisshelf_threshold_errors(misshelfThresholdErrors);
         shelvingError.setSuppress_errors(suppressedErrors);
 
         logger.debug("Location error count:" + locError);
         logger.debug("Accuracy error count:" + accErrors);
         logger.debug("Status error count:" + statusError);
+        logger.debug("Oversize count={}", oversizeErrors);
 
         return shelvingError;
     }
+
 
 }

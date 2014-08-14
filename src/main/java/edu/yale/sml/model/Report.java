@@ -41,7 +41,7 @@ public class Report implements Serializable {
 
         String oversize = "N";
 
-        if (o.getNORMALIZED_CALL_NO().contains("+") || o.getNORMALIZED_CALL_NO().contains("Oversize")) {
+        if (o.getNORMALIZED_CALL_NO().contains("+") || o.getNORMALIZED_CALL_NO().toLowerCase().contains("oversize")) {
             oversize = "Y";
         }
 
