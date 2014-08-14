@@ -36,7 +36,7 @@ public class ShelvingErrorPopulator {
 
         for (Report item : list) {
             String dispCallNo = item.getDISPLAY_CALL_NO();
-            logger.debug("Considering bar:" + item.getITEM_BARCODE());
+            logger.trace("Considering bar:" + item.getITEM_BARCODE());
 
             if (dispCallNo == null) {
                 logger.trace("Display call number null for {}", item.getITEM_BARCODE());
@@ -96,12 +96,12 @@ public class ShelvingErrorPopulator {
             //Oversize Errors
             if (!oversize.equalsIgnoreCase("Intermixed")) {
                 if ((dispCallNo.contains("+") || dispCallNo.toLowerCase().contains("oversize")) && oversize.equals("N")) {
-                    logger.debug("Oversize barcode={}", item.getITEM_BARCODE());
+                    logger.trace("Oversize barcode={}", item.getITEM_BARCODE());
                     oversizeErrors++;
                 } else if ((!dispCallNo.contains("+") && !dispCallNo.toLowerCase().contains("oversize")) && oversize.equals("Y")) {
                     oversizeErrors++;
                 } else {
-                    logger.debug("Not oversized={}", item.getITEM_BARCODE());
+                    logger.trace("Not oversized={}", item.getITEM_BARCODE());
                 }
             }
 

@@ -63,8 +63,8 @@ public class ReportListFilter {
                     }
                 }
 
-                logger.debug("Considering={} Is oversized={}", item.getITEM_BARCODE(), oversizeCallNumber);
-                logger.debug("Found error={}", foundError);
+                logger.trace("Considering={} Is oversized={}", item.getITEM_BARCODE(), oversizeCallNumber);
+                logger.trace("Found error={}", foundError);
 
                 if (item.getText() != 0) {
                     foundError = true;

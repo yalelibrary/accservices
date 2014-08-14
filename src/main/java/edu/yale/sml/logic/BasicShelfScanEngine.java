@@ -87,22 +87,18 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             fullComparator.getCulprits(); // TODO
 
             // set priors, and mis-shelf -- another method also runs for this
-            List<Report> legacyMisshelfs = MisshelfErrorsProcessor.legacyCalculateMisshelf(validBarcodesList,
-                    validBarcodesSorted);
-
+            List<Report> legacyMisshelfs = MisshelfErrorsProcessor.legacyCalculateMisshelf(validBarcodesList, validBarcodesSorted);
             reportLists.setReportCatalogAsList(legacyMisshelfs);
 
             // set oversize flag by comparing against the UI value
             setOversizeFlag(getReportList(reportLists), oversize);
 
             // Filter out objects that do NOT have ANY errors
-            List<Report> errorsOnlyList = ReportListFilter
-                    .filterReportList(Collections.unmodifiableList(getReportList(reportLists)), location, scanDate, oversize);
+            List<Report> errorsOnlyList = ReportListFilter.filterReportList(Collections.unmodifiableList(getReportList(reportLists)), location, scanDate, oversize);
             reportLists.setReportCatalogAsList(errorsOnlyList);
 
             // For UI
-            reportLists.setCatalogSortedRaw(new ArrayList(reportLists
-                    .getCatalogAsList()));
+            reportLists.setCatalogSortedRaw(new ArrayList(reportLists.getCatalogAsList()));
             sortCatalogSortedRaw();
             removeNulls();
 
@@ -344,7 +340,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
                 }
 
                 boolean isOversize = isOversizeCallNumber(item);
-                logger.debug("Is barcode={} oversize={}", item.getITEM_BARCODE(), isOversize);
+                logger.trace("Is barcode={} oversize={}", item.getITEM_BARCODE(), isOversize);
 
                 if (oversize.equalsIgnoreCase("N")) {
                     if (isOversize) {
@@ -365,7 +361,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     }
 
     public static boolean isOversizeCallNumber(Report item) {
-        logger.debug("Considering call number={}", item.getDISPLAY_CALL_NO());
+        logger.trace("Considering call number={}", item.getDISPLAY_CALL_NO());
         return (item.getDISPLAY_CALL_NO().contains("+") || item.getDISPLAY_CALL_NO().toLowerCase().contains("oversize")) ? true : false;
     }
 

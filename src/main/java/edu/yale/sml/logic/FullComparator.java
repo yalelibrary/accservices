@@ -30,10 +30,6 @@ public class FullComparator implements Comparator<OrbisRecord> {
         boolean eitherEnumNull = false;
         boolean enum_found = false;
 
-        if (o1 == null || o2 == null) {
-            // logger.trace("Null record");
-        }
-
         if (o1.getNORMALIZED_CALL_NO() == null || o2.getNORMALIZED_CALL_NO() == null) {
             logger.debug("Null for comparison : " + o1.toString() + "  : " + o2.toString());
             return 0;
@@ -81,6 +77,9 @@ public class FullComparator implements Comparator<OrbisRecord> {
 
                 s1 = s1.replace("pt.", "");
                 s2 = s2.replace("pt.", "");
+
+                //s1 = s1.replace("DVD", "");
+                //s2 = s2.replace("DVD", "");
 
                 if (s1.contains("-")) {
                     s1 = s1.replace("-", ":");
