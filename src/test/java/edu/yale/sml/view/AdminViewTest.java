@@ -1,6 +1,7 @@
 package edu.yale.sml.view;
 
 import edu.yale.sml.model.Admin;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public class AdminViewTest {
         assert (adminView.getPermissionTypes().size() == 2);
     }
 
+    @Ignore("Until can find shelfscan.sqlserver.hibernate.cfg.xml")
     @Test
     public void testInitialize() throws Exception {
         AdminView adminView = new AdminView();
@@ -73,16 +75,6 @@ public class AdminViewTest {
             //ignore
         }
         assert (adminView.getPermissionTypes().size() == 2);
-    }
-
-    @Test
-    public void testRemove() throws Exception {
-        //TODO
-    }
-
-    @Test
-    public void testSaveAll() throws Exception {
-        //TODO
     }
 
     @Test
