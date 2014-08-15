@@ -46,7 +46,7 @@ public class MisshelfErrorsProcessor {
                 final String callNum = o.getDISPLAY_CALL_NO();
 
                 if (callNum == null) {
-                    logger.error("Disp. Call. Null={}", barcode);
+                    logger.error("Null call number={}", barcode);
                     continue;
                 }
 
@@ -148,6 +148,131 @@ public class MisshelfErrorsProcessor {
         logger.debug("Done.");
         return errorItems;
     }
+
+
+      public static List<Report> processMisshelfs(final DataLists dataLists, List<Report> legacyMisshelfs) {
+        logger.debug("(Pass/Step 2) Calculate Misshelf");
+
+        //uses markedCatalogAsList and catalogSortedRaw
+        List<OrbisRecord> itemList = new ArrayList<OrbisRecord>(dataLists.getMarkedCatalogAsList());
+        Collections.copy(itemList, dataLists.getMarkedCatalogAsList());
+        List<OrbisRecord> sortedList = new ArrayList<OrbisRecord>(dataLists.getCatalogSortedRaw());
+        Collections.copy(sortedList, dataLists.getCatalogSortedRaw());
+        List<Report> errorItems = new ArrayList<Report>();
+
+        try {
+            for (final OrbisRecord o : itemList) {
+                String barcode = o.getITEM_BARCODE();
+
+                final String callNum = o.getDISPLAY_CALL_NO();
+
+                if (callNum == null) {
+                    logger.error("Null call number={}", barcode);
+                    continue;
+                }
+
+                if (callNum.contains(ITEM_FLAG_STRING)) {
+                    logger.debug("Eval *'ed barcode={}, {} ", barcode, callNum);
+
+                    int pos = itemList.indexOf(o);
+
+                    OrbisRecord p = itemList.get(pos - 1);
+
+                    if (p == null) {
+                        continue;
+                    }
+
+                    int length = dataLists.getCatalogSortedRaw().size();
+
+                    boolean priorInSortedHighlighted = ReportHelper.reportContainsNonZeroText(p, legacyMisshelfs, length);
+
+
+
+                    logger.debug("Prior in sorted highlight value={} for prior={}", priorInSortedHighlighted, p.getDisplayCallNo());
+
+                    try {
+                        if (priorInSortedHighlighted) {
+                            logger.debug("[X] Prior in sorted highlighted list for={},={}", callNum, barcode);
+
+                            OrbisRecord priorinSortedList = null, priorOfPriorinSortedList = null;
+
+                            if (sortedList.indexOf(p) >= 0) {
+                                priorinSortedList = sortedList.get(sortedList.indexOf(p));
+                            } else {
+                                logger.debug("Warning: Prior in sorted cannot be determined.");
+                            }
+
+                            try {
+                                int indexDiff = pos - 2;
+
+                                if (indexDiff >= 0) {
+                                    priorOfPriorinSortedList = itemList.get(pos - 2);
+                                }
+                            } catch (ArrayIndexOutOfBoundsException e) {
+                                logger.debug("Warning: cannot determine prior");
+                                throw e;
+                            }
+                            int diff = sortedList.indexOf(p) - sortedList.indexOf(o);
+
+                            logger.debug("Added to culprit list={}", priorinSortedList.getItemBarcode());
+
+                            Report reportItem;
+
+                            if (priorOfPriorinSortedList == null) {
+                                logger.debug("Warning. Prior sorted is null for={}", barcode);
+                                priorOfPriorinSortedList = new OrbisRecord();
+                                priorOfPriorinSortedList.setDISPLAY_CALL_NO("N/A");
+                            }
+
+                            reportItem = Report.newReport(priorinSortedList, diff,
+                                    priorOfPriorinSortedList.getDisplayCallNo(),
+                                    priorOfPriorinSortedList.getDisplayCallNo(),
+                                    priorOfPriorinSortedList,
+                                    priorOfPriorinSortedList);
+
+                            errorItems.add(reportItem);
+
+                            logger.debug("Added item={}", reportItem.getItemBarcode());
+
+                            OrbisRecord priorinFlagged = itemList.get(pos - 1);
+
+                            logger.debug("Prior in flagged was={}", priorinFlagged.getITEM_BARCODE());
+                        } else {
+                            logger.debug("[Y] Prior NOT in sorted highlighted list for={}", callNum);
+
+                            OrbisRecord priorInFlagged = itemList.get(pos - 1);
+
+                            int diff = sortedList.indexOf(p) - sortedList.indexOf(o);
+                            errorItems.add(Report.newReport(o, diff, priorInFlagged.getDISPLAY_CALL_NO(),
+                                    priorInFlagged.getDISPLAY_CALL_NO(), priorInFlagged, priorInFlagged));
+
+                            logger.debug("Added item={}", barcode);
+                        }
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        logger.debug("ArrayIndexOutOfBounds. Item={}", barcode);
+                        continue;
+                    } catch (NullPointerException n) {
+                        logger.debug("NPE. Item={}", o.getITEM_BARCODE());
+                        continue;
+                    } catch (Exception e) {
+                        logger.error("Error", e);
+                    }
+                } else {
+                    // no * in display call num
+                }
+            }
+        } catch (Throwable e) {
+            logger.debug("Error={}", e);
+        }
+
+        for (Report r : errorItems) {
+            logger.debug(prettyPrint(r));
+        }
+
+        logger.debug("Done.");
+        return errorItems;
+    }
+
 
     public static String prettyPrint(Report report) {
         return ReflectionToStringBuilder.toString(report);

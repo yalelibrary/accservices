@@ -90,8 +90,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             fullComparator.getCulprits(); // TODO
 
             // set priors, and mis-shelf -- another method also runs for this
-            List<Report> legacyMisshelfs = MisshelfErrorsProcessor.legacyCalculateMisshelf(validBarcodesList, validBarcodesSorted);
-            reportLists.setReportCatalogAsList(legacyMisshelfs);
+            final List<Report> legacyMisshelfs = MisshelfErrorsProcessor.legacyCalculateMisshelf(validBarcodesList, validBarcodesSorted);
+            reportLists.setReportCatalogAsList(new ArrayList(legacyMisshelfs));
 
             //so far, no errors have been calculated except legacy mis-shelf and suppressed
 
@@ -116,16 +116,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             // Add * for call numbers that are out of sort order
             markOutOfPlaceItems(reportLists.getMarkedCatalogAsList());
 
-            //Reset mis-shelf to 0: N.B.
-            for (Report item : getReportList(reportLists)) {
-                if (item.getText() != 0) {
-                    logger.trace("Erasing prior mis-shelf value:" + item.getITEM_BARCODE() + " : " + item.getText());
-                    item.setText(0); //N.B.
-                }
-            }
-
             //Re-calculate mis-shelf:
-            culpritList = MisshelfErrorsProcessor.processMisshelfs(reportLists);
+            culpritList = MisshelfErrorsProcessor.processMisshelfs(reportLists, new ArrayList(legacyMisshelfs));
 
             // Add enums:
             addRemainingToMisshelfCulpritList(culpritList, getReportList(reportLists), getOrbisList(reportLists), loc, scanDate, oversize);
@@ -164,17 +156,9 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
     /**
      * Initialize data structure that's used for all subsequent processing
-     *
-     * @param list of SearchResult
-     * @throws InvocationTargetException
-     * @throws IllegalAccessException
      */
     public DataLists initCatalogList(final List<SearchResult> list) throws InvocationTargetException, IllegalAccessException {
         logger.debug("Processing init catalog list");
-
-        if (reportLists.getCatalogAsList() != null) {
-            logger.trace("Pre-CatalogInit processing, list size={}", getOrbisList(reportLists).size());
-        }
 
         reportLists = CatalogInit.processCatalogList(Collections.unmodifiableList(list));
         return reportLists;
@@ -353,8 +337,6 @@ public class BasicShelfScanEngine implements java.io.Serializable {
                                                   final Date scanDate,
                                                   final String oversize) {
         logger.debug("Adding Non-mis-shelf items to culprit/mis-shelf list. . .");
-
-        //logger.trace("Current culprit list={}", culpritList);
 
         for (Report item : reportCatalogAsList) {
             if (culpritList.contains(item)) {

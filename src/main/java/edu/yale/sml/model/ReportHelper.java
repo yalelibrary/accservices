@@ -15,6 +15,18 @@ public class ReportHelper {
         return false;
     }
 
+
+    public static boolean reportContainsNonZeroText(OrbisRecord o, List<Report> itemList, int limit) {
+        for (Report item : itemList) {
+            for (int i = 0; i < limit; i++) {
+                if (item.getText() != 0 && item.getITEM_BARCODE().equals(o.getITEM_BARCODE())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static boolean reportContains(OrbisRecord o, List<Report> itemList) {
         for (Report item : itemList) {
             if (item.getITEM_BARCODE().equals(o.getITEM_BARCODE())) {
