@@ -1,6 +1,7 @@
 package edu.yale.sml.logic;
 
 import edu.yale.sml.model.DataLists;
+import edu.yale.sml.persistence.BarcodeSearchDAO;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class BasicShelfScanEngineTest {
         Date scanDate = new Date();
         String oversize = "N";
         BasicShelfScanEngine basicShelfScanEngine = new BasicShelfScanEngine();
+        basicShelfScanEngine.setBarcodeSearchDAO(new BarcodeSearchDAO());
         DataLists dataLists = basicShelfScanEngine.process(barcodes, loc, scanDate, oversize); //TODO
         logger.debug("Report catalog size={}", dataLists.getReportCatalogAsList().size()) ;
     }

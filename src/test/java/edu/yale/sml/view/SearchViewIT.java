@@ -3,6 +3,7 @@ package edu.yale.sml.view;
 import edu.yale.sml.logic.BasicShelfScanEngine;
 import edu.yale.sml.model.DataLists;
 import edu.yale.sml.model.Report;
+import edu.yale.sml.persistence.BarcodeSearchDAO;
 import edu.yale.sml.persistence.config.HibernateOracleUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -43,6 +44,7 @@ public class SearchViewIT {
         try {
             if (dataLists != null) { //get once
                 BasicShelfScanEngine engine = new BasicShelfScanEngine();
+                engine.setBarcodeSearchDAO(new BarcodeSearchDAO());
                 dataLists = engine.process(barcodeList(), "sml", new Date(), "N");
             }
         } catch (Exception e) {

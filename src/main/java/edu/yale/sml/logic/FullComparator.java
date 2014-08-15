@@ -143,7 +143,7 @@ public class FullComparator implements Comparator<OrbisRecord> {
             //if added already, skip all - -this is to prevent an enum from appearing multiple times
 
             if (!alreadyAdded(o1, culpritList)) {
-                culpritList.add(Report.populateReport(o1, FLAG, "N/A", "N/A", o2, null));
+                culpritList.add(Report.newReport(o1, FLAG, "N/A", "N/A", o2, null));
             }
         }
         return diff + enumDiff + yearDiff;

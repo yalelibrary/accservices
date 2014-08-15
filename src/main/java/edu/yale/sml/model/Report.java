@@ -37,7 +37,7 @@ public class Report implements Serializable {
     public Report() {
     }
 
-    public static Report populateReport(OrbisRecord o, Integer flag, String prior, String physicalPrior, OrbisRecord physicalPriorO, OrbisRecord priorO) {
+    public static Report newReport(OrbisRecord o, Integer flag, String prior, String physicalPrior, OrbisRecord physicalPriorO, OrbisRecord priorO) {
 
         String oversize = "N";
 

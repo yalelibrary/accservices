@@ -24,9 +24,10 @@ public final class BarcodeSearchDAO implements java.io.Serializable {
     public BarcodeSearchDAO() {
     }
 
-    public List<SearchResult> findAllById(List<String> id) {
-        List<SearchResult> aggregateList = new ArrayList<SearchResult>();
+    public List<SearchResult> findAllById(final List<String> barcodeList) {
+        final List<SearchResult> searchResultList = new ArrayList<SearchResult>();
         Session session;
+
         try {
             session = HibernateOracleUtils.getSessionFactory().openSession();
         } catch (HibernateException e) {
@@ -36,7 +37,7 @@ public final class BarcodeSearchDAO implements java.io.Serializable {
 
         try {
             try {
-                for (String s : id) {
+                for (String barcode : barcodeList) {
                     SQLQuery q = session.createSQLQuery("select b.ITEM_BARCODE, " +
                             "s.ITEM_ID, s.ITEM_STATUS_DATE, st.ITEM_STATUS_DESC, mi.YEAR, mi.CHRON," +
                             " mi.ITEM_ENUM, mi.MFHD_ID, mM.NORMALIZED_CALL_NO,"
@@ -50,10 +51,10 @@ public final class BarcodeSearchDAO implements java.io.Serializable {
                             + " left outer join YALEDB.MFHD_MASTER mM on mi.MFHD_ID = mM.MFHD_ID"
                             + " left outer join YALEDB.LOCATION l on i.PERM_LOCATION=l.LOCATION_ID"
                             + " where b.ITEM_BARCODE = :param");
-                    q.setParameter("param", s);
+                    q.setParameter("param", barcode);
                     q.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
-                    SearchResult obj = new SearchResult(s, (ArrayList<Map<String, Object>>) q.list());
-                    aggregateList.add(obj);
+                    SearchResult searchResult = new SearchResult(barcode, (ArrayList<Map<String, Object>>) q.list());
+                    searchResultList.add(searchResult);
                 }
             } catch (HibernateException e) {
                 throw new HibernateException(e); // rethrow
@@ -67,6 +68,6 @@ public final class BarcodeSearchDAO implements java.io.Serializable {
         } catch (HibernateException e) {
             throw new HibernateException(e);
         }
-        return aggregateList;
+        return searchResultList;
     }
 }

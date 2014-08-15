@@ -14,16 +14,21 @@ public class ShelvingErrorPopulator {
 
     public static final String NULL_BARCODE_STRING = "00000000";
 
+    private final ShelvingError shelvingError = new ShelvingError();
+
     @Deprecated
     public static final int MIN_ERROR_DISPLAY = 2;
 
     /**
      * Get error count.
      */
-    public ShelvingError populateShelvingError(List<Report> list, String finalLocationName,
-                                               Date scanDate, String oversize, int nullBarcodes, int suppressedErrors) {
-        logger.trace("Calculating or setting report header summary count.");
-        ShelvingError shelvingError = new ShelvingError();
+    public ShelvingError calculate(List<Report> list,
+                                   String finalLocationName,
+                                   Date scanDate,
+                                   String oversize,
+                                   int nullBarcodes,
+                                   int suppressedErrors) {
+        logger.debug("Calculating report header summary count.");
         int accErrors = 0;
         int totalErrors = 0;
         int nullResultBars = 0;

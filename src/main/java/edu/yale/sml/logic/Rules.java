@@ -85,7 +85,7 @@ public class Rules {
         boolean error = false;
 
         try {
-            anyRelevantFieldNull(item); //print debug
+            printIfFieldsNull(item); //print debug
 
             if (item.getNORMALIZED_CALL_NO().equals("Bad Barcode")) {
                 // ignore //?
@@ -132,7 +132,7 @@ public class Rules {
         return error;
     }
 
-    public static void anyRelevantFieldNull(final Report item) {
+    public static void printIfFieldsNull(final Report item) {
         try {
             if (item.getNORMALIZED_CALL_NO() == null || item.getDISPLAY_CALL_NO() == null
                     || item.getLOCATION_NAME() == null || item.getITEM_STATUS_DESC() == null

@@ -100,7 +100,7 @@ public class MisshelfErrorsProcessor {
                                 priorOfPriorinSortedList.setDISPLAY_CALL_NO("N/A");
                             }
 
-                            reportItem = Report.populateReport(priorinSortedList, diff,
+                            reportItem = Report.newReport(priorinSortedList, diff,
                                     priorOfPriorinSortedList.getDisplayCallNo(),
                                     priorOfPriorinSortedList.getDisplayCallNo(),
                                     priorOfPriorinSortedList,
@@ -119,7 +119,7 @@ public class MisshelfErrorsProcessor {
                             OrbisRecord priorInFlagged = itemList.get(pos - 1);
 
                             int diff = sortedList.indexOf(p) - sortedList.indexOf(o);
-                            errorItems.add(Report.populateReport(o, diff, priorInFlagged.getDISPLAY_CALL_NO(),
+                            errorItems.add(Report.newReport(o, diff, priorInFlagged.getDISPLAY_CALL_NO(),
                                     priorInFlagged.getDISPLAY_CALL_NO(), priorInFlagged, priorInFlagged));
 
                             logger.debug("Added item={}", barcode);
@@ -159,14 +159,14 @@ public class MisshelfErrorsProcessor {
      * Items with accuracy, location errors are
      * filtered out later by ShelfScanEngine.
      *
-     * @param catalogList
+     * @param orbisList
      * @param sortedList
      * @return
      */
-    public static List<Report> legacyCalculateMisshelf(List<OrbisRecord> catalogList, List<OrbisRecord> sortedList) {
-        logger.debug("(Pass/Step 1) Calculate Misshelf");
+    public static List<Report> legacyCalculateMisshelf(final List<OrbisRecord> orbisList, final List<OrbisRecord> sortedList) {
+        logger.debug("(Pass/Step 1) Calculate Mis-shelf");
 
-        List<Report> reportCatalogAsList = new ArrayList<Report>();
+        List<Report> list = new ArrayList<Report>();
         int diff;
         for (int i = 0; i < sortedList.size(); i++) {
             diff = 0;
@@ -180,25 +180,30 @@ public class MisshelfErrorsProcessor {
                 continue;
             }
 
-            if (catalogList.indexOf(sortedList.get(i - 1)) < catalogList.indexOf(sortedList.get(i))) {
-                Report item = Report.populateReport(sortedList.get(i), 0, "N/A",
-                        catalogList.get(catalogList.indexOf(sortedList.get(i - 1))).getDISPLAY_CALL_NO(),
-                        catalogList.get(catalogList.indexOf(sortedList.get(i - 1))), sortedList.get(i - 1)); // hold
+            if (orbisList.indexOf(sortedList.get(i - 1)) < orbisList.indexOf(sortedList.get(i))) {
+                Report item = Report.newReport(sortedList.get(i),
+                        0,
+                        "N/A",
+                        orbisList.get(orbisList.indexOf(sortedList.get(i - 1))).getDisplayCallNo(),
+                        orbisList.get(orbisList.indexOf(sortedList.get(i - 1))),
+                        sortedList.get(i - 1)); // hold
 
-                reportCatalogAsList.add(item);
+                list.add(item);
                 logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE() + " with diff: " + diff);
-
             } else {
-                diff = Math.abs(catalogList.indexOf(sortedList.get(i - 1)) - catalogList.indexOf(sortedList.get(i)));
-                Report item = Report.populateReport(sortedList.get(i), diff, "N/A",
-                        catalogList.get(catalogList.indexOf(sortedList.get(i - 1))).getDISPLAY_CALL_NO(),
-                        catalogList.get(catalogList.indexOf(sortedList.get(i - 1))), sortedList.get(i - 1)); // hold
+                diff = Math.abs(orbisList.indexOf(sortedList.get(i - 1)) - orbisList.indexOf(sortedList.get(i)));
+                Report item = Report.newReport(sortedList.get(i),
+                        diff,
+                        "N/A",
+                        orbisList.get(orbisList.indexOf(sortedList.get(i - 1))).getDisplayCallNo(),
+                        orbisList.get(orbisList.indexOf(sortedList.get(i - 1))),
+                        sortedList.get(i - 1)); // hold
 
-                reportCatalogAsList.add(item);
+                list.add(item);
                 logger.debug("(Legacy) Added:" + item.getITEM_BARCODE() + " with diff: " + diff);
             }
         }
-        return reportCatalogAsList;
+        return list;
     }
 
     public static boolean anyNull(String str, String str2) {

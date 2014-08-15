@@ -5,6 +5,7 @@ import edu.yale.sml.logic.InvalidFormatException;
 import edu.yale.sml.logic.LogicHelper;
 import edu.yale.sml.logic.Rules;
 import edu.yale.sml.model.*;
+import edu.yale.sml.persistence.BarcodeSearchDAO;
 import edu.yale.sml.persistence.GenericDAO;
 import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.HistoryDAO;
@@ -43,7 +44,7 @@ public class SearchView implements Serializable {
     final static Logger logger = LoggerFactory.getLogger(SearchView.class);
 
     /**Do not remove/rename fields without running tests first
-     * @see SerializationCheckIT
+     * see SerializationCheckIT
      */
     private static final long serialVersionUID = 8064034317364105517L;
 
@@ -209,6 +210,7 @@ public class SearchView implements Serializable {
 
             logger.debug("Processing barcodes list.");
 
+            engine.setBarcodeSearchDAO(new BarcodeSearchDAO()); //TODO
             reportLists = engine.process(toFind, finalLocationName, scanDate, oversize);
 
             logger.debug("Done processing barcodes list.");

@@ -2,6 +2,7 @@ package edu.yale.sml.logic;
 
 import edu.yale.sml.model.DataLists;
 import edu.yale.sml.model.Report;
+import edu.yale.sml.persistence.BarcodeSearchDAO;
 import edu.yale.sml.persistence.config.HibernateOracleUtils;
 import edu.yale.sml.view.NullFileException;
 import org.apache.commons.io.FileUtils;
@@ -29,6 +30,7 @@ public class MisshelfErrrorsProcessorTest {
         BasicShelfScanEngine basicShelfScanEngine = new BasicShelfScanEngine();
         try {
             List<String> barcodes = FileUtils.readLines(new File("src/main/resources/testMEDWK1Accuracy.txt"));
+            basicShelfScanEngine.setBarcodeSearchDAO(new BarcodeSearchDAO()); //allows flexibility of impl.
             DataLists dataLists = basicShelfScanEngine.process(barcodes, "med", new Date(), "N");
             List<Report> reports  = MisshelfErrorsProcessor.processMisshelfs(dataLists);
             //assertEquals(reports.size(), 25);
