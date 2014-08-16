@@ -186,8 +186,6 @@ public class MisshelfErrorsProcessor {
 
                     boolean priorInSortedHighlighted = ReportHelper.reportContainsNonZeroText(p, legacyMisshelfs, length);
 
-
-
                     logger.debug("Prior in sorted highlight value={} for prior={}", priorInSortedHighlighted, p.getDisplayCallNo());
 
                     try {
@@ -265,8 +263,9 @@ public class MisshelfErrorsProcessor {
             logger.debug("Error={}", e);
         }
 
+          logger.debug("Culprit list");
         for (Report r : errorItems) {
-            logger.debug(prettyPrint(r));
+            logger.debug(r.getITEM_BARCODE());
         }
 
         logger.debug("Done.");
@@ -313,16 +312,20 @@ public class MisshelfErrorsProcessor {
                         orbisList.get(orbisList.indexOf(sortedList.get(i - 1))),
                         sortedList.get(i - 1)); // hold
 
+                item.setMark(0);
+
                 list.add(item);
-                logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE() + " with diff: " + diff);
+                //logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE() + " with diff: " + diff);
             } else {
                 diff = Math.abs(orbisList.indexOf(sortedList.get(i - 1)) - orbisList.indexOf(sortedList.get(i)));
+                //diff = 0;
                 Report item = Report.newReport(sortedList.get(i),
                         diff,
                         "N/A",
                         orbisList.get(orbisList.indexOf(sortedList.get(i - 1))).getDisplayCallNo(),
                         orbisList.get(orbisList.indexOf(sortedList.get(i - 1))),
                         sortedList.get(i - 1)); // hold
+                item.setMark(1);
 
                 list.add(item);
                 logger.debug("(Legacy) Added:" + item.getITEM_BARCODE() + " with diff: " + diff);

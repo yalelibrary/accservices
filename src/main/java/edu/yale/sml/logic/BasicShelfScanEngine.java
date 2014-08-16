@@ -66,6 +66,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
         logger.debug("Engine Processing . . .");
 
+
+
         try {
             // call Voyager
             final List<SearchResult> searchResultList = getOrbisDataForBarcodes(barcodes);
@@ -130,6 +132,15 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
             // Fix Sort Order (i.e. original file order):
             culpritList = fixSortOrder(getOrbisList(reportLists), culpritList);
+
+            //clear legacy misshelf:
+
+            for (Report r: culpritList) {
+                if (r.getMark() == 1) {
+                    r.setText(0);
+                }
+            }
+
             reportLists.setCulpritList(culpritList); // ?
 
             int nullBarcodesCount = Collections.frequency(barcodes, Rules.NULL_BARCODE_STRING);

@@ -1,0 +1,16 @@
+<configuration>
+
+    <!-- Appenders -->
+
+    <include resource="logback_appenders.xml"/>
+    <!-- Hibernate -->
+    <logger name="org.hibernate" level="ERROR" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

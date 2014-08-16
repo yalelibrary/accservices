@@ -23,22 +23,28 @@ public class MisshelfErrrorsProcessorTest {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
+    //String loc = "sml";
+    String loc = "med";
+    //String oversize = "N";
+    String oversize = "Y";
+    String fileName = "src/main/resources/testMEDWK1Accuracy.txt";
+    //String fileName = "src/test/resources/TestFile.txt";
 
     @Test
     public void shouldProcessMisshelfs(){
         BasicShelfScanEngine basicShelfScanEngine = new BasicShelfScanEngine();
         try {
-            List<String> barcodes = FileUtils.readLines(new File("src/main/resources/testMEDWK1Accuracy.txt"));
+            List<String> barcodes = FileUtils.readLines(new File(fileName));
             basicShelfScanEngine.setBarcodeSearchDAO(new BarcodeSearchDAO()); //allows flexibility of impl.
-            DataLists dataLists = basicShelfScanEngine.process(barcodes, "med", new Date(), "N");
-            List<Report> reports  = MisshelfErrorsProcessor.processMisshelfs(dataLists);
-            //assertEquals(reports.size(), 25);
+            DataLists dataLists = basicShelfScanEngine.process(barcodes, loc, new Date(), oversize);
+
+            List<Report> reports = dataLists.getCulpritList();
 
             logger.debug("Reports size={}", reports.size());
 
             for (Report report: reports) {
-                logger.debug("Barcode={} Misshelf={}", report.getDISPLAY_CALL_NO() ,report.getText().toString());
+                if (report.getText() != 5555 && report.getText() != 0)
+                 logger.debug("Barcode=" + report.getITEM_BARCODE() + " --" + report.getDisplayCallNo() + "--" + report.getText());
             }
 
             HibernateOracleUtils.shutdown();

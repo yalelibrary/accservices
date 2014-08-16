@@ -60,7 +60,8 @@ public class ReportListFilter {
                 logger.trace("{} is oversize?={}", item.getITEM_BARCODE(), oversizeCallNumber);
 
                 if (item.getText() != 0) {
-                    errorFound = true;
+                    //errorFound = true;
+                    //logger.debug("ignore");
                 }
 
                 if (!item.getLocationName().equals(finalLocationName)) {

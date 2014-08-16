@@ -33,6 +33,7 @@ public class Report implements Serializable {
     private String priorPhysical = "";
     private String marker = "";
     private Integer text; //acc error
+    private Integer mark = 0;
 
     public Report() {
     }
@@ -46,7 +47,7 @@ public class Report implements Serializable {
         }
 
         try {
-            new Report(flag, o.getITEM_BARCODE(), o.getDISPLAY_CALL_NO(), o.getITEM_ENUM(), oversize, o.getCHRON(), o.getCHRON(), o.getLOCATION_NAME(), o.getITEM_STATUS_DESC(), o.getITEM_STATUS_DATE(), o.getSUPPRESS_IN_OPAC(), o.getCALL_NO_TYPE());
+            //new Report(flag, o.getITEM_BARCODE(), o.getDISPLAY_CALL_NO(), o.getITEM_ENUM(), oversize, o.getCHRON(), o.getCHRON(), o.getLOCATION_NAME(), o.getITEM_STATUS_DESC(), o.getITEM_STATUS_DATE(), o.getSUPPRESS_IN_OPAC(), o.getCALL_NO_TYPE());
         } catch (Exception e) {
             //ok to just report the exception, not raise it
         }
@@ -56,15 +57,12 @@ public class Report implements Serializable {
         rc.setPrior(prior);
         rc.setPriorPhysical(physicalPrior);
 
-        if (priorO != null)
-
-        {
+        if (priorO != null) {
             rc.setPriorEnum(priorO.getITEM_ENUM());
             rc.setPriorChron(priorO.getCHRON());
         }
 
         if (physicalPriorO != null) {
-
             rc.setPriorPhysicalEnum(physicalPriorO.getITEM_ENUM());
             rc.setPriorPhysicalChron(physicalPriorO.getCHRON());
             rc.setPhysicalPrior(physicalPriorO);
@@ -411,5 +409,13 @@ public class Report implements Serializable {
                 ", marker='" + marker + '\'' +
                 ", text=" + text +
                 '}';
+    }
+
+    public Integer getMark() {
+        return mark;
+    }
+
+    public void setMark(final Integer mark) {
+        this.mark = mark;
     }
 }
