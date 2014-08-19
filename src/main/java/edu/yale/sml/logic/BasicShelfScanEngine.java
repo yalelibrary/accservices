@@ -63,10 +63,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public DataLists process(final List<String> barcodes, final String loc, final Date scanDate, final String oversize)
             throws IllegalAccessException, InvocationTargetException, IOException, HibernateException, NullFileException {
-
         logger.debug("Engine Processing . . .");
-
-
 
         try {
             // call Voyager
@@ -119,7 +116,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             markOutOfPlaceItems(reportLists.getMarkedCatalogAsList());
 
             //Re-calculate mis-shelf:
-            culpritList = MisshelfErrorsProcessor.processMisshelfs(reportLists, new ArrayList(legacyMisshelfs));
+            culpritList = MisshelfErrorsProcessor.processMisshelfs(reportLists, Collections.unmodifiableList(legacyMisshelfs));
 
             // Add enums:
             addRemainingToMisshelfCulpritList(culpritList, getReportList(reportLists), getOrbisList(reportLists), loc, scanDate, oversize);
@@ -146,7 +143,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             int nullBarcodesCount = Collections.frequency(barcodes, Rules.NULL_BARCODE_STRING);
 
             // Calculate shelving error count:
-            shelvingError = getShelvingErrorPopulator().calculate(culpritList, loc, scanDate, oversize, nullBarcodesCount, suppressedErrors);
+            shelvingError = getShelvingErrorPopulator().calculate(culpritList, loc, scanDate, oversize, nullBarcodesCount, suppressedErrors, reportLists.getMarkedCatalogAsList().size());
             reportLists.setShelvingError(shelvingError);
 
             reportLists.setEnumWarnings(enumWarnings);

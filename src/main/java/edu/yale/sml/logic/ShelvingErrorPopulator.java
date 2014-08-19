@@ -27,7 +27,8 @@ public class ShelvingErrorPopulator {
                                    Date scanDate,
                                    String oversize,
                                    int nullBarcodes,
-                                   int suppressedErrors) {
+                                   int suppressedErrors,
+                                   int flaggedInFileOrderTableSize) {
         logger.debug("Calculating report header summary count.");
         int accErrors = 0;
         int totalErrors = 0;
@@ -37,7 +38,7 @@ public class ShelvingErrorPopulator {
         int locError = 0;
         int statusError = 0;
         int misshelfError = 0; //ignored?
-        int misshelfThresholdErrors = 0; //ignored?
+        //int misshelfThresholdErrors = 0; //ignored?
 
         for (Report item : list) {
             String dispCallNo = item.getDISPLAY_CALL_NO();
@@ -56,13 +57,8 @@ public class ShelvingErrorPopulator {
             }
 
             if (item.getText() != null && item.getText() != 0) {
-
                 accErrors++;
                 misshelfError++;
-                if (item.getText() > MIN_ERROR_DISPLAY) { //for report misshelf > 2
-                    misshelfThresholdErrors++;
-                }
-
                 totalErrors++;
             }
 
@@ -72,7 +68,6 @@ public class ShelvingErrorPopulator {
 
             if (Rules.isLocationError(item.getLocationName(), finalLocationName)) {
                 locError++;
-                //accErrors++;
             }
 
             if (item.getITEM_STATUS_DESC() != null) {
@@ -118,7 +113,8 @@ public class ShelvingErrorPopulator {
                 item.setOVERSIZE("Y");
             }
         }
-        shelvingError.setAccuracy_errors(accErrors); //misshelf
+        //shelvingError.setAccuracy_errors(accErrors); //misshelf
+        shelvingError.setAccuracy_errors(flaggedInFileOrderTableSize);
         shelvingError.setEnum_warnings(enumWarn);
         shelvingError.setNull_barcodes(nullBarcodes);
         shelvingError.setNull_result_barcodes(nullResultBars);
@@ -126,8 +122,8 @@ public class ShelvingErrorPopulator {
         shelvingError.setTotal_errors(totalErrors); //used?
         shelvingError.setLocation_errors(locError);
         shelvingError.setStatus_errors(statusError);
-        shelvingError.setMisshelf_errors(misshelfError); //ignored
-        shelvingError.setMisshelf_threshold_errors(misshelfThresholdErrors);
+        //shelvingError.setMisshelf_errors(misshelfError); //ignored
+        //shelvingError.setMisshelf_threshold_errors(misshelfThresholdErrors);
         shelvingError.setSuppress_errors(suppressedErrors);
 
         logger.debug("Location error count:" + locError);
