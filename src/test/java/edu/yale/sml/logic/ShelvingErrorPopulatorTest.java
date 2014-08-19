@@ -10,7 +10,6 @@ public class ShelvingErrorPopulatorTest {
 
     @Test
     public void shouldPopulateShelvingError() {
-
         Date scanDate = new Date();
         Report item = new Report();
         item.setSUPPRESS_IN_OPAC("Y");
@@ -21,7 +20,7 @@ public class ShelvingErrorPopulatorTest {
 
         ShelvingErrorPopulator shelvingErrorPopulator = new ShelvingErrorPopulator();
         shelvingErrorPopulator.calculate(Collections.singletonList(item),
-                finalLocationName, scanDate, oversize, nullBarcodes, suppressedErrors);
+                finalLocationName, scanDate, oversize, nullBarcodes, suppressedErrors, 0);
 
     }
 }

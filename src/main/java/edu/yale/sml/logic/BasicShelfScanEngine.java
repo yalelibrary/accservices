@@ -90,6 +90,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
             // set priors, and mis-shelf -- another method also runs for this
             final List<Report> legacyMisshelfs = MisshelfErrorsProcessor.legacyCalculateMisshelf(validBarcodesList, validBarcodesSorted);
+
             reportLists.setReportCatalogAsList(new ArrayList(legacyMisshelfs));
 
             //so far, no errors have been calculated except legacy mis-shelf and suppressed
@@ -113,7 +114,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             reportLists.setMarkedCatalogAsList(removeNulls(reportLists.getMarkedCatalogAsList()));
 
             // Add * for call numbers that are out of sort order
-            markOutOfPlaceItems(reportLists.getMarkedCatalogAsList());
+            final int outOfPlace = markOutOfPlaceItems(reportLists.getMarkedCatalogAsList());
 
             //Re-calculate mis-shelf:
             culpritList = MisshelfErrorsProcessor.processMisshelfs(reportLists, Collections.unmodifiableList(legacyMisshelfs));
@@ -131,7 +132,6 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             culpritList = fixSortOrder(getOrbisList(reportLists), culpritList);
 
             //clear legacy misshelf:
-
             for (Report r: culpritList) {
                 if (r.getMark() == 1) {
                     r.setText(0);
@@ -143,7 +143,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             int nullBarcodesCount = Collections.frequency(barcodes, Rules.NULL_BARCODE_STRING);
 
             // Calculate shelving error count:
-            shelvingError = getShelvingErrorPopulator().calculate(culpritList, loc, scanDate, oversize, nullBarcodesCount, suppressedErrors, reportLists.getMarkedCatalogAsList().size());
+            shelvingError = getShelvingErrorPopulator().calculate(culpritList, loc, scanDate, oversize, nullBarcodesCount, suppressedErrors, outOfPlace);
             reportLists.setShelvingError(shelvingError);
 
             reportLists.setEnumWarnings(enumWarnings);
@@ -254,8 +254,10 @@ public class BasicShelfScanEngine implements java.io.Serializable {
      * compares on Normalized Call Number. Comparing on Display Call Number
      * results in much more errors. // e.g. :
      */
-    public void markOutOfPlaceItems(List<OrbisRecord> list) {
+    public int markOutOfPlaceItems(List<OrbisRecord> list) {
         logger.debug("Decorating list with " + Rules.ITEM_FLAG_STRING);
+
+        int count = 0;
 
         for (int i = 1; i < list.size(); i++) {
             OrbisRecord item = list.get(i);
@@ -270,9 +272,11 @@ public class BasicShelfScanEngine implements java.io.Serializable {
 
             if (currentNormalized.compareTo(prevNormalized) < 0) {
                 item.setDISPLAY_CALL_NO(Rules.ITEM_FLAG_STRING + item.getDisplayCallNo());
+                count++;
             }
         }
         logger.debug("Done.");
+        return count;
     }
 
     /**
