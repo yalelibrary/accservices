@@ -149,7 +149,7 @@ public class Rules {
         //logger.debug("Checking for locationName={} and finalLocationName={}", locationName, finalLocationName);
 
         //hardcoded check:
-        if (finalLocationName.equalsIgnoreCase("art") && (locationName.equalsIgnoreCase("artref") || locationName.equalsIgnoreCase("artrefl") || locationName.equalsIgnoreCase("dra"))) {
+        if (finalLocationName.equalsIgnoreCase("art") && (locationName.equalsIgnoreCase("artref") || locationName.equalsIgnoreCase("artrefl") || locationName.equalsIgnoreCase("dra") || locationName.equalsIgnoreCase("drarefl"))) {
             return false;
         }
 
@@ -157,7 +157,11 @@ public class Rules {
             return false;
         }
 
-        if (finalLocationName.equalsIgnoreCase("medref") && (locationName.equalsIgnoreCase("medwk1") || (locationName.equalsIgnoreCase("med")))) {
+        if (finalLocationName.equalsIgnoreCase("medref") && (locationName.equalsIgnoreCase("medwk1"))) {
+            return false;
+        }
+
+        if (finalLocationName.equalsIgnoreCase("medrefeol") && (locationName.equalsIgnoreCase("medwk1"))) {
             return false;
         }
 
