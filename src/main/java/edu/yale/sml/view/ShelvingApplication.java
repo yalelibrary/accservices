@@ -435,19 +435,6 @@ public class ShelvingApplication implements java.io.Serializable {
         return teamAsList;
     }
 
-    public void removeAllPaginated() {
-        ShelvingDAO dao = new ShelvingHibernateDAO();
-        try {
-            List<Shelving> historyAsList = dao.findAll(Shelving.class);
-            logger.debug("WARNING: Deleting all Shelving History objects");
-            dao.delete(historyAsList);
-            historyAsList.clear();
-        } catch (Throwable t) {
-            logger.debug("Exception removing object");
-            t.printStackTrace();
-        }
-    }
-
     public void removeElement() {
         ShelvingDAO dao = new ShelvingHibernateDAO();
         try {
