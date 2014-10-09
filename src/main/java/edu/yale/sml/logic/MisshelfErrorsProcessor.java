@@ -278,24 +278,20 @@ public class MisshelfErrorsProcessor {
     }
 
     /**
-     * Calculate misshelfs. Pass 1.
+     * Arrange by sort for eventual misshelf processing
      * <p/>
      * Items with accuracy, location errors are
      * filtered out later by ShelfScanEngine.
-     *
-     * @param orbisList
-     * @param sortedList
-     * @return
      */
-    public static List<Report> legacyCalculateMisshelf(final List<OrbisRecord> orbisList, final List<OrbisRecord> sortedList) {
-        logger.debug("(Pass/Step 1) Calculate Mis-shelf");
+    public static List<Report> sortForMisshelf(final List<OrbisRecord> orbisList, final List<OrbisRecord> sortedList) {
+        logger.debug("Sort for Mis-shelf");
 
         List<Report> list = new ArrayList<Report>();
         int diff;
         for (int i = 0; i < sortedList.size(); i++) {
             diff = 0;
             if (i == 0) {
-                logger.debug("Skipping 1st item in sorted list.");
+                logger.trace("Skipping 1st item in sorted list.");
                 continue; // skip 1st
             }
 
@@ -315,7 +311,6 @@ public class MisshelfErrorsProcessor {
                 item.setMark(0);
 
                 list.add(item);
-                //logger.debug("(Legacy) Added item:" + item.getITEM_BARCODE() + " with diff: " + diff);
             } else {
                 diff = Math.abs(orbisList.indexOf(sortedList.get(i - 1)) - orbisList.indexOf(sortedList.get(i)));
                 //diff = 0;
@@ -328,7 +323,7 @@ public class MisshelfErrorsProcessor {
                 item.setMark(1);
 
                 list.add(item);
-                logger.debug("(Legacy) Added:" + item.getITEM_BARCODE() + " with diff: " + diff);
+                logger.trace("Added:" + item.getITEM_BARCODE() + " with diff: " + diff);
             }
         }
         return list;

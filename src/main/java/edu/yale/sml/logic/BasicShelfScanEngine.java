@@ -88,10 +88,11 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             Collections.sort(validBarcodesSorted, fullComparator);
             fullComparator.getCulprits(); // TODO
 
-            // set priors, and mis-shelf -- another method also runs for this
-            final List<Report> legacyMisshelfs = MisshelfErrorsProcessor.legacyCalculateMisshelf(validBarcodesList, validBarcodesSorted);
+            // set priors, and mis-shelf -- for eventual misshelf processing
+            final List<Report> misshelfSortList = MisshelfErrorsProcessor
+                    .sortForMisshelf(validBarcodesList, validBarcodesSorted);
 
-            reportLists.setReportCatalogAsList(new ArrayList(legacyMisshelfs));
+            reportLists.setReportCatalogAsList(new ArrayList(misshelfSortList));
 
             //so far, no errors have been calculated except legacy mis-shelf and suppressed
 
@@ -99,7 +100,8 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             setOversizeFlag(getReportList(reportLists), oversize);
 
             // Filter out objects that do NOT have ANY errors
-            List<Report> errorsOnlyList = ReportListFilter.filterReportList(Collections.unmodifiableList(getReportList(reportLists)), loc, scanDate, oversize);
+            List<Report> errorsOnlyList = ReportListFilter
+                    .filterReportList(Collections.unmodifiableList(getReportList(reportLists)), loc, scanDate, oversize);
             reportLists.setReportCatalogAsList(errorsOnlyList);
 
             // For UI
@@ -117,10 +119,11 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             final int outOfPlace = markOutOfPlaceItems(reportLists.getMarkedCatalogAsList());
 
             //Re-calculate mis-shelf:
-            culpritList = MisshelfErrorsProcessor.processMisshelfs(reportLists, Collections.unmodifiableList(legacyMisshelfs));
+            culpritList = MisshelfErrorsProcessor.processMisshelfs(reportLists, Collections.unmodifiableList(misshelfSortList));
 
             // Add enums:
-            addRemainingToMisshelfCulpritList(culpritList, getReportList(reportLists), getOrbisList(reportLists), loc, scanDate, oversize);
+            addRemainingToMisshelfCulpritList(culpritList, getReportList(reportLists),
+                    getOrbisList(reportLists), loc, scanDate, oversize);
 
             // Add other errors:
             for (Report item : fullComparator.getCulpritList()) {
@@ -131,19 +134,20 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             // Fix Sort Order (i.e. original file order):
             culpritList = fixSortOrder(getOrbisList(reportLists), culpritList);
 
-            //clear legacy misshelf:
+            //clear sort misshelf
             for (Report r: culpritList) {
                 if (r.getMark() == 1) {
                     r.setText(0);
                 }
             }
 
-            reportLists.setCulpritList(culpritList); // ?
+            reportLists.setCulpritList(culpritList);
 
             int nullBarcodesCount = Collections.frequency(barcodes, Rules.NULL_BARCODE_STRING);
 
             // Calculate shelving error count:
-            shelvingError = getShelvingErrorPopulator().calculate(culpritList, loc, scanDate, oversize, nullBarcodesCount, suppressedErrors, outOfPlace);
+            shelvingError = getShelvingErrorPopulator()
+                    .calculate(culpritList, loc, scanDate, oversize, nullBarcodesCount, suppressedErrors, outOfPlace);
             reportLists.setShelvingError(shelvingError);
 
             reportLists.setEnumWarnings(enumWarnings);
@@ -354,7 +358,7 @@ public class BasicShelfScanEngine implements java.io.Serializable {
             if (culpritList.contains(item)) {
                 logger.trace("Skipping adding non-acc to culprit list: " + item.getITEM_BARCODE()
                         + " (List already contains).");
-            } else if (Rules.isVoyagerError(item, finalLocationName, scanDate, oversize)) { // necessary because of legacyMisshelf()
+            } else if (Rules.isVoyagerError(item, finalLocationName, scanDate, oversize)) { // necessary
                 OrbisRecord prior = LogicHelper.priorPhysical(orbisList, item.getITEM_BARCODE());
                 if (prior != null) {
                     if (prior.getDisplayCallNo() != null)

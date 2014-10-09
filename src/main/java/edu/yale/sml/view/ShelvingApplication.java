@@ -242,7 +242,8 @@ public class ShelvingApplication implements java.io.Serializable {
 
                         if (barcodesAdded.get(barcode) != null) {
 
-                            if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC()) && catalogObj.getITEM_STATUS_DATE().compareTo(barcodesAdded.get(barcode)) < 0) {
+                            if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC())
+                                    && catalogObj.getITEM_STATUS_DATE().compareTo(barcodesAdded.get(barcode)) < 0) {
                                 logger.debug("Ignoring in favor of a more recent status date: ");
                                 continue;
                             } else if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC())) {
@@ -286,7 +287,8 @@ public class ShelvingApplication implements java.io.Serializable {
                 if (orbisList.get(0).getITEM_STATUS_DATE() != null) {
                     status_date = orbisList.get(0).getITEM_STATUS_DATE();
                 }
-                if ((item.getBarcodeStart().length() == 0) || orbisList.get(0).getDISPLAY_CALL_NO().equalsIgnoreCase(item.getDisplayEnd())) {
+                if ((item.getBarcodeStart().length() == 0)
+                        || orbisList.get(0).getDISPLAY_CALL_NO().equalsIgnoreCase(item.getDisplayEnd())) {
                     item.setDisplayEnd(orbisList.get(0).getDISPLAY_CALL_NO());
                     item.setNormalizedEnd(orbisList.get(0).getDISPLAY_CALL_NO());
                     item.setEndItemStatus(status_desc);

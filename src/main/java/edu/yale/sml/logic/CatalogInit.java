@@ -108,7 +108,8 @@ public class CatalogInit {
                     } else if (barocodesAdded.contains(o.getITEM_BARCODE())) {
                         logger.trace("List already contains this item : " + o.getITEM_BARCODE());
                         Date existingItemStatusDate = null;
-                        OrbisRecord outdatedObject = findOlderItemStatusDateObject(dataLists.getCatalogAsList(), o.getITEM_BARCODE());
+                        OrbisRecord outdatedObject = findOlderItemStatusDateObject(dataLists.getCatalogAsList(),
+                                o.getITEM_BARCODE());
                         if (outdatedObject != null) {
                             existingItemStatusDate = outdatedObject.getITEM_STATUS_DATE();
                         } else {
@@ -118,14 +119,16 @@ public class CatalogInit {
                         if (o.getITEM_STATUS_DATE() != null
                                 && outdatedObject != null
                                 && o.getITEM_STATUS_DATE().compareTo(existingItemStatusDate) > 0) {
-                            logger.trace("Item (w/ invalid status) has more recent date:" + o.getItemBarcode() + ", so it's replacing the older entity");
+                            logger.trace("Item (w/ invalid status) has more recent date:"
+                                    + o.getItemBarcode() + ", so it's replacing the older entity");
                             dataLists.getCatalogAsList().remove(outdatedObject);
                             dataLists.getCatalogAsList().add(o);
                         } else {
                             logger.trace("Item (w/ invalid status) doesn't have more recent status." + o.getITEM_BARCODE());
                             logger.trace("Checking if the other item (in the list is valid though?");
 
-                            if (outdatedObject != null && outdatedObject.getITEM_STATUS_DESC() != null && Rules.isValidItemStatus(outdatedObject.getITEM_STATUS_DESC())) {
+                            if (outdatedObject != null && outdatedObject.getITEM_STATUS_DESC() != null
+                                    && Rules.isValidItemStatus(outdatedObject.getITEM_STATUS_DESC())) {
                                 logger.trace("Confirmed that current list already contains a valid item");
                                 logger.trace("Discarding valid with invalid");
 

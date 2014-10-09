@@ -47,40 +47,23 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
 
     @Override
     public List<InputFile> search(String queryString) throws Throwable {
-
         List<InputFile> itemList;
-
         try {
-
             logger.trace("\nObtaining session for Hibernate Session (Lucene).");
-
             Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
-
             logger.trace("Inst. FullTextSession.");
-
             FullTextSession fullTextSession = Search.getFullTextSession(session);
-
             logger.trace("Inst. Build Query for entity.");
-
             QueryBuilder queryBuilder = fullTextSession.getSearchFactory().buildQueryBuilder().forEntity(InputFile.class).get();
-
             logger.trace("Inst. Lucene Query.");
-
             org.apache.lucene.search.Query luceneQuery = queryBuilder.keyword().onFields("contents").matching(queryString).createQuery();
-
             // wrap Lucene query in a javax.persistence.Query
             logger.trace("Inst. Full Text Query");
-
             org.hibernate.Query fullTextQuery = fullTextSession.createFullTextQuery(luceneQuery, InputFile.class);
-
             logger.trace("Inst. Query List.");
-
             itemList = fullTextQuery.list();
-
             logger.trace("Closing Lucene Session.");
-
             fullTextSession.close();
-
             logger.debug("Closed lucene session");
         } catch (Throwable t) {
             logger.error("Error in search", t);
@@ -96,22 +79,16 @@ public class FileHibernateDAO extends GenericHibernateDAO implements FileDAO {
 
         Session session = null;
         try {
-
             logger.trace("FileHIbernateDAO: Opening session\n");
-
             session = HibernateSQLServerUtil.getSessionFactory().openSession();
-
             logger.trace("FileHIbernateDAO: Getting full text session");
-
             FullTextSession fullTextSession = Search.getFullTextSession(session);
-
             logger.trace("FileHIbernateDAO: Got full text session");
             logger.trace("FileHIbernateDAO: Creating Indexer. . .");
 
             //N.B. -- ENSURE MIN. NUMBER OF THREADS FOR POOL
 
             fullTextSession.createIndexer().startAndWait();
-
             logger.debug("Created Index  ... OK");
 
             if (fullTextSession.isOpen()) {

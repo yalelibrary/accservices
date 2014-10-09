@@ -75,11 +75,6 @@ public class Rules {
         return list.get(firstValid).getDISPLAY_CALL_NO();
     }
 
-    /*
-     * same as above but returns only voyager errors .. i.e. not concerned with whether an item is a misshelf
-     */
-
-    //BUGGY
     public static boolean isVoyagerError(final Report item, final String finalLocationName, final Date scanDate,
                                          final String oversize) {
         boolean error = false;
@@ -116,8 +111,6 @@ public class Rules {
                         && (scanDate.getTime() - item.getITEM_STATUS_DATE().getTime()) > 86400000) {
                     return true;
                 }
-                else {
-                }
             } else {
                 return true;
             }
@@ -142,14 +135,13 @@ public class Rules {
         } catch (Exception e) {
             //ignore
         }
-
     }
 
     public static boolean isLocationError(String locationName, String finalLocationName) {
-        //logger.debug("Checking for locationName={} and finalLocationName={}", locationName, finalLocationName);
-
         //hardcoded check:
-        if (finalLocationName.equalsIgnoreCase("art") && (locationName.equalsIgnoreCase("artref") || locationName.equalsIgnoreCase("artrefl") || locationName.equalsIgnoreCase("dra") || locationName.equalsIgnoreCase("drarefl"))) {
+        if (finalLocationName.equalsIgnoreCase("art") && (locationName.equalsIgnoreCase("artref")
+                || locationName.equalsIgnoreCase("artrefl") || locationName.equalsIgnoreCase("dra")
+                || locationName.equalsIgnoreCase("drarefl"))) {
             return false;
         }
 
