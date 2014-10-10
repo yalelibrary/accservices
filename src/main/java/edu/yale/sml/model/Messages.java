@@ -6,8 +6,11 @@ import lombok.ToString;
 public class Messages {
 
     private Integer ID;
+
     private String NAME = "";
+
     private String VALUE = ""; // what if it's value
+
     private String TOOLTIP = "";
 
     public Messages() {

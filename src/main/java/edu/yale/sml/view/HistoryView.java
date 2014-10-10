@@ -32,21 +32,24 @@ public class HistoryView implements Serializable {
 
     private static final long serialVersionUID = -8625177943611718289L;
 
-    String currentNotes = ""; // TODO
+    private String currentNotes = ""; // TODO
 
-    List<History> historyAsList = new ArrayList<History>();
+    private List<History> historyAsList = new ArrayList<History>();
 
     private LazyDataModel<History> lazyModel;
 
-    SelectItem[] locationSelectOptions;
+    private SelectItem[] locationSelectOptions;
 
-    SelectItem[] netidOptions;
+    private SelectItem[] netidOptions;
 
-    String opMsg = ""; // result of operation (used anywhere?)
+    private String opMsg = ""; // result of operation (used anywhere?)
 
-    String paramView = "edit.xhtml?id=10";
+    private String paramView = "edit.xhtml?id=10";
 
     private History selectedHistory;
+
+    private HistoryDAO dao = new HistoryHibernateDAO();
+
 
     public HistoryView() {
         super();
@@ -79,9 +82,7 @@ public class HistoryView implements Serializable {
     }
 
     private SelectItem[] createFilterOptionsPaginated() {
-        List<String> netids = new ArrayList();
-        HistoryDAO dao = new HistoryHibernateDAO();
-        netids = dao.findUniqueNetIds();
+        List<String> netids = dao.findUniqueNetIds();
         Set<String> set = new HashSet<String>(netids); // need unique
         SelectItem[] options = new SelectItem[set.size() + 1];
         options[0] = new SelectItem("", "Select");
@@ -93,7 +94,6 @@ public class HistoryView implements Serializable {
         return options;
     }
 
-    // TODO merge w/ netid filter
     private SelectItem[] createLocationFilterOptions(List<History> historyAsList2) {
         List<String> locations = new ArrayList<String>(historyAsList.size());
         for (History h : historyAsList2) {
@@ -110,10 +110,8 @@ public class HistoryView implements Serializable {
         return options;
     }
 
-    // TODO merge w/ net id filter
     private SelectItem[] createLocationFilterOptionsPaginated() {
-        List<String> locations = new ArrayList<String>();
-        locations = new HistoryHibernateDAO().findUniqueLocations();
+        List<String> locations = new HistoryHibernateDAO().findUniqueLocations();
         Set<String> set = new HashSet<String>(locations); // need unique
         SelectItem[] options = new SelectItem[set.size() + 1];
         options[0] = new SelectItem("", "Select");
@@ -144,20 +142,8 @@ public class HistoryView implements Serializable {
         return lazyModel;
     }
 
-    public SelectItem[] getLocationSelectOptions() {
-        return locationSelectOptions;
-    }
-
-    public SelectItem[] getNetidOptions() {
-        return netidOptions;
-    }
-
     public String getOpMsg() {
         return opMsg;
-    }
-
-    public String getParamView() {
-        return "edit.xhtml?id=" + selectedHistory.getID();
     }
 
     public History getSelectedHistory() {
@@ -178,8 +164,7 @@ public class HistoryView implements Serializable {
                     historyAsList = historyDAO.findAll(History.class);
                 }
             } catch (Throwable e) {
-                logger.debug("Exception encountered finding objects");
-                e.printStackTrace();
+                logger.debug("Exception encountered finding objects", e);
             }
         } catch (Exception e) {
             logger.debug("Exception initializing");
@@ -223,44 +208,14 @@ public class HistoryView implements Serializable {
         }
     }
 
-    @Deprecated
-    public void removeAll() {
-        HistoryDAO historyDAO = new HistoryHibernateDAO();
-        logger.debug("Warning: Deleting all History objects");
-        try {
-            historyDAO.delete(historyAsList);
-            historyAsList.clear();
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); // caution, out of cautio0n
-        } catch (Throwable t) {
-            logger.debug("Exception removing object", t);
-        }
-    }
-
-    /*
-     * Removes all history items. This is used by Paginated view, since paginated has only a few elements, and one has to grab everything from the database. Problem is sync.
-     */
-    @Deprecated
-    public void removeAllPaginated() {
-        HistoryDAO historyDAO = new HistoryHibernateDAO();
-        try {
-            List<History> historyAsList = historyDAO.findAll(History.class);
-            logger.debug("Warning: Deleting all History objects");
-            historyDAO.delete(historyAsList);
-            historyAsList.clear();
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); // caution, out of cautio0n
-        } catch (Throwable t) {
-            logger.debug("Exception removing object", t);
-        }
-    }
-
     public void removeElement() {
         HistoryDAO historyDAO = new HistoryHibernateDAO();
         logger.debug("Removing history element : " + selectedHistory.getId() + ":" + selectedHistory.getID());
         try {
             historyDAO.delete(selectedHistory);
             historyAsList.remove(selectedHistory);
-            logger.trace("Remvoing history id from session");
-            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID"); // caution, out of cautio0n
+            logger.trace("Removing history id from session");
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().remove("HISTORYID");
         } catch (Throwable e) {
             logger.error("Error removing element", e);
         }
@@ -277,11 +232,6 @@ public class HistoryView implements Serializable {
         }
     }
 
-    @Deprecated
-    public void save(String ID) {
-        HistoryDAO historyDAO = new HistoryHibernateDAO();
-    }
-
     public String selectElement() {
         return "edit.xhtml?faces-redirect=true&id=" + selectedHistory.getID();
     }
@@ -294,20 +244,8 @@ public class HistoryView implements Serializable {
         this.lazyModel = lazyModel;
     }
 
-    public void setLocationSelectOptions(SelectItem[] locationSelectOptions) {
-        this.locationSelectOptions = locationSelectOptions;
-    }
-
-    public void setNetidOptions(SelectItem[] netidOptions) {
-        this.netidOptions = netidOptions;
-    }
-
     public void setOpMsg(String opMsg) {
         this.opMsg = opMsg;
-    }
-
-    public void setParamView(String paramView) {
-        this.paramView = paramView;
     }
 
     public void setSelectedHistory(History selectedHistory) {

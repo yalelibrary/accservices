@@ -12,13 +12,14 @@ import java.io.IOException;
 @ManagedBean
 @RequestScoped
 public class DeleteOptionsView {
-    Logger logger = LoggerFactory.getLogger(DeleteOptionsView.class);
 
-    String redirect_id = "";
+    private final Logger logger = LoggerFactory.getLogger(DeleteOptionsView.class);
+
+    private String redirect_id = "";
 
     // To jump to a particular history report
     public void jump() throws IOException {
-        logger.debug("DeleteView redirecting to=" + redirect_id);
+        logger.debug("DeleteView redirecting to={}", redirect_id);
         FacesContext.getCurrentInstance().getExternalContext()
                 .redirect("/shelfscan/pages/remove.xhtml?id=" + redirect_id);
     }

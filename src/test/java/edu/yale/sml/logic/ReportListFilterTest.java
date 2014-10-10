@@ -1,7 +1,6 @@
 package edu.yale.sml.logic;
 
 import edu.emory.mathcs.backport.java.util.Collections;
-import edu.yale.sml.logic.ReportListFilter;
 import edu.yale.sml.model.Report;
 import org.junit.Test;
 

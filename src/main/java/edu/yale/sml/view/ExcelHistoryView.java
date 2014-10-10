@@ -18,10 +18,12 @@ import edu.yale.sml.persistence.HistoryDAO;
 @ViewScoped
 public class ExcelHistoryView implements Serializable {
 
-    final static Logger logger = LoggerFactory.getLogger(ExcelHistoryView.class);
+    private final static Logger logger = LoggerFactory.getLogger(ExcelHistoryView.class);
 
     private static final long serialVersionUID = -2165470636629035577L;
-    List<History> historyAsList = new ArrayList<History>();
+
+    private List<History> historyAsList = new ArrayList<History>();
+
     private boolean nonColumns = false;
 
     public ExcelHistoryView() {
@@ -57,7 +59,7 @@ public class ExcelHistoryView implements Serializable {
                 historyAsList = historyDAO.findAll(History.class);
             }
         } catch (Throwable e) {
-            logger.error("Init error", e.getMessage());
+            logger.error("Init error", e);
         }
     }
 

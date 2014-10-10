@@ -13,14 +13,19 @@ import edu.yale.sml.logic.HistoryComparator;
 import edu.yale.sml.model.History;
 import edu.yale.sml.persistence.GenericDAO;
 import edu.yale.sml.persistence.GenericHibernateDAO;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Used for History paginated table view
  */
 public class LazyHistoryDataModel extends LazyDataModel<History> {
-    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LazyHistoryDataModel.class);
+
+    private final Logger logger = getLogger(this.getClass());
 
     private List<History> datasource;
+
     private int dataSourceSize = 0;
 
     @Override
@@ -61,7 +66,7 @@ public class LazyHistoryDataModel extends LazyDataModel<History> {
                 }
             }
         } catch (Throwable e1) {
-            e1.printStackTrace();
+            logger.error("Error", e1);
         }
 
         if (sortField != null) {

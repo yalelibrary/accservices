@@ -11,10 +11,14 @@ import org.primefaces.model.StreamedContent;
 
 import edu.yale.sml.persistence.FileDAO;
 import edu.yale.sml.persistence.FileHibernateDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ManagedBean
 @RequestScoped
 public class FileDownloadController {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private StreamedContent file;
 
@@ -33,7 +37,7 @@ public class FileDownloadController {
             InputStream stream = new ByteArrayInputStream(contents.getBytes("UTF-8"));
             file = new DefaultStreamedContent(stream, "text/plain", fileName);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Error download", e);
         }
     }
 

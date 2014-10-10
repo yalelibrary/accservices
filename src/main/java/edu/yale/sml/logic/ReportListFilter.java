@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ReportListFilter {
 
-    final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.logic.ReportListFilter");
+    private static final Logger logger = LoggerFactory.getLogger("edu.yale.sml.logic.ReportListFilter");
 
     /**
      * Filter list
@@ -55,13 +55,6 @@ public class ReportListFilter {
                     if (!oversizeCallNumber) {
                         errorFound = true;
                     }
-                }
-
-                logger.trace("{} is oversize?={}", item.getITEM_BARCODE(), oversizeCallNumber);
-
-                if (item.getText() != 0) {
-                    //errorFound = true;
-                    //logger.debug("ignore");
                 }
 
                 if (!item.getLocationName().equals(finalLocationName)) {

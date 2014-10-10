@@ -11,5 +11,4 @@ public interface ShelvingDAO extends GenericDAO<Shelving> {
 
    public abstract int count();
 
-
 }

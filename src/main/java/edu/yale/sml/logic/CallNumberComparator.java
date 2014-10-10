@@ -8,6 +8,7 @@ import edu.yale.sml.model.Report;
  * Sorts / Compares just by Display Call Number
  */
 public class CallNumberComparator implements Comparator<Report> {
+
     public int compare(Report o1, Report o2) {
         if (o1.getNORMALIZED_CALL_NO() == null || o2.getNORMALIZED_CALL_NO() == null) {
             return 0;

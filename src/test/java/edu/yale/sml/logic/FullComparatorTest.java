@@ -1,12 +1,9 @@
 package edu.yale.sml.logic;
 
-import edu.yale.sml.logic.FullComparator;
 import edu.yale.sml.model.OrbisRecord;
 import org.junit.Test;
-import org.slf4j.*;
 
 public class FullComparatorTest {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Test
     public void shouldCompare() {

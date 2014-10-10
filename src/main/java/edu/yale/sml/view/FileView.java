@@ -20,8 +20,11 @@ public class FileView {
 
     private Logger logger = LoggerFactory.getLogger(FileView.class);
 
-    List<InputFile> inputFileAsList;
+    private List<InputFile> inputFileAsList;
+
     private InputFile selectedFile;
+
+    GenericDAO<InputFile> fileDAO = new GenericHibernateDAO<InputFile>();
 
     public FileView() {
         super();
@@ -31,30 +34,14 @@ public class FileView {
     public void init() {
         try {
             inputFileAsList = new ArrayList<InputFile>();
-            GenericDAO<InputFile> fileDAO = new GenericHibernateDAO<InputFile>();
             try {
                 inputFileAsList = fileDAO.findAll(InputFile.class);
             } catch (Throwable e) {
                 logger.debug("Error init bean", e);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
-    }
-
-    @Deprecated
-    public List<String> getInputFilesByName() {
-
-        FileDAO fileDAO = new FileHibernateDAO();
-        List<String> fileNames = new ArrayList<String>();
-
-        try {
-            fileNames = fileDAO.findByName();
-        } catch (Exception e) {
-            logger.error("Error getting file by name", e);
-        }
-
-        return fileNames;
     }
 
     public InputFile getSelectedFile() {
@@ -71,17 +58,6 @@ public class FileView {
 
     public void setInputFileAsList(List<InputFile> inputFileAsList) {
         this.inputFileAsList = inputFileAsList;
-    }
-
-    public void removeAll() {
-        GenericDAO<InputFile> fileDAO = new GenericHibernateDAO<InputFile>();
-        try {
-            fileDAO.delete(inputFileAsList);
-            inputFileAsList.clear();
-
-        } catch (Throwable e) {
-            logger.debug("Error removing all", e);
-        }
     }
 
 }

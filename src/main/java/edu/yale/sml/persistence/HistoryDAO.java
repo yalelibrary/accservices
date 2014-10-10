@@ -5,6 +5,7 @@ import edu.yale.sml.model.History;
 import java.util.List;
 
 public interface HistoryDAO extends GenericDAO<History> {
+
     public abstract void update(History history);
 
     public abstract List<History> findById(Integer ID);

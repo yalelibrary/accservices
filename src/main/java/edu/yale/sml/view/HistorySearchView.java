@@ -27,13 +27,21 @@ public class HistorySearchView implements java.io.Serializable {
     final static Logger logger = LoggerFactory.getLogger(HistorySearchView.class);
 
     private static final long serialVersionUID = 6842600101066936186L;
-    String barcodeSearchTerm = "39002097141650"; // tmp for Hibernate Search
-    List<InputFile> inputFileAsList;
-    SelectItem[] levelOptions;
-    Date searchEndDate = new Date();
-    Date searchRunEndDate = new Date();
-    Date searchRunStartDate = new Date();
-    Date searchStartDate = new Date();
+
+    private String barcodeSearchTerm = "39002097141650"; // tmp for Hibernate Search
+
+    private List<InputFile> inputFileAsList;
+
+    private SelectItem[] levelOptions;
+
+    private Date searchEndDate = new Date();
+
+    private Date searchRunEndDate = new Date();
+
+    private Date searchRunStartDate = new Date();
+
+    private Date searchStartDate = new Date();
+
     private InputFile selectedFile;
 
     public HistorySearchView() {
@@ -46,30 +54,6 @@ public class HistorySearchView implements java.io.Serializable {
 
     public List<InputFile> getInputFileAsList() {
         return inputFileAsList;
-    }
-
-    public List<InputFile> getInputFileList() {
-        return inputFileAsList;
-    }
-
-    public Date getSearchEndDate() {
-        return searchEndDate;
-    }
-
-    public Date getSearchRunEndDate() {
-        return searchRunEndDate;
-    }
-
-    public Date getSearchRunStartDate() {
-        return searchRunStartDate;
-    }
-
-    public Date getSearchStartDate() {
-        return searchStartDate;
-    }
-
-    public String getSearchTerm() {
-        return barcodeSearchTerm;
     }
 
     public InputFile getSelectedFile() {
@@ -128,30 +112,6 @@ public class HistorySearchView implements java.io.Serializable {
 
     public void setInputFileAsList(List<InputFile> inputFileAsList) {
         this.inputFileAsList = inputFileAsList;
-    }
-
-    public void setInputFileList(List<InputFile> inputFileList) {
-        this.inputFileAsList = inputFileList;
-    }
-
-    public void setSearchEndDate(Date searchEndDate) {
-        this.searchEndDate = searchEndDate;
-    }
-
-    public void setSearchRunEndDate(Date searchRunEndDate) {
-        this.searchRunEndDate = searchRunEndDate;
-    }
-
-    public void setSearchRunStartDate(Date searchRunStartDate) {
-        this.searchRunStartDate = searchRunStartDate;
-    }
-
-    public void setSearchStartDate(Date searchStartDate) {
-        this.searchStartDate = searchStartDate;
-    }
-
-    public void setSearchTerm(String searchTerm) {
-        this.barcodeSearchTerm = searchTerm;
     }
 
     public void setSelectedFile(InputFile selectedFile) {

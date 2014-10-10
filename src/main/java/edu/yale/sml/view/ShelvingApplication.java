@@ -22,7 +22,6 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.converters.DateConverter;
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.model.LazyDataModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,26 +41,31 @@ import edu.yale.sml.persistence.ShelvingHibernateDAO;
 @ManagedBean
 @ViewScoped
 public class ShelvingApplication implements java.io.Serializable {
+
     private Logger logger = LoggerFactory.getLogger(ShelvingApplication.class);
 
     private static final long serialVersionUID = 716362163607646863L;
-    List<Shelving> historyAsList = new ArrayList<Shelving>();
-    Shelving item = new Shelving();
-    private LazyDataModel<Shelving> lazyModel;
-    String locationName = "sml";
-    List<String> locationNames = new ArrayList<String>();
-    List<String> floorNames = new ArrayList<String>();
-    SelectItem[] locationSelectOptions;
-    SelectItem[] netidOptions;
-    List<String> oversizeAsList = new ArrayList<String>();
-    private Shelving selectedHistory;
-    List<String> teamAsList = new ArrayList<String>();
 
-    @Deprecated
-    public void onCellEdit(CellEditEvent event) {
-        Object oldValue = event.getOldValue();
-        Object newValue = event.getNewValue();
-    }
+    private List<Shelving> historyAsList = new ArrayList<Shelving>();
+
+    private Shelving item = new Shelving();
+
+    private LazyDataModel<Shelving> lazyModel;
+
+
+    private List<String> locationNames = new ArrayList<String>();
+
+    private List<String> floorNames = new ArrayList<String>();
+
+    private SelectItem[] locationSelectOptions;
+
+    private SelectItem[] netidOptions;
+
+    private List<String> oversizeAsList = new ArrayList<String>();
+
+    private Shelving selectedHistory;
+
+    private List<String> teamAsList = new ArrayList<String>();
 
     // for netids list
     private SelectItem[] createFilterOptions(List<Shelving> historyAsList2) {
@@ -131,7 +135,7 @@ public class ShelvingApplication implements java.io.Serializable {
 
     @PostConstruct
     public void initialize() {
-        ShelvingDAO dao = new ShelvingHibernateDAO();
+        final ShelvingDAO dao = new ShelvingHibernateDAO();
         int historyAsListSize = 0;
         boolean paginate = true;
 
@@ -156,11 +160,11 @@ public class ShelvingApplication implements java.io.Serializable {
                     historyAsList = dao.findAll(Shelving.class);
 
             } catch (Throwable e) {
-                e.printStackTrace();
+                logger.error("Error", e);
             }
 
         } catch (Exception e) {
-            System.out.println("Exception initializing");
+            logger.error("Error init", e);
         }
 
         netidOptions = createFilterOptions(historyAsList);
@@ -188,35 +192,29 @@ public class ShelvingApplication implements java.io.Serializable {
 
 
     /**
-     * TODO needs logic clean up
      * Main method.
-     *
-     * @return
-     * @throws Throwable
      */
     public String process() throws Throwable {
-        FacesContext context = FacesContext.getCurrentInstance();
-        context.getExternalContext().getFlash().setKeepMessages(true); // http://stackoverflow.com/questions/9932446/how-to-use-primefaces-pgrowl-and-redirect-to-a-page
+        final GenericDAO<Shelving> dao = new GenericHibernateDAO<Shelving>();
+        BarcodeSearchDAO barcodeSearchDAO = new BarcodeSearchDAO();
 
-        GenericDAO<Shelving> dao = new GenericHibernateDAO<Shelving>();
+        // http://stackoverflow.com/questions/9932446/how-to-use-primefaces-pgrowl-and-redirect-to-a-page
+        FacesContext context = FacesContext.getCurrentInstance();
+        context.getExternalContext().getFlash().setKeepMessages(true);
 
         item.setCreationDate(new java.util.Date());
 
-        if (item.getNETID() == null) // o/wise use what use entered
-        {
-            item.setNETID(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString()); // TODO thread
+        if (item.getNETID() == null) {
+            item.setNETID(FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("netid").toString());
         }
 
-        // set item first/last call number.:
-
-        BarcodeSearchDAO barcodeSearchDAO = new BarcodeSearchDAO();
-
+        // set item first/last call number:
         List<String> toFind = new ArrayList<String>();
         List<OrbisRecord> orbisList = new ArrayList<OrbisRecord>();
         toFind.add(item.getBarcodeStart());
         toFind.add(item.getBarcodeEnd());
 
-        Map<String, Date> barcodesAdded = new HashMap<String, Date>();
+        final Map<String, Date> barcodesAdded = new HashMap<String, Date>();
 
         try {
             List<SearchResult> list = barcodeSearchDAO.findAllById(toFind);
@@ -225,7 +223,7 @@ public class ShelvingApplication implements java.io.Serializable {
                     continue; // skip full object populating
                 }
                 for (Map<String, Object> m : searchResult.getResult()) {
-                    OrbisRecord catalogObj = new OrbisRecord();
+                    final OrbisRecord catalogObj = new OrbisRecord();
                     java.sql.Date date = null;
                     Converter dc = new DateConverter(date);
                     ConvertUtils.register(dc, java.sql.Date.class);
@@ -233,21 +231,19 @@ public class ShelvingApplication implements java.io.Serializable {
 
                     // we want only one entry per barcode... 
 
-                    String barcode = catalogObj.getITEM_BARCODE();
-
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    final String barcode = catalogObj.getITEM_BARCODE();
 
                     if (barcodesAdded.containsKey(barcode)) {
-                        logger.debug("Have seen this barcode before." + catalogObj.getITEM_BARCODE());
+                        logger.trace("Have seen this barcode before={}", catalogObj.getITEM_BARCODE());
 
                         if (barcodesAdded.get(barcode) != null) {
 
                             if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC())
                                     && catalogObj.getITEM_STATUS_DATE().compareTo(barcodesAdded.get(barcode)) < 0) {
-                                logger.debug("Ignoring in favor of a more recent status date: ");
+                                logger.trace("Ignoring in favor of a more recent status date");
                                 continue;
                             } else if (!Rules.isValidItemStatus(catalogObj.getITEM_STATUS_DESC())) {
-                                logger.debug("Have the more recent date. So removing older entry");
+                                logger.trace("Have the more recent date. So removing older entry");
                                 barcodesAdded.remove(barcode);
                                 int found = -1;
                                 for (int i = 0; i < orbisList.size(); i++) {
@@ -260,7 +256,7 @@ public class ShelvingApplication implements java.io.Serializable {
                                     orbisList.remove(found);
                                 }
                             } else {
-                                logger.debug("Unknown case:" + barcode);
+                                logger.trace("Unknown case:" + barcode);
                             }
                         } else {
                             continue;
@@ -268,8 +264,6 @@ public class ShelvingApplication implements java.io.Serializable {
                     }
                     if (catalogObj.getITEM_STATUS_DESC() != null && catalogObj.getITEM_STATUS_DATE() != null) {
                         barcodesAdded.put(catalogObj.getITEM_BARCODE(), catalogObj.getITEM_STATUS_DATE());
-                    } else {
-                        //logger.debug("Cannot add" + catalogObj.getITEM_BARCODE());
                     }
                     orbisList.add(catalogObj);
                 }
@@ -287,6 +281,7 @@ public class ShelvingApplication implements java.io.Serializable {
                 if (orbisList.get(0).getITEM_STATUS_DATE() != null) {
                     status_date = orbisList.get(0).getITEM_STATUS_DATE();
                 }
+
                 if ((item.getBarcodeStart().length() == 0)
                         || orbisList.get(0).getDISPLAY_CALL_NO().equalsIgnoreCase(item.getDisplayEnd())) {
                     item.setDisplayEnd(orbisList.get(0).getDISPLAY_CALL_NO());
@@ -315,25 +310,23 @@ public class ShelvingApplication implements java.io.Serializable {
                 }
 
                 if (item.getBarcodeEnd().equals(orbisList.get(1).getITEM_BARCODE())) {
-
                     item.setDisplayEnd(orbisList.get(1).getDISPLAY_CALL_NO());
                     item.setNormalizedEnd(orbisList.get(1).getNORMALIZED_CALL_NO());
 
                     if (orbisList.get(1).getITEM_STATUS_DESC() != null) {
                         item.setEndItemStatus(orbisList.get(1).getITEM_STATUS_DESC());
                     }
+
                     if (orbisList.get(1).getITEM_STATUS_DATE() != null) {
                         item.setEndItemStatusDate(orbisList.get(1).getITEM_STATUS_DATE());
                     }
                 }
-            } else {
-                //logger.tradce("ALERT: Wrong orbis size: " + orbisList.size());
             }
         } catch (Throwable t) {
-            t.printStackTrace();
+            logger.error("Error", t);
         }
 
-        //Finally save the item!
+        //Finally save the item
         try {
             dao.save(item);
             context.addMessage(null, new FacesMessage("Saved Shelving Entry"));
@@ -345,10 +338,6 @@ public class ShelvingApplication implements java.io.Serializable {
         }
     }
 
-    public void setHistoryAsList(List<Shelving> historyAsList) {
-        this.historyAsList = historyAsList;
-    }
-
     public void setItem(Shelving item) {
         this.item = item;
     }
@@ -357,20 +346,8 @@ public class ShelvingApplication implements java.io.Serializable {
         this.lazyModel = lazyModel;
     }
 
-    public void setLocationName(String locationName) {
-        this.locationName = locationName;
-    }
-
     public void setLocationNames(List<String> locationNames) {
         this.locationNames = locationNames;
-    }
-
-    public void setLocationSelectOptions(SelectItem[] locationSelectOptions) {
-        this.locationSelectOptions = locationSelectOptions;
-    }
-
-    public void setNetidOptions(SelectItem[] netidOptions) {
-        this.netidOptions = netidOptions;
     }
 
     public void setOversizeAsList(List<String> oversizeAsList) {
@@ -397,10 +374,6 @@ public class ShelvingApplication implements java.io.Serializable {
         return "edit_shelving.xhtml?faces-redirect=true&id=" + selectedHistory.getId();
     }
 
-    public List<Shelving> getHistoryAsList() {
-        return historyAsList;
-    }
-
     public Shelving getItem() {
         return item;
     }
@@ -409,20 +382,8 @@ public class ShelvingApplication implements java.io.Serializable {
         return lazyModel;
     }
 
-    public String getLocationName() {
-        return locationName;
-    }
-
     public List<String> getLocationNames() {
         return locationNames;
-    }
-
-    public SelectItem[] getLocationSelectOptions() {
-        return locationSelectOptions;
-    }
-
-    public SelectItem[] getNetidOptions() {
-        return netidOptions;
     }
 
     public List<String> getOversizeAsList() {
@@ -443,7 +404,7 @@ public class ShelvingApplication implements java.io.Serializable {
             dao.delete(selectedHistory);
             historyAsList.remove(selectedHistory);
         } catch (Throwable t) {
-            t.printStackTrace();
+            logger.error("Error removing element", t);
         }
     }
 

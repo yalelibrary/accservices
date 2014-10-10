@@ -28,8 +28,10 @@ import edu.yale.sml.persistence.MessagesHibernateDAO;
 
 public class LogicHelper {
 
-    private final static Logger logger = LoggerFactory.getLogger(LogicHelper.class);
-    private final static int MIN_BARCODE_LEN = 1;    //should be 14, but not needed right now
+    private static final Logger logger = LoggerFactory.getLogger(LogicHelper.class);
+
+    private static final int MIN_BARCODE_LEN = 1;    //should be 14, but not needed right now
+
     public static final int MAX_QUERY_COUNT = 1500;
 
     /**

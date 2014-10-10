@@ -1,14 +1,8 @@
 package edu.yale.sml.logic;
 
 
-import edu.yale.sml.logic.CallNumberComparator;
-import edu.yale.sml.logic.ShelvingComparator;
 import edu.yale.sml.model.Report;
-import edu.yale.sml.model.Shelving;
 import org.junit.Test;
-import org.primefaces.model.SortOrder;
-
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 

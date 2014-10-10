@@ -19,7 +19,6 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @param <T>
  */
 
-//TODO delete(List<T>) needs tx handling if necessary. also remove tx from save()
 public class GenericHibernateDAO<T> implements GenericDAO<T> {
 
     private Logger logger = getLogger(this.getClass());

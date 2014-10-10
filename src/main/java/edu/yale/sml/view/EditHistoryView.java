@@ -23,15 +23,14 @@ public class EditHistoryView implements java.io.Serializable {
     private static final long serialVersionUID = 6223995917417414208L;
 
     /** history **/
-    History historyCatalog;
+    private History historyCatalog;
 
-    HistoryDAO historyDAO;
+    private HistoryDAO historyDAO = new HistoryHibernateDAO();
 
     private Integer ID = 0;
 
     @PostConstruct
     public void initialize() {
-        historyDAO = new HistoryHibernateDAO();
         ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
         historyCatalog = new History();
 

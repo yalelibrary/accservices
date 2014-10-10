@@ -20,13 +20,14 @@ public class EditHistoryShelvingView implements java.io.Serializable {
 
     private static final long serialVersionUID = 6223995917417414208L;
 
-    Shelving historyCatalog; // history object
-    ShelvingDAO historyDAO;
+    private Shelving historyCatalog; // history object
+
+    private ShelvingDAO historyDAO  = new ShelvingHibernateDAO();;
+
     private Integer ID = 0;
 
     @PostConstruct
     public void initialize() {
-        historyDAO = new ShelvingHibernateDAO();
         ID = Integer.parseInt(FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("id"));
         historyCatalog = new Shelving();
         try {
@@ -48,8 +49,8 @@ public class EditHistoryShelvingView implements java.io.Serializable {
         this.historyCatalog = historyCatalog;
     }
 
-    public void setID(Integer iD) {
-        ID = iD;
+    public void setID(Integer id) {
+        ID = id;
     }
 
     public String save() {

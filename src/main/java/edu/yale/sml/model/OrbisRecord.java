@@ -11,20 +11,35 @@ public class OrbisRecord implements Serializable {
     private static final long serialVersionUID = -6792300395330658557L;
 
     private String CHRON = "";
+
     private String DISPLAY_CALL_NO = "";
+
     private String ENCODING_LEVEL;
+
     private String ITEM_BARCODE = "";
+
     private String ITEM_ENUM = "";
+
     private String ITEM_ID = "";
+
     private Date ITEM_STATUS_DATE = null;
+
     private String ITEM_STATUS_DESC = "";
+
     private String LOCATION_NAME = "";
+
     private String MFHD_ID = "";
+
     private String NORMALIZED_CALL_NO = "";
+
     private String PERM_LOCATION = "";
+
     private String prior = "N/A";
+
     private String SUPPRESS_IN_OPAC = "";
+
     private String YEAR = "";
+
     private String CALL_NO_TYPE = "N/A";
 
     public OrbisRecord() {

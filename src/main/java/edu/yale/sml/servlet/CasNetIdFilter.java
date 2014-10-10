@@ -39,15 +39,10 @@ public class CasNetIdFilter implements Filter {
         final String service = URLEncoder.encode(var);
         final String param = "ticket=" + ticket + "&service=" + service;
 
-        //logger.trace("Param={}", param);
-
         try {
             final List<String> userList = LogicHelper.getCASUser(Constants.CAS_VALIDATE_URL, new StringBuffer(param));
             final String user = userList.get(2).trim();
             request.getSession().setAttribute(Constants.NETID, user);
-
-            //final List<String> userList2 = LogicHelper.getCASUser(CAS_VALIDATE_URL, new StringBuffer(param));
-            //logger.trace("userList={}", userList2);
             logger.trace("Saved user in session={}", user);
         } catch (UnknownHostException e) {
             logger.error("Error finding server or service.", e);

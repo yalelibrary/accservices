@@ -3,9 +3,7 @@ package edu.yale.sml.logic;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import edu.emory.mathcs.backport.java.util.Collections;
-import edu.yale.sml.logic.CatalogInit;
 import org.junit.Test;
-import org.slf4j.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -14,7 +12,6 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 
 public class CatalogInitTest {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Test
     public void shouldProcess() {

@@ -27,18 +27,17 @@ public class RemoveReportView {
      * @see HistoryView remove methods. Use HistoryView instead.
      */
     public String save(History history) {
-        logger.debug("Request for deletion for report{}=", history.toString());
+        logger.debug("Request for deletion for report={}", history.toString());
 
         //TODO proper auth check
         if (history.getNETID() == null || history.getNETID().length() < 3) {
-            logger.debug("Ignoring delete for this netid.");
+            logger.error("Ignoring delete for this netid");
             return "failed";
         }
         try {
             remove(history);
             logger.trace("Deleted report.");
             return "ok";
-
         } catch (Throwable t) {
             logger.error("Error deleting report", t);
         }

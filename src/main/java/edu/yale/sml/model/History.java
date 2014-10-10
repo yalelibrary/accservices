@@ -5,32 +5,59 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class History implements java.io.Serializable {
+
     private static final long serialVersionUID = -8463243297163676698L;
+
     private short ACCURACY;
+
     private Integer FILE_ID = 0;
+
     private Integer fileId = 0;
+
     private String FILENAME = "";
+
     private Set fileSet = new HashSet(0);
+
     private String FIRSTCALLNUMBER = "";
+
     private Integer ID;
+
     private InputFile inputFile; // FK many-to-one
+
     private String LASTCALLNUMBER = "";
+
     private String LOCATION = "";
+
     private int LOCATIONERROR = 0;
+
     private String MISLABELLED = "";
+
     private String NETID = "";
+
     private String NOTES = "";
+
     private int NULLBARCODE = 0;
+
     private String NUMBERBARCODE = "";
+
     private short NUMBERSCANNED;
+
     private short OVERSIZE = 0;
+
     private Date RUNDATE = new Date();
+
     private Date SCANDATE = new Date();
+
     private String SCANLOCATION = "";
+
     private byte[] SEARCHVIEW;
+
     private short STATUS;
+
     private short SUPPRESS;
+
     private short TIMESPENT = 0;
+
     @Deprecated
     private String TRANSCATIONMESSAGES;
     private String BARCODE_LAST;

@@ -11,9 +11,10 @@ import java.io.IOException;
 @ManagedBean
 @RequestScoped
 public class EditOptionsView {
-    Logger logger = LoggerFactory.getLogger(EditOptionsView.class);
 
-    String redirect_id = "";
+    private final Logger logger = LoggerFactory.getLogger(EditOptionsView.class);
+
+    private String redirect_id = "";
 
     // To jump to a particular history report
     public void jump() throws IOException {

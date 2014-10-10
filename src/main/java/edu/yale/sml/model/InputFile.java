@@ -15,13 +15,21 @@ import org.hibernate.search.annotations.Store;
 public class InputFile implements java.io.Serializable {
 
     private static final long serialVersionUID = -5760688122331029078L;
+
     private String author;
+
     private String contents;
+
     private Date date;
+
     private List<String> historyList = new ArrayList<String>();
+
     private int id;
+
     private String md5;
+
     private String name;
+
     private String text;
 
     public InputFile() {

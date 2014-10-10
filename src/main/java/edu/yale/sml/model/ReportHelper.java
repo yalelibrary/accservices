@@ -20,7 +20,6 @@ public class ReportHelper {
         for (Report item : itemList) {
             for (int i = 0; i < limit; i++) {
                 if (item.getText() != 0 && item.getITEM_BARCODE().equals(o.getITEM_BARCODE())) {
-                    //item.setText(0);
                     return true;
                 }
             }

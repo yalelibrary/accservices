@@ -7,6 +7,7 @@ import org.primefaces.model.SortOrder;
 import edu.yale.sml.model.History;
 
 public class HistoryComparator implements Comparator<History> {
+
     String sortField = "";
     SortOrder sortOrder;
 

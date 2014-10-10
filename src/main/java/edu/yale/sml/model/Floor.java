@@ -13,8 +13,11 @@ public class Floor implements java.io.Serializable {
     private static final long serialVersionUID = 5667310452313292689L;
 
     private Date date = new Date();
+
     private String editor = "";
+
     private Integer id;
+
     private String name = "";
 
     public Floor(Date date, String editor, Integer id, String name) {

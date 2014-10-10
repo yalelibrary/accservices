@@ -21,7 +21,7 @@ import com.google.common.collect.*;
 
 public class CatalogInit {
 
-    final static Logger logger = LoggerFactory.getLogger(CatalogInit.class);
+    private final static Logger logger = LoggerFactory.getLogger(CatalogInit.class);
 
     private static final String NULL_BARCODE_STRING = "00000000";
 

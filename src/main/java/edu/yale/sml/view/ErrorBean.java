@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 @javax.faces.bean.ViewScoped
 public class ErrorBean {
 
-    final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.view.ErrorBean");
+    private final static Logger logger = LoggerFactory.getLogger("edu.yale.sml.view.ErrorBean");
 
     private void fillStackTrace(Throwable t, PrintWriter w) {
         if (t == null) {
@@ -65,7 +65,6 @@ public class ErrorBean {
 
         w.println("\nStackTrace\n \n:");
         t.printStackTrace(w);
-
     }
 
     public ErrorBean() {

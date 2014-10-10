@@ -8,13 +8,21 @@ import java.util.Date;
 public class Log implements java.io.Serializable {
 
     private static final long serialVersionUID = 1777878878L;
+
     private Integer id;
+
     private String net_id;
+
     private Date timestamp;
+
     private String operation;
+
     private String input_file;
+
     private String application_env;
+
     private String user_env;
+
     private String stacktrace;
 
     public Integer getId() {

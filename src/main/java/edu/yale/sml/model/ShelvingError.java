@@ -3,17 +3,29 @@ package edu.yale.sml.model;
 public class ShelvingError implements java.io.Serializable {
 
     private static final long serialVersionUID = -1201513663541649150L;
+
     private int accuracy_errors = 0;
+
     private int discharge_errors = 0;
+
     private int enum_warnings = 0;
+
     private int location_errors = 0;
+
     private int null_barcodes = 0;
+
     private int null_result_barcodes = 0;
+
     private int oversize_errors = 0;
+
     private int total_errors = 0;
+
     private int status_errors = 0;
+
     private int suppress_errors = 0;
+
     private int misshelf_errors = 0;
+
     private int misshelf_threshold_errors = 0;
 
     public int getMisshelf_threshold_errors() {

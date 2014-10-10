@@ -13,14 +13,19 @@ import edu.yale.sml.logic.ShelvingComparator;
 import edu.yale.sml.model.Shelving;
 import edu.yale.sml.persistence.GenericDAO;
 import edu.yale.sml.persistence.GenericHibernateDAO;
+import org.slf4j.Logger;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Used for History paginated table view
  */
 public class LazyHistoryNewShelvingDataModel extends LazyDataModel<Shelving> {
-    final static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(LazyHistoryNewShelvingDataModel.class);
+
+    private final Logger logger = getLogger(this.getClass());
 
     private List<Shelving> datasource;
+
     private int dataSourceSize = 0;
 
     @Override
@@ -67,8 +72,8 @@ public class LazyHistoryNewShelvingDataModel extends LazyDataModel<Shelving> {
                 }
 
             }
-        } catch (Throwable e1) {
-            e1.printStackTrace();
+        } catch (Throwable t) {
+            logger.error("Error", t);
         }
 
         if (sortField != null) {
@@ -120,7 +125,6 @@ public class LazyHistoryNewShelvingDataModel extends LazyDataModel<Shelving> {
     }
 
     public LazyHistoryNewShelvingDataModel(List<Shelving> datasource) {
-        System.out.println("Constructor, LazyHistoryDataModel");
         this.datasource = datasource;
     }
 

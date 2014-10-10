@@ -17,14 +17,14 @@ import edu.yale.sml.persistence.GenericHibernateDAO;
 @ViewScoped
 public class LogView implements java.io.Serializable {
 
-    final static Logger logger = LoggerFactory.getLogger(LogView.class);
+    private final static Logger logger = LoggerFactory.getLogger(LogView.class);
 
     private static final long serialVersionUID = 1778L;
 
     /** limit of messages to display */
     private static final int MAX_RESULTS = 100;
 
-    List<Log> logList = new ArrayList<Log>();
+    private List<Log> logList = new ArrayList<Log>();
 
     @PostConstruct
     public void initialize() {

@@ -18,7 +18,6 @@ public final class MessagesHibernateDAO extends GenericHibernateDAO<Messages> im
 
     private static final long serialVersionUID = -481304207357582739L;
 
-
     public MessagesHibernateDAO() {
         super();
     }

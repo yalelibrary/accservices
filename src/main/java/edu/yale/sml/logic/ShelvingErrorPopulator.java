@@ -29,7 +29,6 @@ public class ShelvingErrorPopulator {
                                    int nullBarcodes,
                                    int suppressedErrors,
                                    int flaggedInFileOrderTableSize) {
-        logger.debug("Calculating report header summary count.");
         int accErrors = 0;
         int totalErrors = 0;
         int nullResultBars = 0;
@@ -37,8 +36,8 @@ public class ShelvingErrorPopulator {
         int enumWarn = 0;
         int locError = 0;
         int statusError = 0;
-        int misshelfError = 0; //ignored?
-        //int misshelfThresholdErrors = 0; //ignored?
+
+        logger.debug("Calculating report header summary count.");
 
         for (Report item : list) {
             String dispCallNo = item.getDISPLAY_CALL_NO();
@@ -58,7 +57,6 @@ public class ShelvingErrorPopulator {
 
             if (item.getText() != null && item.getText() != 0) {
                 accErrors++;
-                misshelfError++;
                 totalErrors++;
             }
 
@@ -101,7 +99,7 @@ public class ShelvingErrorPopulator {
                 } else if ((!dispCallNo.contains("+") && !dispCallNo.toLowerCase().contains("oversize")) && oversize.equals("Y")) {
                     oversizeErrors++;
                 } else {
-                    logger.trace("Not oversized={}", item.getITEM_BARCODE());
+                    logger.trace("Not over-sized={}", item.getITEM_BARCODE());
                 }
             }
 
@@ -113,7 +111,6 @@ public class ShelvingErrorPopulator {
                 item.setOVERSIZE("Y");
             }
         }
-        //shelvingError.setAccuracy_errors(accErrors); //misshelf
         shelvingError.setAccuracy_errors(flaggedInFileOrderTableSize);
         shelvingError.setEnum_warnings(enumWarn);
         shelvingError.setNull_barcodes(nullBarcodes);
@@ -122,14 +119,12 @@ public class ShelvingErrorPopulator {
         shelvingError.setTotal_errors(totalErrors); //used?
         shelvingError.setLocation_errors(locError);
         shelvingError.setStatus_errors(statusError);
-        //shelvingError.setMisshelf_errors(misshelfError); //ignored
-        //shelvingError.setMisshelf_threshold_errors(misshelfThresholdErrors);
         shelvingError.setSuppress_errors(suppressedErrors);
 
-        logger.debug("Location error count:" + locError);
-        logger.debug("Accuracy error count:" + accErrors);
-        logger.debug("Status error count:" + statusError);
-        logger.debug("Oversize count={}", oversizeErrors);
+        logger.trace("Location error count={}", locError);
+        logger.trace("Accuracy error count={}", accErrors);
+        logger.trace("Status error count={}", statusError);
+        logger.trace("Oversize count={}", oversizeErrors);
 
         return shelvingError;
     }

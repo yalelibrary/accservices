@@ -6,30 +6,52 @@ import java.util.Date;
 public class Shelving implements java.io.Serializable {
 
     private static final long serialVersionUID = 2215173185991677617L;
-    private Integer accuracyErrors;
-    private String barcodeEnd;
-    private String barcodeStart;
-    private Date creationDate;
-    private String displayEnd = "";
-    private String displayStart = "";
-    private String endItemStatus = "";
-    private Date endItemStatusDate;
-    private String floor = "";
-    private Date formDate = new Date();
-    private int id;
-    private String NETID = ""; //has to be public for LazyHistory model
-    private String normalizedEnd = "";
-    private String normalizedStart = "";
-    private String notes;
-    private String numRows;
-    private String oversize;
-    private String SCANLOCATION = "";
-    private String startItemStatus = "";
-    private Date startItemStatusDate;
-    private String team;
-    private float teamSize = 1;
-    private String time;
 
+    private Integer accuracyErrors;
+
+    private String barcodeEnd;
+
+    private String barcodeStart;
+
+    private Date creationDate;
+
+    private String displayEnd = "";
+
+    private String displayStart = "";
+
+    private String endItemStatus = "";
+
+    private Date endItemStatusDate;
+
+    private String floor = "";
+
+    private Date formDate = new Date();
+
+    private int id;
+
+    private String NETID = ""; //has to be public for LazyHistory model
+
+    private String normalizedEnd = "";
+
+    private String normalizedStart = "";
+
+    private String notes;
+
+    private String numRows;
+
+    private String oversize;
+
+    private String SCANLOCATION = "";
+
+    private String startItemStatus = "";
+
+    private Date startItemStatusDate;
+
+    private String team;
+
+    private float teamSize = 1;
+
+    private String time;
 
     public Shelving() {
     }

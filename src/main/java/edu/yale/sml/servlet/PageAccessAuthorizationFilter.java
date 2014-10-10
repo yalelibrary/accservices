@@ -28,7 +28,7 @@ public class PageAccessAuthorizationFilter implements Filter {
 
     private static final Logger logger = getLogger(PageAccessAuthorizationFilter.class);
 
-    FilterConfig filterConfig;
+    private FilterConfig filterConfig;
 
     public PageAccessAuthorizationFilter() {
         super();

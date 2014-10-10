@@ -9,8 +9,11 @@ import lombok.ToString;
 public class Admin implements java.io.Serializable {
 
     private String adminCode;
+
     private String editor;
+
     private Integer id;
+
     private String netid;
 
     public Admin() {

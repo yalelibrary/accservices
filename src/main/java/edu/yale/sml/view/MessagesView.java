@@ -6,6 +6,7 @@ import edu.yale.sml.persistence.GenericDAO;
 import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.MessagesDAO;
 import edu.yale.sml.persistence.MessagesHibernateDAO;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -15,14 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 @ManagedBean
 @SessionScoped
 public class MessagesView {
 
-    List<Messages> messagesList = new ArrayList<Messages>();
-    List<Log> logList = new ArrayList<Log>();
-    HashMap hashMap = new HashMap<String, String>();
-    Properties props = new Properties();
+    private Logger logger = getLogger(this.getClass());
+
+    private List<Messages> messagesList = new ArrayList<Messages>();
+
+    private List<Log> logList = new ArrayList<Log>();
+
+    private HashMap hashMap = new HashMap<String, String>();
+
+    private Properties props = new Properties();
 
     public List findAll() {
         return messagesList;
@@ -45,24 +53,8 @@ public class MessagesView {
 
             props.putAll(hashMap);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
-    }
-
-    public List<Log> getLogList() {
-        return logList;
-    }
-
-    public void setLogList(List<Log> logList) {
-        this.logList = logList;
-    }
-
-    public Properties getProps() {
-        return props;
-    }
-
-    public void setProps(Properties props) {
-        this.props = props;
     }
 
     public List<Messages> getMessagesList() {
@@ -88,25 +80,4 @@ public class MessagesView {
         initialize();
         return "ok";
     }
-
-    /*
-    public void saveAll() {
-        try {
-            try {
-                Session s = HibernateSQLServerUtil.getSessionFactory().openSession();
-                Transaction t = s.beginTransaction();
-                for (Messages m : messagesList) {
-                    s.save(m);
-                }
-                s.flush();
-                t.commit();
-                s.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    */
 }

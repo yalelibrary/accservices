@@ -12,17 +12,21 @@ import javax.faces.event.ActionEvent;
 import edu.yale.sml.model.Admin;
 import edu.yale.sml.persistence.AdminDAO;
 import edu.yale.sml.persistence.AdminHibernateDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ManagedBean
 @RequestScoped
 public class AdminView {
 
-    List<Admin> adminAsList = new ArrayList<Admin>();
-    Admin adminCatalog; // ?
-    String adminCode = "";
-    String editor = "";
-    String netid = "";
-    List<String> permissionTypes = new ArrayList<String>();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private List<Admin> adminAsList = new ArrayList<Admin>();
+    private Admin adminCatalog; // ?
+    private String adminCode = "";
+    private String editor = "";
+    private String netid = "";
+    private List<String> permissionTypes = new ArrayList<String>();
 
     public void addInfo(ActionEvent actionEvent) {
         FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", "Changes Saved."));
@@ -66,7 +70,7 @@ public class AdminView {
             AdminDAO adminDAO = new AdminHibernateDAO();
             adminAsList = adminDAO.findAll(Admin.class);
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
     }
 
@@ -78,8 +82,7 @@ public class AdminView {
             adminDAO.delete(adminCatalog);
             adminAsList.remove(adminCatalog);
         } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("Error", e);
         }
     }
 
@@ -95,7 +98,7 @@ public class AdminView {
             adminDAO.save(adminCatalog);
             initialize();
         } catch (Throwable e) {
-            e.printStackTrace();
+            logger.error("Error", e);
         }
     }
 

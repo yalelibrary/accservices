@@ -12,6 +12,7 @@ import edu.yale.sml.model.Shelving;
 public class ShelvingComparator implements Comparator<Shelving> {
 
     String sortField = "";
+
     SortOrder sortOrder;
 
     public ShelvingComparator(String sortField, SortOrder sortOrder) {

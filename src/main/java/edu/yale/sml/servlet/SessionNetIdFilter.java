@@ -18,7 +18,7 @@ public class SessionNetIdFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(SessionNetIdFilter.class);
 
-    FilterConfig filterConfig;
+    private FilterConfig filterConfig;
 
     public SessionNetIdFilter() {
         super();

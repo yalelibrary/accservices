@@ -9,30 +9,55 @@ public class Report implements Serializable {
     private static final long serialVersionUID = 5079435243211265712L;
 
     private String CHRON = "";
+
     private String DISPLAY_CALL_NO = "";
+
     private String ENCODING_LEVEL;
+
     private String ITEM_BARCODE = "";
+
     private String ITEM_ENUM = "";
+
     private String ITEM_ID = "";
+
     private Date ITEM_STATUS_DATE = null;
+
     private String ITEM_STATUS_DESC = "";
+
     private String LOCATION_NAME = "";
+
     private String MFHD_ID = "";
+
     private String NORMALIZED_CALL_NO = "";
+
     private String OVERSIZE = "";
+
     private String SUPPRESS_IN_OPAC;
+
     private String YEAR = "";
+
     private String CALL_NO_TYPE = "";
+
     private OrbisRecord orbisRecord;
+
     private String priorEnum = "";
+
     private String priorChron = "";
+
     private String priorPhysicalEnum = "";
+
     private String priorPhysicalChron = "";
+
     private OrbisRecord physicalPrior;
+
     private String prior = "";
+
     private String priorPhysical = "";
+
     private String marker = "";
+
     private Integer text; //acc error
+
     private Integer mark = 0;
 
     public Report() {

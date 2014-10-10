@@ -1,9 +1,7 @@
 package edu.yale.sml.logic;
 
-import edu.yale.sml.logic.Rules;
 import edu.yale.sml.model.OrbisRecord;
 import edu.yale.sml.model.Report;
-
 import org.junit.Test;
 
 import java.util.ArrayList;

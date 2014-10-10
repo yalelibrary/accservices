@@ -20,7 +20,7 @@ public class DBCheckFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(DBCheckFilter.class);
 
-    FilterConfig filterConfig;
+    private FilterConfig filterConfig;
 
     public DBCheckFilter() {
         super();

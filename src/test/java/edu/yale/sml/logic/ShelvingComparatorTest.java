@@ -1,7 +1,6 @@
 package edu.yale.sml.logic;
 
 
-import edu.yale.sml.logic.ShelvingComparator;
 import edu.yale.sml.model.Shelving;
 import org.junit.Test;
 import org.primefaces.model.SortOrder;

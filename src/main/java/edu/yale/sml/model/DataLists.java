@@ -11,14 +11,23 @@ public class DataLists implements java.io.Serializable {
     private static final long serialVersionUID = 2524269432605035990L;
 
     private List<OrbisRecord> catalogAsList = new ArrayList<OrbisRecord>();
+
     private List<OrbisRecord> catalogSortedRaw = new ArrayList<OrbisRecord>();
+
     private List<Report> culpritList = new ArrayList<Report>(); // for alt logic
+
     private List<OrbisRecord> markedCatalogAsList = new ArrayList<OrbisRecord>();
+
     private List<OrbisRecord> nullResultBarcodes = new ArrayList<OrbisRecord>();
+
     private List<Report> reportCatalogAsList = new ArrayList<Report>();
+
     private ShelvingError shelvingError = new ShelvingError();
+
     private List<OrbisRecord> suppressedList = new ArrayList<OrbisRecord>(); // of Report?
+
     private List<Report> enumWarnings = new ArrayList<Report>();
+
     private Multimap<String, String> barcodesAsMap = ArrayListMultimap.create(); //currently only {barcode:itemstatus}
 
     public Multimap<String, String> getBarcodesAsMap() {

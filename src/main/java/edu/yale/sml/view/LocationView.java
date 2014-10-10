@@ -32,7 +32,9 @@ public class LocationView implements java.io.Serializable {
 
     //UI bound objects:
     private Date date = new Date();
+
     private String editor = "";
+
     private String name = "";
 
     /**
@@ -86,7 +88,6 @@ public class LocationView implements java.io.Serializable {
         try {
             GenericDAO<Location> dao = new GenericHibernateDAO<Location>();
             dao.save(item);
-
             initialize();
         } catch (Throwable e) {
             logger.error("Error saving object", e);
@@ -102,7 +103,6 @@ public class LocationView implements java.io.Serializable {
         return  new FacesMessage(FacesMessage.SEVERITY_INFO, "INFO", message);
     }
 
-    // getters and setters -----------------------------------------------------------------
     public Date getDate() {
         return date;
     }

@@ -49,7 +49,9 @@ public class SearchView implements Serializable {
     private static final long serialVersionUID = 8064034317364105517L;
 
     private static final String PF_FILE_PREFIX = "PrimeFacesUploadedFile";
+
     private static final String PF_FILE_NAME = "PrimeFacesUploadedFileName";
+
     private static final String APP = "ShelfScan";
 
     /** Identifier for session */
@@ -59,21 +61,37 @@ public class SearchView implements Serializable {
     transient static final String SESSION_NETID = "netid";
 
     private BasicShelfScanEngine engine;
+
     private String fileName = "";
+
     private String finalLocationName = "";
+
     private String firstCallNumber = "", lastCallNumber = "";
+
     private String locationName = "sml";
+
     private List<String> locationNames = new ArrayList<String>();
+
     private String oversize = "N";
+
     private List<String> oversizeAsList = new ArrayList<String>();
+
     private DataLists reportLists = new DataLists();
+
     private Date scanDate = new Date();
+
     private int timeSpent = 30;
+
     private UploadedFile uploadedFile;
+
     private List<OrbisRecord> badBarcodes;
+
     private String uploadedFileName = "";
+
     private String user = "";
+
     private String notes = "";
+
     private String redirect_id = "";
 
     /**
@@ -216,7 +234,6 @@ public class SearchView implements Serializable {
             logger.debug("Done processing barcodes list.");
 
             List<OrbisRecord> catalogList = reportLists.getCatalogAsList();
-
             firstCallNumber = catalogList.get(0).getDISPLAY_CALL_NO();
             lastCallNumber = catalogList.get(catalogList.size() - 1).getDISPLAY_CALL_NO();
 
@@ -487,7 +504,7 @@ public class SearchView implements Serializable {
         this.badBarcodes = badBarcodes;
     }
 
-    /* //Was Used to navigate links
+    /* Was Used to navigate links
     public static String getReferenceLink2(String rowIndex) {
         return "#BarcodeSearchViewFormResult:j_idt25:justsorted2:" + rowIndex + ":wrong";
     }*/

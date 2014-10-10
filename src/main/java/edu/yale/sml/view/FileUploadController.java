@@ -14,6 +14,7 @@ import org.primefaces.model.UploadedFile;
 public class FileUploadController implements java.io.Serializable {
 
     private static final long serialVersionUID = 9177080916752001407L;
+
     private UploadedFile file;
 
     public UploadedFile getFile() {
@@ -21,7 +22,6 @@ public class FileUploadController implements java.io.Serializable {
     }
 
     public void handleFileUpload(FileUploadEvent event) {
-        //logger.debug("FileUploadController : fileName : " + event.getFile().getFileName());
         FacesMessage msg = new FacesMessage("File uploaded.");
         setFile(event.getFile());
         FacesContext.getCurrentInstance().addMessage(null, msg);
