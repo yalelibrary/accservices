@@ -358,10 +358,13 @@ public class ShelvingApplication implements java.io.Serializable {
                 shelvingCount.setOldestCart(item.getOldestCartDate());
                 shelvingCount.setLastUpdateTimeStamp(new Date());
                 shelvingCount.setOldestCartDated(new Date());
-                int rowChange = Integer.parseInt(item.getNumRows()) - shelvingCount.getRows();
-                shelvingCount.setRows(rowChange);
 
-                logger.info("Updating row:{}", shelvingCount);
+                if (shelvingCount.getRows() > 0) {
+                    int rowChange = shelvingCount.getRows() - Integer.parseInt(item.getNumRows());
+                    shelvingCount.setRows(rowChange);
+                }
+
+                logger.info("Updating row shelving count:{}", shelvingCount);
                 shelvingLiveRowCountDAO.update(shelvingCount);
             } else {
                 logger.info("Cannot process oldest cart item");
