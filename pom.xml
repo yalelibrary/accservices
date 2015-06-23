@@ -311,10 +311,4 @@
 
 
     </profiles>
-
-    <parent>
-        <groupId>edu.yale.sml</groupId>
-        <artifactId>shelfscan-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
 </project>
