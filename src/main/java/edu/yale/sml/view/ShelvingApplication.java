@@ -18,6 +18,9 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
+import edu.yale.sml.model.ShelvingLiveRowCount;
+import edu.yale.sml.persistence.ShelvingLiveRowCountDAO;
+import edu.yale.sml.persistence.ShelvingLiveRowCountHibernateDAO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
@@ -66,6 +69,11 @@ public class ShelvingApplication implements java.io.Serializable {
     private Shelving selectedHistory;
 
     private List<String> teamAsList = new ArrayList<String>();
+
+    /**
+     * Used for updating oldest cart logic
+     */
+    private ShelvingLiveRowCountDAO shelvingLiveRowCountDAO = new ShelvingLiveRowCountHibernateDAO();
 
     // for netids list
     private SelectItem[] createFilterOptions(List<Shelving> historyAsList2) {
@@ -330,10 +338,39 @@ public class ShelvingApplication implements java.io.Serializable {
         try {
             dao.save(item);
             context.addMessage(null, new FacesMessage("Saved Shelving Entry"));
+
+            // Update Shelving row table:
+
+            if (item.getOldestCartDate() != null && item.getSCANLOCATION().equalsIgnoreCase("SML")) {
+                logger.info("Existing count:{}", shelvingLiveRowCountDAO.count());
+
+                // look up the floor row. This should give the entry that needs to be updated
+                List<ShelvingLiveRowCount> list = shelvingLiveRowCountDAO.findById(item.getFloor());
+
+                logger.debug("Found matches:{}", list.toString());
+
+                if (list.size() == 0 || list.size() > 1) {
+                    logger.error("Invalid number of rows found");
+                }
+
+                ShelvingLiveRowCount shelvingCount = list.get(0);
+                shelvingCount.setLastUpdateSystem("P");
+                shelvingCount.setOldestCart(item.getOldestCartDate());
+                shelvingCount.setLastUpdateTimeStamp(new Date());
+                shelvingCount.setOldestCartDated(new Date());
+                int rowChange = Integer.parseInt(item.getNumRows()) - shelvingCount.getRows();
+                shelvingCount.setRows(rowChange);
+
+                logger.info("Updating row:{}", shelvingCount);
+                shelvingLiveRowCountDAO.update(shelvingCount);
+            } else {
+                logger.info("Cannot process oldest cart item");
+            }
+
             return "ok";
         } catch (Throwable e) {
             logger.error("Error processing", e);
-            context.addMessage(null, new FacesMessage("Error Saving Shelving Entry"));
+            context.addMessage(null, new FacesMessage("Error Saving Shelving Entry or Updating Live Count"));
             return "failed";
         }
     }

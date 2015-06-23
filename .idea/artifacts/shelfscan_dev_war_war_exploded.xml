@@ -8,10 +8,10 @@
           <element id="module-output" name="shelfscan-dev-war" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="edu.yale.sml-0.0.1-SNAPSHOT.jar">
+          <element id="archive" name="shelfscan-main-dev-0.0.1-SNAPSHOT.jar">
             <element id="module-output" name="shelfscan-main-dev" />
           </element>
-          <element id="library" level="project" name="Maven: commons-io:commons-io:2.4" />
+          <element id="library" level="project" name="Maven: commons-io:commons-io:2.0" />
           <element id="library" level="project" name="Maven: commons-configuration:commons-configuration:1.6" />
           <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2.1" />
           <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.4" />

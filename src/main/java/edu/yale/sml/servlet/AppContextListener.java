@@ -7,6 +7,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import edu.yale.sml.persistence.config.HibernateSQLServerUtil;
+import edu.yale.sml.persistence.config.ShelvingLiveRowCountSQLServerUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,8 @@ public class AppContextListener implements ServletContextListener {
         try {
             start = HibernateSQLServerUtil.getSessionFactory().getStatistics().getStartTime();
             logger.info("OK. Built Session Factory");
+            ShelvingLiveRowCountSQLServerUtil.getSessionFactory().getStatistics().getStartTime();
+            logger.info("Built shelving live row count factory");
         } catch (Throwable t) {
             logger.error("Error in context initialization", t);
         }
@@ -35,7 +38,7 @@ public class AppContextListener implements ServletContextListener {
         try {
             HibernateSQLServerUtil.shutdown();
             logger.info("Closed Hibernate Session Factory. Time Usage={} ms ", (System.currentTimeMillis() - start));
-
+            ShelvingLiveRowCountSQLServerUtil.shutdown();
         } catch (Throwable t) {
             logger.error("Error in context shutdown", t);
         }

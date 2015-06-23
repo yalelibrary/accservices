@@ -27,6 +27,8 @@ public class Shelving implements java.io.Serializable {
 
     private Date formDate = new Date();
 
+    private Date oldestCartDate = new Date();
+
     private int id;
 
     private String NETID = ""; //has to be public for LazyHistory model
@@ -272,6 +274,14 @@ public class Shelving implements java.io.Serializable {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public Date getOldestCartDate() {
+        return oldestCartDate;
+    }
+
+    public void setOldestCartDate(Date oldestCartDate) {
+        this.oldestCartDate = oldestCartDate;
     }
 
     @Override
