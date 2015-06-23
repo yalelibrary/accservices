@@ -92,4 +92,18 @@ public class ShelvingLiveRowCount implements Serializable {
         this.lastUpdateSystem = lastUpdateSystem;
     }
 
+
+    @Override
+    public String toString() {
+        return "ShelvingLiveRowCount{" +
+                "floor='" + floor + '\'' +
+                ", trucks=" + trucks +
+                ", rows=" + rows +
+                ", oldestCart=" + oldestCart +
+                ", newRows=" + newRows +
+                ", oldestCartDated=" + oldestCartDated +
+                ", lastUpdateTimeStamp=" + lastUpdateTimeStamp +
+                ", lastUpdateSystem='" + lastUpdateSystem + '\'' +
+                '}';
+    }
 }

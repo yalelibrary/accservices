@@ -34,6 +34,10 @@ public final class ShelvingLiveRowCountHibernateDAO extends GenericHibernateDAO<
             tx = s.beginTransaction();
             ShelvingLiveRowCount oldObj =
                     (ShelvingLiveRowCount) s.load(ShelvingLiveRowCount.class, shelvingLiveRowCount.getFloor());
+            oldObj.setRows(shelvingLiveRowCount.getRows());
+            oldObj.setLastUpdateTimeStamp(shelvingLiveRowCount.getLastUpdateTimeStamp());
+            oldObj.setOldestCart(shelvingLiveRowCount.getOldestCart());
+            oldObj.setLastUpdateSystem(shelvingLiveRowCount.getLastUpdateSystem());
             s.flush();
             tx.commit();
         } catch (HibernateException e) {
