@@ -344,6 +344,8 @@ public class ShelvingApplication implements java.io.Serializable {
             if (item.getOldestCartDate() != null && item.getSCANLOCATION().equalsIgnoreCase("SML")) {
                 logger.info("Existing count:{}", shelvingLiveRowCountDAO.count());
 
+                logger.info("Floor:{}", item.getFloor());
+
                 // look up the floor row. This should give the entry that needs to be updated
                 List<ShelvingLiveRowCount> list = shelvingLiveRowCountDAO.findById(item.getFloor());
 

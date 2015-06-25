@@ -58,18 +58,22 @@ public final class ShelvingLiveRowCountHibernateDAO extends GenericHibernateDAO<
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<ShelvingLiveRowCount> findById(String ID) {
+    public List<ShelvingLiveRowCount> findById(String floor) {
         Session session = null;
         try {
             session = ShelvingLiveRowCountSQLServerUtil.getSessionFactory().openSession();
-            Query q = session.createQuery("from edu.yale.sml.model.ShelvingLiveRowCount where floor = " + ID);
+            logger.debug("Looking for floor:{}", floor);
+            Query q = session.createQuery("from edu.yale.sml.model.ShelvingLiveRowCount where floor = :param");
+            q.setParameter("param", floor);
             return q.list();
         } catch (HibernateException e) {
             logger.error("Error", e);
             throw new HibernateException(e);
         } finally {
             try {
-                session.close();
+                if (session != null) {
+                    session.close();
+                }
             } catch (HibernateException e) {
                 logger.error("Error", e);
             }
