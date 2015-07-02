@@ -12,7 +12,7 @@ public class ShelvingLiveRowCount implements Serializable {
 
     private int trucks;
 
-    private int rows;
+    private float rows;
 
     private Date oldestCart;
 
@@ -44,11 +44,11 @@ public class ShelvingLiveRowCount implements Serializable {
         this.trucks = trucks;
     }
 
-    public int getRows() {
+    public float getRows() {
         return rows;
     }
 
-    public void setRows(int rows) {
+    public void setRows(float rows) {
         this.rows = rows;
     }
 

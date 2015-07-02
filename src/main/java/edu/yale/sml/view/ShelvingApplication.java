@@ -341,7 +341,7 @@ public class ShelvingApplication implements java.io.Serializable {
 
             // Update Shelving row table:
 
-            if (item.getOldestCartDate() != null && item.getSCANLOCATION().equalsIgnoreCase("SML")) {
+            if (item.getOldestCartDate() != null && item.getSCANLOCATION().startsWith("sml")) {
                 logger.info("Existing count:{}", shelvingLiveRowCountDAO.count());
                 logger.info("Floor:{}", item.getFloor());
 
@@ -360,7 +360,7 @@ public class ShelvingApplication implements java.io.Serializable {
                 shelvingCount.setLastUpdateTimeStamp(new Date());
                 shelvingCount.setOldestCartDated(new Date());
 
-                int rowChange = shelvingCount.getRows() - Integer.parseInt(item.getNumRows());
+                float rowChange = shelvingCount.getRows() - Float.parseFloat(item.getNumRows());
                 shelvingCount.setRows(rowChange);
 
                 logger.info("Updating row shelving count:{}", shelvingCount);
