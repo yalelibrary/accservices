@@ -7,14 +7,7 @@
     <packaging>jar</packaging>
     <description>Shelf Scan Application</description>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>snappy</id>
-            <name>Maven2 Snapshot Repository</name>
-            <url>http://130.132.146.30:8081/nexus/content/repositories/snapshots</url>
-            <uniqueVersion>true</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
+
 
     <dependencies>
         <dependency>
@@ -220,14 +213,7 @@
             <url>http://repository.primefaces.org</url>
             <layout>default</layout>
         </repository>
-        <repository>
-            <id>nexus</id>
-            <url>http://130.132.146.30:8081/nexus/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>snappys</id>
-            <url>http://130.132.146.30:8081/nexus/content/repositories/thirdparty</url>
-        </repository>
+    
     </repositories>
 
     <build>
