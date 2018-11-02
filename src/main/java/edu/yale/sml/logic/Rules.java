@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import edu.yale.sml.model.OrbisRecord;
 import edu.yale.sml.model.Report;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Helper logic static class
@@ -138,6 +140,7 @@ public class Rules {
     }
 
     public static boolean isLocationError(String locationName, String finalLocationName) {
+        /* Yue Ji Commented out on 10/22/2018 7:51 PM
         //hardcoded check:
         if (finalLocationName.equalsIgnoreCase("art") && (locationName.equalsIgnoreCase("artref")
                 || locationName.equalsIgnoreCase("artrefl") || locationName.equalsIgnoreCase("dra")
@@ -156,12 +159,20 @@ public class Rules {
         if (finalLocationName.equalsIgnoreCase("medrefeol") && (locationName.equalsIgnoreCase("medwk1"))) {
             return false;
         }
-
+        
         if (!locationName.equalsIgnoreCase(finalLocationName)) {
             return true;
         }
-
-        return false;
+        */
+        // Yue Ji Added on 10/22/2018 7:51 PM
+         String pattern = "\\b"+locationName.toLowerCase()+"\\b";
+         Pattern p = Pattern.compile(pattern);
+         Matcher m = p.matcher(finalLocationName.toLowerCase());
+         if (m.find())   {
+            return false;
+         }
+         else
+            return true;
     }
 
 }
