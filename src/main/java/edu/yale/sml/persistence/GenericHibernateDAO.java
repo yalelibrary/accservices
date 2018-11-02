@@ -74,6 +74,7 @@ public class GenericHibernateDAO<T> implements GenericDAO<T> {
     public List<T> findAll(Class classz) throws Throwable {
         Session session = HibernateSQLServerUtil.getSessionFactory().openSession();
         try {
+            //Sample value of classz.getName(): edu.yale.sml.model.Messages, edu.yale.sml.model.Log, edu.yale.sml.model.Location
             Query q = session.createQuery("from " + classz.getName());
             List<T> list = q.list();
             return list;
