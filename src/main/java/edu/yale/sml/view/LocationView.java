@@ -14,6 +14,7 @@ import javax.faces.event.ActionEvent;
 import edu.yale.sml.model.Location;
 import edu.yale.sml.persistence.GenericHibernateDAO;
 import edu.yale.sml.persistence.GenericDAO;
+import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +55,8 @@ public class LocationView implements java.io.Serializable {
         for (Location l : locationAsList) {
             locationNameList.add(l.getName());
         }
+        // Yue Ji Added on 10/24/2018 5:11 PM to sort the location list
+        Collections.sort(locationNameList);
         return locationNameList;
     }
 
