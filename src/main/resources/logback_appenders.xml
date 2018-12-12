@@ -8,7 +8,7 @@
         </encoder>
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <File> /usr/local/Tomcat70/logs/shelfscan.log</File>
+        <File> /usr/local/tomcat/logs/shelfscan.log</File>
         <Append>true</Append>
         <encoder>
             <pattern>%d | %p | %logger{15} | %M - %m%n

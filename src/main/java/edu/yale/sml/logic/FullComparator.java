@@ -115,12 +115,12 @@ public class FullComparator implements Comparator<OrbisRecord> {
             }
         }
         int aggregate = diff + enumDiff + yearDiff;
-        if (enum_found && aggregate > 0) {
-            culprits.add(o1); // redundant
+        if (enum_found && aggregate > 0) {           
+             culprits.add(o1); // redundant
 
             //if added already, skip all - -this is to prevent an enum from appearing multiple times
-
-            if (!alreadyAdded(o1, culpritList)) {
+           
+            if (!alreadyAdded(o1, culpritList)) {              
                 culpritList.add(Report.newReport(o1, FLAG, "N/A", "N/A", o2, null));
             }
         }

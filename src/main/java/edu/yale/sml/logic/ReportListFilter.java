@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReportListFilter {
 
@@ -56,10 +58,20 @@ public class ReportListFilter {
                         errorFound = true;
                     }
                 }
-
+                /* Yue Ji Commented out on 10/23/2018 12:02 PM
                 if (!item.getLocationName().equals(finalLocationName)) {
                     errorFound = true;
                 }
+                */
+                // Yue Ji Added on 10/23/2018 12:02 PM
+                String pattern = "\\b"+item.getLocationName().toLowerCase()+"\\b";
+                Pattern p = Pattern.compile(pattern);
+                Matcher m = p.matcher(finalLocationName.toLowerCase());
+                if (m.find())   {
+                    errorFound = false;
+                }
+                else
+                    errorFound = true;
 
                 final String desc = item.getItemStatusDesc();
                 final Date statusDate = item.getItemStatusDate();

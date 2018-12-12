@@ -126,9 +126,10 @@ public class BasicShelfScanEngine implements java.io.Serializable {
                     getOrbisList(reportLists), loc, scanDate, oversize);
 
             // Add other errors:
-            for (Report item : fullComparator.getCulpritList()) {
+            for (Report item : fullComparator.getCulpritList()) {                
                 enumWarnings.add(item);
-                culpritList.add(item); // add shelving warnings to culpritList
+                // Yue Ji commented out on November 10, 2018 10:21 PM to remove Enum&Chron list in the main error report, since it has already appeared in Warning Report.
+                // culpritList.add(item); // add shelving warnings to culpritLis
             }
 
             // Fix Sort Order (i.e. original file order):

@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -477,7 +478,16 @@ public class SearchView implements Serializable {
     }
 
     public List<String> getLocationNames() {
-        return new LocationView().findLocationNames();
+        // Yue Ji Added on 10/24/2018 5:11 PM to sort the location list
+        List<String> listLocationNames = new ArrayList<String>(new LocationView().findLocationNames()); 
+        Collections.sort(listLocationNames);
+        /*
+        for (int i =0; i < listLocationNames.size(); i++) {
+            System.out.print(listLocationNames.get(i) + ","); 
+        }
+        */
+        //return new LocationView().findLocationNames();
+        return listLocationNames;
     }
 
     public String getOversize() {
