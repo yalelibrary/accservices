@@ -236,12 +236,9 @@ public class LogicHelper {
         List<String> response = new ArrayList<String>();
         StringBuffer response_body = new StringBuffer();
         try {
-            URL url = new URL(cas_server_url);
+            URL url = new URL(cas_server_url + "?" + contents.toString());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            writer = new OutputStreamWriter(conn.getOutputStream());
-            writer.write(contents.toString());
-            writer.flush();
+            conn.setRequestMethod("GET");
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             response.add(new String(Integer.toString(conn.getResponseCode())));
             String decodedString = "";
@@ -254,7 +251,7 @@ public class LogicHelper {
         } catch (java.net.UnknownHostException e) {
             throw new java.net.UnknownHostException();
         } catch (IOException e) {
-            throw new IOException(e);
+            throw new IOException(contents.toString(), e);
         } finally {
             try {
                 if (writer != null) {
